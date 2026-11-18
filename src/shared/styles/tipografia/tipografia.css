@@ -1,0 +1,17 @@
+/* Tipografía. Las fuentes se cargan con next/font en app/[idioma]/layout.tsx
+   y llegan aquí como variables CSS. Los componentes usan font-serif / font-sans / font-mono. */
+@theme inline {
+  --font-serif: var(--fuente-serif), Georgia, serif;
+  --font-sans: var(--fuente-sans), system-ui, sans-serif;
+  --font-mono: var(--fuente-mono), ui-monospace, monospace;
+}
+
+/* Etiquetas de navegación y botones: monoespaciada, mayúsculas y espaciada */
+@utility text-etiqueta {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}

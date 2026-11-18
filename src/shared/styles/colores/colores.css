@@ -1,0 +1,18 @@
+/* Tokens de color. Los componentes usan clases con nombre (bg-fondo, text-texto…),
+   nunca hexadecimales ni la paleta por defecto de Tailwind.
+   Texto y primario salen del logo; el resto es propuesta a partir de la referencia visual. */
+@theme {
+  --color-*: initial;
+
+  --color-fondo: #f6f4ec;
+  --color-texto: #082023;
+  --color-texto-suave: #3f5254;
+  --color-borde: #082023;
+  --color-primario: #fe412a;
+
+  /* Degradado del fondo de página (ver ../fondos/fondos.css) */
+  --color-degradado-crema: #f3f1e8;
+  --color-degradado-amarillo: #f3efc4;
+  --color-degradado-durazno: #ebd2b8;
+  --color-degradado-azul: #9fc9ea;
+}

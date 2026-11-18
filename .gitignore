@@ -1,0 +1,10 @@
+node_modules
+.next
+.next-pruebas
+.env*.local
+next-env.d.ts
+*.tsbuildinfo
+e2e/capturas
+test-results
+playwright-report
+AGENTS.md
