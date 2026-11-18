@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { redesSociales } from '@/modules/landing/domain/contacto'
 import { idiomas } from '@/shared/idiomas/idiomas'
 import { PieConectado } from './PieConectado'
 
@@ -20,10 +21,13 @@ describe('PieConectado', () => {
     expect(screen.getByRole('link', { name: /Contact/ })).toHaveAttribute('href', 'https://wa.me/51973356545')
   })
 
-  it('mientras no haya enlaces de redes sociales no se muestran iconos', () => {
+  it('muestra un enlace por cada red social definida en el dominio, nombrado por la red', () => {
     render(<PieConectado idioma="es" />)
-    expect(screen.queryByRole('list', { name: 'Redes sociales' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Instagram' })).not.toBeInTheDocument()
+    const lista = screen.getByRole('list', { name: 'Redes sociales' })
+    expect(within(lista).getAllByRole('link')).toHaveLength(redesSociales.length)
+    const instagram = redesSociales.find((red) => red.tipo === 'instagram')
+    expect(within(lista).getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', instagram?.href)
+    expect(within(lista).getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('target', '_blank')
   })
 
   it('el copyright lleva el año actual', () => {

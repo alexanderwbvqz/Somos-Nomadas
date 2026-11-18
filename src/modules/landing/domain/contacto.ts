@@ -10,6 +10,9 @@ export function enlaceWhatsapp(numero: string = numeroWhatsapp): string {
 export type TipoRedSocial = 'instagram' | 'linkedin'
 export type RedSocial = { tipo: TipoRedSocial; href: string }
 
-// Pendiente: agregar aquí los enlaces reales de Instagram y LinkedIn.
-// Mientras la lista esté vacía, el pie no muestra iconos de redes.
-export const redesSociales: RedSocial[] = []
+// PENDIENTE: sustituir estos enlaces provisionales (la portada de cada red)
+// por los de las cuentas reales de Nómadas. Si la lista queda vacía, el pie no muestra iconos.
+export const redesSociales: RedSocial[] = [
+  { tipo: 'instagram', href: 'https://www.instagram.com/' },
+  { tipo: 'linkedin', href: 'https://www.linkedin.com/' },
+]
