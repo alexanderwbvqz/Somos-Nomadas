@@ -13,6 +13,15 @@ describe('PieConectado', () => {
     expect(screen.getByText(/Usamos tus datos personales solo para conectar fundadores entre sí/)).toBeInTheDocument()
   })
 
+  it('Ecosistema tiene solo la red de aliados y postular como aliado: los mentores ya están dentro de la red', () => {
+    render(<PieConectado idioma="es" />)
+    const ecosistema = screen.getByRole('navigation', { name: 'Ecosistema' })
+    const enlaces = within(ecosistema).getAllByRole('link')
+    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Red de aliados', 'Postular como aliado'])
+    expect(enlaces.map((enlace) => enlace.getAttribute('href'))).toEqual(['/es/aliados', '/es/aliados/postular'])
+    expect(within(ecosistema).queryByRole('link', { name: 'Mentores' })).not.toBeInTheDocument()
+  })
+
   it('Contacto lleva a WhatsApp con el número de Nómadas y se traduce', () => {
     const { unmount } = render(<PieConectado idioma="es" />)
     expect(screen.getByRole('link', { name: /Contacto/ })).toHaveAttribute('href', 'https://wa.me/51973356545')

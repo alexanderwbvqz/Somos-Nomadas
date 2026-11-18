@@ -10,7 +10,7 @@ export const en: TextosLanding = {
     descripcion: 'An open community that connects entrepreneurs with complementary talent to found companies.',
     registrados: 'people registered',
     explorar: { titulo: 'Explore', directorio: 'Directory', match: 'Match connections', eventos: 'In-person events' },
-    ecosistema: { titulo: 'Ecosystem', red: 'Ally network', mentores: 'Mentors', postular: 'Apply as an ally' },
+    ecosistema: { titulo: 'Ecosystem', red: 'Ally network', postular: 'Apply as an ally' },
     privacidad: { titulo: 'Privacy', politica: 'Data policy', terminos: 'Community terms' },
     avisoAntes: 'We use your personal data only to connect founders with each other. More information in the',
     avisoEnlace: 'data policy',

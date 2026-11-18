@@ -35,7 +35,6 @@ export function PieConectado({ idioma }: { idioma: Idioma }) {
           titulo: t.pie.ecosistema.titulo,
           enlaces: [
             { texto: t.pie.ecosistema.red, href: `${base}/aliados` },
-            { texto: t.pie.ecosistema.mentores, href: `${base}/aliados?tipo=mentores` },
             { texto: t.pie.ecosistema.postular, href: `${base}/aliados/postular` },
           ],
         },
