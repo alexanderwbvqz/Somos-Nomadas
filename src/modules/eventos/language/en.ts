@@ -10,7 +10,7 @@ export const en: TextosEventos = {
     etiqueta: 'Events',
     titulo: 'Upcoming events',
     parrafo:
-      'Meeting in person changes everything. At each event we run activities so you can see how each person thinks, talk to the people the match suggests and find your team.',
+      'Events are the heart of Nómadas. You confirm your attendance with your WhatsApp, check in when you arrive and get the list of people it makes the most sense to talk to, each with a question to break the ice. We run activities to get to know each other better, and every connection is with someone who is in the room.',
   },
   proximo: {
     etiquetaSeccion: 'The next event',
@@ -27,6 +27,21 @@ export const en: TextosEventos = {
     sinEventosTexto: 'Write to us and we will let you know as soon as there is one.',
     sinEventosBoton: 'Let me know',
     mensajeAvisar: 'Hi, I would like to be notified about the next Nómadas event.',
+  },
+  comoFunciona: {
+    etiquetaSeccion: 'How an event works',
+    pasos: [
+      { titulo: 'Confirm', texto: 'You tell us on WhatsApp that you are coming, before the event.' },
+      { titulo: 'Arrive', texto: 'You check in when you walk in, so we know who is in the room.' },
+      { titulo: 'Connect', texto: 'You get your match connections, only with people who attended, and a question to start the conversation.' },
+      { titulo: 'Take part', texto: 'Activities to discover how each person thinks before deciding who to build with.' },
+    ],
+  },
+  llamado: {
+    tituloInicio: 'Do you have a space or a community?',
+    tituloResaltado: 'Host an event with us.',
+    boton: 'I want to be an ally',
+    nota: 'Organizers are part of the network: they provide the spaces and communities where nómadas meet.',
   },
   masEventos: {
     etiquetaSeccion: 'More events',

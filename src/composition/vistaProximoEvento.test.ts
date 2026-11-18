@@ -42,7 +42,7 @@ describe('vistaProximoEvento', () => {
   it('el evento del listado lleva fecha corta, lugar, modalidad y enlace de confirmación con su nombre', () => {
     const vista = vistaEventoListado(evento, 'es', textosEventos('es').proximo, whatsapp)
     expect(vista.fecha.toLowerCase()).toMatch(/^12 dic 2026$/)
-    expect(vista).toMatchObject({ id: 'e1', nombre: 'Match and Building', lugar: 'Lima', modalidad: 'Presencial' })
+    expect(vista).toMatchObject({ id: 'e1', nombre: 'Match and Building', lugar: 'Lima', modalidad: 'Presencial', descripcion: 'Descripción' })
     expect(decodeURIComponent(vista.hrefConfirmar)).toContain('«Match and Building»')
   })
 

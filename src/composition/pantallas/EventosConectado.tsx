@@ -20,10 +20,15 @@ export async function EventosConectado({ idioma, ahora = new Date() }: { idioma:
         proximo: proximo ? vistaProximoEvento(proximo, idioma, t.proximo, ahora, conMensaje) : undefined,
         hrefAvisar: conMensaje(t.proximo.mensajeAvisar),
       }}
+      comoFunciona={{
+        textos: { etiquetaSeccion: t.comoFunciona.etiquetaSeccion },
+        pasos: t.comoFunciona.pasos,
+      }}
       masEventos={{
         textos: { ...t.masEventos, confirmar: t.proximo.confirmar },
         eventos: siguientes.map((evento) => vistaEventoListado(evento, idioma, t.proximo, conMensaje)),
       }}
+      llamado={{ idTitulo: 'titulo-llamado-eventos', textos: t.llamado, href: `/${idioma}/aliados/postular` }}
     />
   )
 }

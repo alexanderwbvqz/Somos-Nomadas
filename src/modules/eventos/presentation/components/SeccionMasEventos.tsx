@@ -13,6 +13,7 @@ export type EventoListadoVista = {
   fecha: string
   lugar: string
   modalidad: string
+  descripcion: string
   hrefConfirmar: string
 }
 
@@ -52,6 +53,8 @@ export function SeccionMasEventos({ textos, eventos, porPagina = 9 }: SeccionMas
             <h3 className="text-titulo-tarjeta texto-equilibrado mt-4">{evento.nombre}</h3>
             <p className="text-etiqueta mt-4">{evento.fecha}</p>
             <p className="text-parrafo mt-1">{evento.lugar}</p>
+            {/* Tope de cinco líneas: red de seguridad para textos largos o columnas estrechas (igual que en aliados) */}
+            <p className="text-cuerpo mt-3 line-clamp-5 max-w-md">{evento.descripcion}</p>
             <div className="mt-5">
               <EnlaceBoton href={evento.hrefConfirmar} variante="enlace">
                 {textos.confirmar}

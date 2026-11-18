@@ -59,6 +59,7 @@ export function vistaEventoListado(
     fecha: `${dia} ${mes} ${anio}`,
     lugar: evento.lugar,
     modalidad: textos.modalidades[evento.modalidad],
+    descripcion: evento.descripcion,
     hrefConfirmar: enlaceWhatsapp(rellenarPlantilla(textos.mensajeConfirmar, { evento: evento.nombre })),
   }
 }

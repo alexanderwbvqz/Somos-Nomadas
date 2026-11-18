@@ -27,6 +27,31 @@ describe('EventosConectado', () => {
     expect(decodeURIComponent(confirmar.getAttribute('href') ?? '')).toContain('Match and Building')
   })
 
+  it('incluye los cuatro pasos de un evento, en orden', async () => {
+    await dibujar('es')
+    const seccion = screen.getByRole('region', { name: 'Cómo funciona un evento' })
+    const titulos = Array.from(seccion.querySelectorAll('h3')).map((h) => h.textContent)
+    expect(titulos).toEqual(['Confirma', 'Llega', 'Conecta', 'Participa'])
+  })
+
+  it('en inglés los pasos salen en inglés', async () => {
+    await dibujar('en')
+    const seccion = screen.getByRole('region', { name: 'How an event works' })
+    expect(Array.from(seccion.querySelectorAll('h3')).map((h) => h.textContent)).toEqual(['Confirm', 'Arrive', 'Connect', 'Take part'])
+  })
+
+  it('los eventos del listado muestran su descripción', async () => {
+    await dibujar('es')
+    const lista = screen.getByRole('region', { name: 'Más eventos' })
+    expect(lista.textContent).toContain('Encuentro con mentores y organizadores de la comunidad')
+  })
+
+  it('termina con un llamado a organizar un evento que lleva a ser aliado en el idioma de la página', async () => {
+    await dibujar('es')
+    const llamado = screen.getByRole('region', { name: '¿Tienes un espacio o una comunidad? Organiza un evento con nosotros.' })
+    expect(within(llamado).getByRole('link', { name: 'Quiero ser aliado' })).toHaveAttribute('href', '/es/aliados/postular')
+  })
+
   it('el listado de más eventos trae los siguientes (29 de los 30) y muestra los primeros nueve', async () => {
     await dibujar('es')
     expect(screen.getByRole('heading', { level: 2, name: 'Más eventos' })).toBeInTheDocument()

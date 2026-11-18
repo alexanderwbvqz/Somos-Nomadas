@@ -26,6 +26,14 @@ describe('MockEventoRepository', () => {
     expect(primero).toMatchObject({ id: 'match-and-building', modalidad: 'presencial', zonaHoraria: 'America/Lima' })
   })
 
+  it('todos llevan una descripción de entre 20 y 40 palabras (la extensión esperada de las reales)', async () => {
+    for (const evento of await new MockEventoRepository().listarEventos()) {
+      const palabras = evento.descripcion.trim().split(/\s+/).length
+      expect(palabras, evento.nombre).toBeGreaterThanOrEqual(20)
+      expect(palabras, evento.nombre).toBeLessThanOrEqual(40)
+    }
+  })
+
   it('hay eventos presenciales y en línea, y de varias ciudades', async () => {
     const eventos = await new MockEventoRepository().listarEventos()
     expect(new Set(eventos.map((evento) => evento.modalidad))).toEqual(new Set(['presencial', 'enlinea']))

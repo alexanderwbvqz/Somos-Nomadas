@@ -18,6 +18,7 @@ function eventos(cantidad: number): EventoListadoVista[] {
     fecha: '20 ene 2027',
     lugar: 'Lima',
     modalidad: 'Presencial',
+    descripcion: `Descripción del evento ${i + 1}`,
     hrefConfirmar: `https://wa.me/1?text=e${i + 1}`,
   }))
 }
@@ -29,6 +30,12 @@ describe('SeccionMasEventos', () => {
     expect(screen.getByText('30 eventos')).toBeInTheDocument()
     expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(9)
     expect(screen.getByText('Mostrando 9 de 30')).toBeInTheDocument()
+  })
+
+  it('cada evento muestra su descripción', () => {
+    render(<SeccionMasEventos textos={textos} eventos={eventos(3)} />)
+    expect(screen.getByText('Descripción del evento 1')).toBeInTheDocument()
+    expect(screen.getByText('Descripción del evento 3')).toBeInTheDocument()
   })
 
   it('cada evento trae su enlace para confirmar asistencia', () => {

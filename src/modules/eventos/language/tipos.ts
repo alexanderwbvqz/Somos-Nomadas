@@ -28,6 +28,17 @@ export type TextosEventos = {
     sinEventosBoton: string
     mensajeAvisar: string
   }
+  comoFunciona: {
+    etiquetaSeccion: string
+    /** Los cuatro pasos de un evento, en orden */
+    pasos: { titulo: string; texto: string }[]
+  }
+  llamado: {
+    tituloInicio: string
+    tituloResaltado: string
+    boton: string
+    nota: string
+  }
   masEventos: {
     etiquetaSeccion: string
     /** Lleva {cantidad} */
