@@ -28,4 +28,10 @@ export const en: TextosEventos = {
     sinEventosBoton: 'Let me know',
     mensajeAvisar: 'Hi, I would like to be notified about the next Nómadas event.',
   },
+  masEventos: {
+    etiquetaSeccion: 'More events',
+    contador: '{cantidad} events',
+    verMas: 'See more events',
+    mostrando: 'Showing {mostrados} of {total}',
+  },
 }

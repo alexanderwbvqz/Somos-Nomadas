@@ -24,6 +24,11 @@
   letter-spacing: -0.03em;
 }
 
+/* Reparte las líneas de un título para que no queden palabras sueltas */
+@utility texto-equilibrado {
+  text-wrap: balance;
+}
+
 /* Número grande de una fecha, en serif */
 @utility text-numero-fecha {
   font-family: var(--font-serif);

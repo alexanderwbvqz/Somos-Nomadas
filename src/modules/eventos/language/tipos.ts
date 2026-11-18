@@ -28,4 +28,12 @@ export type TextosEventos = {
     sinEventosBoton: string
     mensajeAvisar: string
   }
+  masEventos: {
+    etiquetaSeccion: string
+    /** Lleva {cantidad} */
+    contador: string
+    verMas: string
+    /** Llevan {mostrados} y {total} */
+    mostrando: string
+  }
 }

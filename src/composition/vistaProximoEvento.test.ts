@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Evento } from '@/modules/eventos/domain/Evento'
 import { textosEventos } from '@/modules/eventos/language'
-import { vistaProximoEvento } from './vistaProximoEvento'
+import { vistaEventoListado, vistaProximoEvento } from './vistaProximoEvento'
 
 const evento: Evento = {
   id: 'e1',
@@ -37,6 +37,21 @@ describe('vistaProximoEvento', () => {
     const vista = vistaProximoEvento(evento, 'en', textosEventos('en').proximo, ahora, whatsapp)
     expect(vista.cuenta).toBe('In 24 days')
     expect(vista.modalidad).toBe('In person')
+  })
+
+  it('el evento del listado lleva fecha corta, lugar, modalidad y enlace de confirmación con su nombre', () => {
+    const vista = vistaEventoListado(evento, 'es', textosEventos('es').proximo, whatsapp)
+    expect(vista.fecha.toLowerCase()).toMatch(/^12 dic 2026$/)
+    expect(vista).toMatchObject({ id: 'e1', nombre: 'Match and Building', lugar: 'Lima', modalidad: 'Presencial' })
+    expect(decodeURIComponent(vista.hrefConfirmar)).toContain('«Match and Building»')
+  })
+
+  it('el evento del listado usa la fecha de su propia zona horaria', () => {
+    // 23:30 UTC del 12 es el 12 en Lima (18:30), pero ya es el 13 en UTC
+    const enLima = { ...evento, inicio: '2026-12-12T23:30:00.000Z' }
+    const enManila = { ...evento, inicio: '2026-12-12T23:30:00.000Z', zonaHoraria: 'Asia/Manila' }
+    expect(vistaEventoListado(enLima, 'es', textosEventos('es').proximo, whatsapp).fecha).toMatch(/^12 /)
+    expect(vistaEventoListado(enManila, 'es', textosEventos('es').proximo, whatsapp).fecha).toMatch(/^13 /)
   })
 
   it('dice "Hoy" y "Mañana" cuando corresponde', () => {
