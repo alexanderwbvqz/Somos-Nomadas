@@ -1,0 +1,4 @@
+/* Único punto de quiebre de escritorio (1030 px). Se usa como `escritorio:` en las clases. */
+@theme {
+  --breakpoint-escritorio: 64.375rem;
+}

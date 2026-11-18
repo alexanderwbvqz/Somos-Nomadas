@@ -24,6 +24,24 @@
   letter-spacing: -0.02em;
 }
 
+/* Título de sección en serif, tamaño medio */
+@utility text-titulo-medio {
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  line-height: 1.08;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+/* Título de sección secundaria en serif */
+@utility text-titulo-seccion {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.1;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
 /* Párrafo de lectura */
 @utility text-parrafo {
   font-family: var(--font-sans);
@@ -37,6 +55,55 @@
   font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Título de tarjeta en serif */
+@utility text-titulo-tarjeta {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 300;
+}
+
+/* Título grande de tarjeta en serif (nombre de un área) */
+@utility text-titulo-tarjeta-grande {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  line-height: 1.05;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+/* Textos dentro de un SVG (el tamaño va en unidades del dibujo) */
+@utility texto-diagrama {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@utility texto-diagrama-centro {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 300;
+}
+
+/* Etiqueta pequeña en monoespaciada: insignias, selectores, contadores */
+@utility text-etiqueta-chica {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Texto de apoyo dentro de paneles, un punto menor que el párrafo */
+@utility text-cuerpo {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.4;
   font-weight: 400;
 }
 

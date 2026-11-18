@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { DM_Mono, Hanken_Grotesk, Newsreader } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { BarraSuperiorConectado } from '@/composition/pantallas/BarraSuperiorConectado'
+import { PieConectado } from '@/composition/pantallas/PieConectado'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
 import '../globals.css'
 
@@ -30,7 +31,8 @@ export default async function LayoutIdioma({
     <html lang={idioma} className={`${fuenteSerif.variable} ${fuenteSans.variable} ${fuenteMono.variable}`}>
       <body className="flex min-h-screen flex-col">
         <BarraSuperiorConectado idioma={idioma} />
-        <main className="fondo-degradado flex-1">{children}</main>
+        <main className="flex-1">{children}</main>
+        <PieConectado idioma={idioma} />
       </body>
     </html>
   )

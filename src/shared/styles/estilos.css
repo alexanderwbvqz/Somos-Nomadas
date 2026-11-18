@@ -3,6 +3,7 @@
 @import './tipografia/tipografia.css';
 @import './fondos/fondos.css';
 @import './animaciones/animaciones.css';
+@import './breakpoints/breakpoints.css';
 
 @layer base {
   body {

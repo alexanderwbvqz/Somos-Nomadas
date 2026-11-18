@@ -9,6 +9,8 @@
   --color-texto-suave: #3f5254;
   --color-borde: #082023;
   --color-primario: #fe412a;
+  --color-tarjeta: #ffffff;
+  --color-suave: #ece9df;
 
   /* Degradado del fondo de página (ver ../fondos/fondos.css) */
   --color-degradado-crema: #f3f1e8;

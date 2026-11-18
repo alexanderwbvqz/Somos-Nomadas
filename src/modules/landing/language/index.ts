@@ -1,7 +1,8 @@
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { en } from './en'
-import { es, type TextosLanding } from './es'
+import { es } from './es'
 import { pt } from './pt'
+import type { TextosLanding } from './tipos'
 
 const textos: Record<Idioma, TextosLanding> = { es, en, pt }
 

@@ -1,3 +1,47 @@
+/* Tarjeta blanca que, al pasar el cursor o con foco dentro, toma un degradado suave */
+@utility fondo-tarjeta {
+  background-color: var(--color-tarjeta);
+
+  &:hover,
+  &:focus-within {
+    background-image: linear-gradient(
+      110deg,
+      var(--color-tarjeta) 0%,
+      var(--color-degradado-amarillo) 45%,
+      var(--color-degradado-durazno) 100%
+    );
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--color-texto) 12%, transparent);
+  }
+}
+
+/* Fila transparente que, al pasar el cursor o con foco dentro, toma un degradado suave */
+@utility fondo-fila {
+  &:hover,
+  &:focus-within {
+    background-image: linear-gradient(
+      110deg,
+      transparent 0%,
+      var(--color-degradado-amarillo) 55%,
+      var(--color-degradado-durazno) 100%
+    );
+  }
+}
+
+/* Recuadro de ejemplo con degradado fijo */
+@utility fondo-ejemplo {
+  background-image: linear-gradient(
+    110deg,
+    var(--color-tarjeta) 0%,
+    var(--color-degradado-amarillo) 45%,
+    var(--color-degradado-durazno) 100%
+  );
+}
+
+/* Sombra suave de un panel elevado */
+@utility sombra-panel {
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--color-texto) 8%, transparent);
+}
+
 /* Fondo de página: degradado suave de crema, amarillo, durazno y azul (propuesta). */
 @utility fondo-degradado {
   background-color: var(--color-degradado-crema);

@@ -8,6 +8,37 @@
   }
 }
 
+/* Flotación suave de una forma; el desfase se pasa con --retraso */
+@keyframes flotar {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -7px;
+  }
+}
+
+@utility flotar {
+  animation: flotar 7s ease-in-out infinite;
+  animation-delay: var(--retraso, 0s);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* Cambios suaves de opacidad y relleno */
+@utility transicion-suave {
+  transition:
+    opacity 250ms ease,
+    fill 250ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
 /* Pista de la franja de logos: se desplaza sola, se pausa con cursor o foco.
    Con movimiento reducido no se anima y los elementos se reparten en filas. */
 @utility franja-pista {
