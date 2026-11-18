@@ -14,6 +14,9 @@ const props = {
   ],
   aviso: { antes: 'Usamos tus datos solo para conectar. Más información en la', textoEnlace: 'política de datos', despues: '.', href: '/es/politica-de-datos' },
   copyright: '© 2026 Nómadas. Todos los derechos reservados.',
+  contacto: { texto: 'Contacto', href: 'https://wa.me/51973356545' },
+  redes: [] as { nombre: string; href: string; icono: React.ReactNode }[],
+  etiquetaRedes: 'Redes sociales',
   selectorIdioma: <nav aria-label="Idioma">selector</nav>,
 }
 
@@ -31,6 +34,34 @@ describe('Pie', () => {
     const explorar = screen.getByRole('navigation', { name: 'Explorar' })
     expect(within(explorar).getByRole('link', { name: 'Directorio' })).toHaveAttribute('href', '/es/directorio')
     expect(screen.getByRole('navigation', { name: 'Privacidad' })).toBeInTheDocument()
+  })
+
+  it('el enlace de contacto se abre en pestaña nueva sin dar acceso a la página de origen', () => {
+    render(<Pie {...props} />)
+    const contacto = screen.getByRole('link', { name: /Contacto/ })
+    expect(contacto).toHaveAttribute('href', 'https://wa.me/51973356545')
+    expect(contacto).toHaveAttribute('target', '_blank')
+    expect(contacto).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('sin redes no muestra la lista de redes', () => {
+    render(<Pie {...props} />)
+    expect(screen.queryByRole('list', { name: 'Redes sociales' })).not.toBeInTheDocument()
+  })
+
+  it('con redes muestra un enlace por red, nombrado por la red', () => {
+    render(
+      <Pie
+        {...props}
+        redes={[
+          { nombre: 'Instagram', href: 'https://instagram.com/ejemplo', icono: <svg aria-hidden="true" /> },
+          { nombre: 'LinkedIn', href: 'https://linkedin.com/company/ejemplo', icono: <svg aria-hidden="true" /> },
+        ]}
+      />,
+    )
+    const lista = screen.getByRole('list', { name: 'Redes sociales' })
+    expect(within(lista).getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', 'https://instagram.com/ejemplo')
+    expect(within(lista).getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('target', '_blank')
   })
 
   it('el aviso de privacidad enlaza a la política de datos, y están el copyright y el selector', () => {

@@ -14,6 +14,12 @@ type Props = {
   columnas: ColumnaPie[]
   aviso: { antes: string; textoEnlace: string; despues: string; href: string }
   copyright: string
+  /** Enlace de contacto (se abre en pestaña nueva) */
+  contacto: { texto: string; href: string }
+  /** Redes sociales; si la lista está vacía no se muestran */
+  redes: { nombre: string; href: string; icono: ReactNode }[]
+  /** Nombre accesible de la lista de redes */
+  etiquetaRedes: string
   /** Selector de idioma, ya construido por quien usa el pie */
   selectorIdioma: ReactNode
 }
@@ -21,7 +27,20 @@ type Props = {
 const foco = 'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario'
 
 // Pie oscuro de la web: marca, columnas de enlaces, aviso de privacidad, copyright e idioma.
-export function Pie({ logoSrc, logoAlt, hrefInicio, descripcion, insignia, columnas, aviso, copyright, selectorIdioma }: Props) {
+export function Pie({
+  logoSrc,
+  logoAlt,
+  hrefInicio,
+  descripcion,
+  insignia,
+  columnas,
+  aviso,
+  copyright,
+  contacto,
+  redes,
+  etiquetaRedes,
+  selectorIdioma,
+}: Props) {
   return (
     <footer className="bg-texto text-fondo">
       <div className="mx-auto w-full max-w-7xl px-6 pb-8 pt-14 escritorio:px-12 escritorio:pb-10 escritorio:pt-[4.5rem]">
@@ -72,9 +91,36 @@ export function Pie({ logoSrc, logoAlt, hrefInicio, descripcion, insignia, colum
             </Link>
             {aviso.despues}
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-between gap-5">
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-x-8 gap-y-5">
             <p className="text-cuerpo">{copyright}</p>
-            {selectorIdioma}
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
+              <a
+                href={contacto.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-etiqueta underline underline-offset-8 ${foco}`}
+              >
+                {contacto.texto} <span aria-hidden="true">↗</span>
+              </a>
+              {redes.length > 0 && (
+                <ul aria-label={etiquetaRedes} className="flex gap-2.5">
+                  {redes.map((red) => (
+                    <li key={red.nombre}>
+                      <a
+                        href={red.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={red.nombre}
+                        className={`inline-flex size-10 items-center justify-center rounded-full border-[1.5px] border-fondo/55 hover:bg-fondo hover:text-texto ${foco}`}
+                      >
+                        {red.icono}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {selectorIdioma}
+            </div>
           </div>
         </div>
       </div>

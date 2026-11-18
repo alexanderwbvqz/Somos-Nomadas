@@ -27,6 +27,8 @@ export type TextosLanding = {
     avisoDespues: string
     /** Lleva {anio} */
     copyright: string
+    contacto: string
+    redes: string
     idioma: string
   }
   hero: {

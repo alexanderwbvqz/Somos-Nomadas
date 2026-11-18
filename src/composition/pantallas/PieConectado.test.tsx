@@ -12,6 +12,20 @@ describe('PieConectado', () => {
     expect(screen.getByText(/Usamos tus datos personales solo para conectar fundadores entre sí/)).toBeInTheDocument()
   })
 
+  it('Contacto lleva a WhatsApp con el número de Nómadas y se traduce', () => {
+    const { unmount } = render(<PieConectado idioma="es" />)
+    expect(screen.getByRole('link', { name: /Contacto/ })).toHaveAttribute('href', 'https://wa.me/51973356545')
+    unmount()
+    render(<PieConectado idioma="en" />)
+    expect(screen.getByRole('link', { name: /Contact/ })).toHaveAttribute('href', 'https://wa.me/51973356545')
+  })
+
+  it('mientras no haya enlaces de redes sociales no se muestran iconos', () => {
+    render(<PieConectado idioma="es" />)
+    expect(screen.queryByRole('list', { name: 'Redes sociales' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Instagram' })).not.toBeInTheDocument()
+  })
+
   it('el copyright lleva el año actual', () => {
     render(<PieConectado idioma="es" />)
     expect(screen.getByText(`© ${new Date().getFullYear()} Nómadas. Todos los derechos reservados.`)).toBeInTheDocument()

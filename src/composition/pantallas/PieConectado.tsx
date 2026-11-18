@@ -1,8 +1,10 @@
 import { cifras } from '@/modules/landing/domain/cifras'
+import { enlaceWhatsapp, redesSociales } from '@/modules/landing/domain/contacto'
 import { textosLanding } from '@/modules/landing/language'
 import { idiomas, nombresIdiomas, type Idioma } from '@/shared/idiomas/idiomas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Pie } from '@/shared/layout/Pie'
+import { IconoRedSocial, nombresRedesSociales } from '@/shared/ui/IconoRedSocial'
 import { SelectorIdioma } from '@/shared/ui/SelectorIdioma'
 import { formatearCifra } from '../formatoCifras'
 
@@ -53,6 +55,13 @@ export function PieConectado({ idioma }: { idioma: Idioma }) {
         href: `${base}/politica-de-datos`,
       }}
       copyright={rellenarPlantilla(t.pie.copyright, { anio: new Date().getFullYear() })}
+      contacto={{ texto: t.pie.contacto, href: enlaceWhatsapp() }}
+      redes={redesSociales.map((red) => ({
+        nombre: nombresRedesSociales[red.tipo],
+        href: red.href,
+        icono: <IconoRedSocial tipo={red.tipo} />,
+      }))}
+      etiquetaRedes={t.pie.redes}
       selectorIdioma={
         <SelectorIdioma
           idiomaActual={idioma}

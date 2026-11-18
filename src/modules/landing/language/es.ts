@@ -16,6 +16,8 @@ export const es: TextosLanding = {
     avisoEnlace: 'política de datos',
     avisoDespues: '.',
     copyright: '© {anio} Nómadas. Todos los derechos reservados.',
+    contacto: 'Contacto',
+    redes: 'Redes sociales',
     idioma: 'Idioma',
   },
   hero: {
