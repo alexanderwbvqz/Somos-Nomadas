@@ -2,6 +2,7 @@
 @import './colores/colores.css';
 @import './tipografia/tipografia.css';
 @import './fondos/fondos.css';
+@import './animaciones/animaciones.css';
 
 @layer base {
   body {

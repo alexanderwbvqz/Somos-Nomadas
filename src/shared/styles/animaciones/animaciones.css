@@ -1,0 +1,35 @@
+/* Animaciones. Todas respetan prefers-reduced-motion. */
+@keyframes desplazar-franja {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pista de la franja de logos: se desplaza sola, se pausa con cursor o foco.
+   Con movimiento reducido no se anima y los elementos se reparten en filas. */
+@utility franja-pista {
+  width: max-content;
+  animation: desplazar-franja 40s linear infinite;
+
+  &:hover,
+  &:focus-within {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    width: auto;
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Segunda copia de la lista (para el bucle continuo): se oculta sin animación */
+@utility franja-copia {
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+}

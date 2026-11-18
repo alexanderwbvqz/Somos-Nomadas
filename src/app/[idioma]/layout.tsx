@@ -6,7 +6,7 @@ import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
 import '../globals.css'
 
 // Fuentes (propuesta, parecidas a la referencia): serif para titulares, sans para texto, mono para etiquetas
-const fuenteSerif = Newsreader({ subsets: ['latin'], variable: '--fuente-serif', weight: ['300', '400'] })
+const fuenteSerif = Newsreader({ subsets: ['latin'], variable: '--fuente-serif', weight: ['300', '400'], style: ['normal', 'italic'] })
 const fuenteSans = Hanken_Grotesk({ subsets: ['latin'], variable: '--fuente-sans' })
 const fuenteMono = DM_Mono({ subsets: ['latin'], variable: '--fuente-mono', weight: ['400', '500'] })
 
