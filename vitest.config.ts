@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   test: {
     environment: 'jsdom',
+    env: { NEXT_PUBLIC_USAR_MOCKS_EVENTOS: 'true' },
     globals: false,
     setupFiles: ['./src/shared/test/configuracion.ts'],
     include: ['src/**/*.test.{ts,tsx}'],

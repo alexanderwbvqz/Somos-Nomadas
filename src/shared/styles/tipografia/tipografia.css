@@ -24,6 +24,15 @@
   letter-spacing: -0.03em;
 }
 
+/* Número grande de una fecha, en serif */
+@utility text-numero-fecha {
+  font-family: var(--font-serif);
+  font-size: clamp(6rem, 12vw, 10.5rem);
+  line-height: 0.85;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+
 /* Etiqueta pequeña con mucho espaciado, encima de un titular */
 @utility text-etiqueta-hero {
   font-family: var(--font-mono);

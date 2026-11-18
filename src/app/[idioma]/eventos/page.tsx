@@ -4,6 +4,9 @@ import { EventosConectado } from '@/composition/pantallas/EventosConectado'
 import { textosEventos } from '@/modules/eventos/language'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
 
+// La cuenta regresiva depende de la fecha: se regenera cada hora
+export const revalidate = 3600
+
 type Parametros = { params: Promise<{ idioma: string }> }
 
 export function generateStaticParams() {
@@ -20,5 +23,5 @@ export async function generateMetadata({ params }: Parametros): Promise<Metadata
 export default async function PaginaEventos({ params }: Parametros) {
   const { idioma } = await params
   if (!esIdioma(idioma)) notFound()
-  return <EventosConectado idioma={idioma} />
+  return await EventosConectado({ idioma })
 }
