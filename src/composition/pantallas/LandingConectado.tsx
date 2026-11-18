@@ -1,4 +1,5 @@
-import { aliados, tiposAliado } from '@/modules/landing/domain/aliados'
+import { tiposAliado } from '@/modules/aliados/domain/Aliado'
+import { aliados } from '@/modules/landing/domain/aliados'
 import { cifras } from '@/modules/landing/domain/cifras'
 import { areasMatch } from '@/modules/landing/domain/match'
 import { clavesProblemas } from '@/modules/landing/domain/problemas'

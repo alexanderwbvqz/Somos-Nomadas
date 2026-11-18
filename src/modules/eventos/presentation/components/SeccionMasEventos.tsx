@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useMostrarMas } from '@/shared/lib/useMostrarMas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Badge } from '@/shared/ui/Badge'
 import { Boton } from '@/shared/ui/Boton'
@@ -30,17 +30,7 @@ export type SeccionMasEventosProps = {
 }
 
 export function SeccionMasEventos({ textos, eventos, porPagina = 9 }: SeccionMasEventosProps) {
-  const [mostrados, setMostrados] = useState(porPagina)
-  const estado = useRef<HTMLParagraphElement>(null)
-  const yaSeAmplio = useRef(false)
-
-  const visibles = eventos.slice(0, mostrados)
-  const quedanPorMostrar = mostrados < eventos.length
-
-  // Al mostrar el último grupo el botón desaparece: el foco pasa al estado para no perderse
-  useEffect(() => {
-    if (yaSeAmplio.current && !quedanPorMostrar) estado.current?.focus()
-  }, [quedanPorMostrar])
+  const { visibles, quedanPorMostrar, mostrarMas, refEstado, total } = useMostrarMas(eventos, porPagina)
 
   if (eventos.length === 0) return null
 
@@ -72,17 +62,11 @@ export function SeccionMasEventos({ textos, eventos, porPagina = 9 }: SeccionMas
       </ul>
 
       <div className="mt-6 flex flex-col items-center gap-5">
-        <p ref={estado} tabIndex={-1} aria-live="polite" className="text-etiqueta-chica outline-none">
-          {rellenarPlantilla(textos.mostrando, { mostrados: visibles.length, total: eventos.length })}
+        <p ref={refEstado} tabIndex={-1} aria-live="polite" className="text-etiqueta-chica outline-none">
+          {rellenarPlantilla(textos.mostrando, { mostrados: visibles.length, total })}
         </p>
         {quedanPorMostrar && (
-          <Boton
-            flechaAbajo
-            alPulsar={() => {
-              yaSeAmplio.current = true
-              setMostrados((actuales) => actuales + porPagina)
-            }}
-          >
+          <Boton flechaAbajo alPulsar={mostrarMas}>
             {textos.verMas}
           </Boton>
         )}

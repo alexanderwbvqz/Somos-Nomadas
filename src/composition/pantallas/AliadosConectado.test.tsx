@@ -1,20 +1,57 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { idiomas } from '@/shared/idiomas/idiomas'
 import { AliadosConectado } from './AliadosConectado'
+
+// Es un componente de servidor asíncrono: se resuelve y se dibuja su resultado
+async function dibujar(idioma: (typeof idiomas)[number], tipo?: string) {
+  return render(await AliadosConectado({ idioma, tipo }))
+}
 
 describe('AliadosConectado', () => {
   it.each([
     ['es', 'Red de aliados'],
     ['en', 'Ally network'],
     ['pt', 'Rede de aliados'],
-  ] as const)('en %s muestra el titular "%s"', (idioma, titulo) => {
-    render(<AliadosConectado idioma={idioma} />)
+  ] as const)('en %s muestra el titular "%s"', async (idioma, titulo) => {
+    await dibujar(idioma)
     expect(screen.getByRole('heading', { level: 1, name: titulo })).toBeInTheDocument()
   })
 
-  it.each(idiomas)('en %s no queda ninguna plantilla {…} sin rellenar', (idioma) => {
-    const { container } = render(<AliadosConectado idioma={idioma} />)
+  it('lista los aliados del adaptador, con el tipo en singular y el enlace a su página en el idioma', async () => {
+    await dibujar('es')
+    expect(screen.getByRole('heading', { level: 3, name: 'Mentoría en producto' })).toBeInTheDocument()
+    const enlaces = screen.getAllByRole('link', { name: 'Leer más' })
+    expect(enlaces[0]).toHaveAttribute('href', '/es/aliados/mentoria-producto')
+  })
+
+  it('los contadores de los filtros suman los 12 aliados de ejemplo', async () => {
+    await dibujar('es')
+    const filtros = screen.getByRole('group', { name: 'Filtrar por tipo' })
+    expect(within(filtros).getByRole('button', { name: 'Todos · 12' })).toBeInTheDocument()
+    expect(within(filtros).getByRole('button', { name: 'Mentores · 4' })).toBeInTheDocument()
+    expect(within(filtros).getByRole('button', { name: 'Organizadores · 4' })).toBeInTheDocument()
+    expect(within(filtros).getByRole('button', { name: 'Aliados estratégicos · 4' })).toBeInTheDocument()
+  })
+
+  it('?tipo=mentores abre la página filtrada; un tipo inválido deja "todos"', async () => {
+    const { unmount } = await dibujar('es', 'mentores')
+    expect(screen.getByRole('button', { name: 'Mentores · 4' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(4)
+    unmount()
+
+    await dibujar('es', 'inventado')
+    expect(screen.getByRole('button', { name: 'Todos · 12' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('el listado muestra nueve y deja "Ver más" para los tres restantes', async () => {
+    await dibujar('es')
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(9)
+    expect(screen.getByText('Mostrando 9 de 12')).toBeInTheDocument()
+  })
+
+  it.each(idiomas)('en %s no queda ninguna plantilla {…} sin rellenar', async (idioma) => {
+    const { container } = await dibujar(idioma)
     expect(container.textContent).not.toMatch(/\{\w+\}/)
   })
 })

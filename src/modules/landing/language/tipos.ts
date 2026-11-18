@@ -1,4 +1,4 @@
-import type { TipoAliado } from '../domain/aliados'
+import type { TipoAliado } from '@/modules/aliados/domain/Aliado'
 import type { ClaveCifra } from '../domain/cifras'
 import type { ClaveArea } from '../domain/match'
 import type { ClaveProblema } from '../domain/problemas'

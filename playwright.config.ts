@@ -9,7 +9,7 @@ export default defineConfig({
   webServer: {
     command: `pnpm build && pnpm start -p ${PUERTO}`,
     url: `http://localhost:${PUERTO}`,
-    env: { NEXT_DIST_DIR: '.next-pruebas', NEXT_PUBLIC_USAR_MOCKS_EVENTOS: 'true' },
+    env: { NEXT_DIST_DIR: '.next-pruebas', NEXT_PUBLIC_USAR_MOCKS_EVENTOS: 'true', NEXT_PUBLIC_USAR_MOCKS_ALIADOS: 'true' },
     reuseExistingServer: false,
     timeout: 240000,
   },

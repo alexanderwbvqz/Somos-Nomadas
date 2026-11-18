@@ -1,4 +1,4 @@
-import type { Aliado } from '@/modules/landing/domain/aliados'
+import type { AliadoDestacado } from '@/modules/landing/domain/aliados'
 import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
 import { FranjaLogos } from '@/shared/ui/FranjaLogos'
 
@@ -14,7 +14,7 @@ export type TextosHero = {
 
 export type HeroProps = {
   textos: TextosHero
-  aliados: Aliado[]
+  aliados: AliadoDestacado[]
   hrefPostular: string
   hrefDirectorio: string
 }
