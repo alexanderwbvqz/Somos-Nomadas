@@ -15,10 +15,12 @@ describe('MockAliadoRepository', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/)
   })
 
-  it('todos llevan nombre y descripción', async () => {
+  it('todos llevan nombre y una descripción de entre 20 y 40 palabras (la extensión esperada de las reales)', async () => {
     for (const aliado of await new MockAliadoRepository().listarAliados()) {
+      const palabras = aliado.descripcion.trim().split(/\s+/).length
       expect(aliado.nombre.length).toBeGreaterThan(0)
-      expect(aliado.descripcion.length).toBeGreaterThan(0)
+      expect(palabras, aliado.nombre).toBeGreaterThanOrEqual(20)
+      expect(palabras, aliado.nombre).toBeLessThanOrEqual(40)
     }
   })
 })

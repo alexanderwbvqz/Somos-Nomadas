@@ -22,6 +22,16 @@ const props: AliadosViewProps = {
       { id: 'a', nombre: 'Un aliado', tipo: 'mentores', descripcion: 'D.', etiquetaTipo: 'Mentor', href: '/es/aliados/a' },
     ],
   },
+  llamado: {
+    idTitulo: 'titulo-llamado-aliados',
+    textos: {
+      tituloInicio: '¿Tu organización puede',
+      tituloResaltado: 'impulsar equipos?',
+      boton: 'Quiero ser aliado',
+      nota: 'Nota de revisión.',
+    },
+    href: '/es/aliados/postular',
+  },
 }
 
 describe('AliadosView', () => {
@@ -34,5 +44,11 @@ describe('AliadosView', () => {
     render(<AliadosView {...props} />)
     expect(screen.getByRole('group', { name: 'Filtrar por tipo' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 3, name: 'Un aliado' })).toBeInTheDocument()
+  })
+
+  it('y al final el llamado a ser aliado', () => {
+    render(<AliadosView {...props} />)
+    expect(screen.getByRole('heading', { level: 2, name: '¿Tu organización puede impulsar equipos?' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Quiero ser aliado' })).toHaveAttribute('href', '/es/aliados/postular')
   })
 })

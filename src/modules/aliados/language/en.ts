@@ -10,7 +10,7 @@ export const en: TextosAliados = {
     etiqueta: 'Allies',
     titulo: 'Ally network',
     parrafo:
-      'Mentors, organizers and strategic partners who back the community with experience, spaces and capital so every team can go further.',
+      'The ally network brings together the people and organizations that back Nómadas. Mentors guide founders with their experience, organizers provide the spaces, events and communities where we meet, and strategic partners add companies, universities and capital that power the projects. Every ally is reviewed by the team before being published.',
   },
   listado: {
     etiquetaFiltro: 'Filter by type',
@@ -24,5 +24,11 @@ export const en: TextosAliados = {
     verMas: 'See more allies',
     mostrando: 'Showing {mostrados} of {total}',
     vacio: 'There are no allies of this type yet.',
+  },
+  llamado: {
+    tituloInicio: 'Can your organization',
+    tituloResaltado: 'power up teams?',
+    boton: 'I want to be an ally',
+    nota: 'We review every application before publishing it, to keep the network high quality.',
   },
 }

@@ -21,4 +21,10 @@ export type TextosAliados = {
     mostrando: string
     vacio: string
   }
+  llamado: {
+    tituloInicio: string
+    tituloResaltado: string
+    boton: string
+    nota: string
+  }
 }

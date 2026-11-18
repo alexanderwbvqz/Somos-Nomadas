@@ -25,6 +25,15 @@ describe('AliadosConectado', () => {
     expect(enlaces[0]).toHaveAttribute('href', '/es/aliados/mentoria-producto')
   })
 
+  it('al final hay un llamado a ser aliado que lleva a la postulación en el idioma de la página', async () => {
+    await dibujar('es')
+    expect(screen.getByRole('heading', { level: 2, name: '¿Tu organización puede impulsar equipos?' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Quiero ser aliado' })).toHaveAttribute('href', '/es/aliados/postular')
+    const { unmount } = await dibujar('en')
+    expect(screen.getAllByRole('link', { name: 'I want to be an ally' })[0]).toHaveAttribute('href', '/en/aliados/postular')
+    unmount()
+  })
+
   it('los contadores de los filtros suman los 12 aliados de ejemplo', async () => {
     await dibujar('es')
     const filtros = screen.getByRole('group', { name: 'Filtrar por tipo' })

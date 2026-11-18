@@ -50,7 +50,8 @@ function ListaPaginada({ textos, aliados, porPagina }: { textos: SeccionListadoA
             </div>
             <h3 className="text-titulo-tarjeta-grande mt-5">{aliado.nombre}</h3>
             <p className="text-etiqueta-chica mt-3">{aliado.etiquetaTipo}</p>
-            <p className="text-cuerpo mt-3 max-w-md">{aliado.descripcion}</p>
+            {/* Tope de cinco líneas: red de seguridad para textos largos o columnas estrechas; el texto completo irá en su página */}
+            <p className="text-cuerpo mt-3 line-clamp-5 max-w-md">{aliado.descripcion}</p>
             <div className="mt-5">
               <EnlaceBoton href={aliado.href} variante="enlace">
                 {textos.leerMas}

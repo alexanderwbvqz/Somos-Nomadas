@@ -10,7 +10,7 @@ export const es: TextosAliados = {
     etiqueta: 'Aliados',
     titulo: 'Red de aliados',
     parrafo:
-      'Mentores, organizadores y aliados estratégicos que respaldan a la comunidad con experiencia, espacios y capital para que cada equipo llegue más lejos.',
+      'La red de aliados reúne a las personas y organizaciones que respaldan a Nómadas. Los mentores acompañan a los fundadores con su experiencia, los organizadores ponen los espacios, eventos y comunidades donde nos encontramos, y los aliados estratégicos suman empresas, universidades y capital que potencian a los proyectos. Cada aliado pasa por una revisión del equipo antes de publicarse.',
   },
   listado: {
     etiquetaFiltro: 'Filtrar por tipo',
@@ -24,5 +24,11 @@ export const es: TextosAliados = {
     verMas: 'Ver más aliados',
     mostrando: 'Mostrando {mostrados} de {total}',
     vacio: 'Todavía no hay aliados de este tipo.',
+  },
+  llamado: {
+    tituloInicio: '¿Tu organización puede',
+    tituloResaltado: 'impulsar equipos?',
+    boton: 'Quiero ser aliado',
+    nota: 'Revisamos cada postulación antes de publicarla, para cuidar la calidad de la red.',
   },
 }

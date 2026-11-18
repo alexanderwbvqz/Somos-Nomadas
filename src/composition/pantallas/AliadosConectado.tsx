@@ -27,6 +27,7 @@ export async function AliadosConectado({ idioma, tipo }: Props) {
           href: `/${idioma}/aliados/${aliado.id}`,
         })),
       }}
+      llamado={{ idTitulo: 'titulo-llamado-aliados', textos: t.llamado, href: `/${idioma}/aliados/postular` }}
     />
   )
 }
