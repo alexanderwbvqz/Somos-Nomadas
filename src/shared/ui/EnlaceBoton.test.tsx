@@ -24,6 +24,21 @@ describe('EnlaceBoton', () => {
     expect(screen.getByRole('link', { name: 'Ver perfiles' })).toHaveAttribute('href', '/es/directorio')
   })
 
+  it('un enlace externo se abre en pestaña nueva sin dar acceso a la página de origen; uno interno no', () => {
+    render(
+      <>
+        <EnlaceBoton href="https://agenda.example/x" externo>
+          Externo
+        </EnlaceBoton>
+        <EnlaceBoton href="/es/aliados">Interno</EnlaceBoton>
+      </>,
+    )
+    const externo = screen.getByRole('link', { name: 'Externo' })
+    expect(externo).toHaveAttribute('target', '_blank')
+    expect(externo).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(screen.getByRole('link', { name: 'Interno' })).not.toHaveAttribute('target')
+  })
+
   it('la variante de texto también tiene el texto como nombre accesible', () => {
     render(
       <EnlaceBoton href="/es/directorio" variante="texto">

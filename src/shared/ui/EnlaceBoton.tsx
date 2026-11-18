@@ -10,6 +10,8 @@ type Props = {
    * enlace: enlace subrayado con flecha diagonal
    */
   variante?: 'contorno' | 'lleno' | 'texto' | 'enlace'
+  /** Enlace a otro sitio: se abre en una pestaña nueva sin dar acceso a esta página */
+  externo?: boolean
   children: ReactNode
 }
 
@@ -51,10 +53,13 @@ export function CirculoFlecha({ lleno, abajo = false }: { lleno: boolean; abajo?
   )
 }
 
-export function EnlaceBoton({ href, variante = 'contorno', children }: Props) {
+const atributosExternos = { target: '_blank', rel: 'noopener noreferrer' } as const
+
+export function EnlaceBoton({ href, variante = 'contorno', externo = false, children }: Props) {
+  const extra = externo ? atributosExternos : {}
   if (variante === 'texto' || variante === 'enlace') {
     return (
-      <Link href={href} className={`${subrayado} ${foco}`}>
+      <Link href={href} className={`${subrayado} ${foco}`} {...extra}>
         {children}
         <span aria-hidden="true">{variante === 'texto' ? '↓' : '↗'}</span>
       </Link>
@@ -63,7 +68,7 @@ export function EnlaceBoton({ href, variante = 'contorno', children }: Props) {
 
   const lleno = variante === 'lleno'
   return (
-    <Link href={href} className={claseBoton(lleno)}>
+    <Link href={href} className={claseBoton(lleno)} {...extra}>
       {children}
       <CirculoFlecha lleno={lleno} />
     </Link>

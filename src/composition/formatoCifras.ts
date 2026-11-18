@@ -1,5 +1,6 @@
 import type { Cifra } from '@/modules/landing/domain/cifras'
 import type { Idioma } from '@/shared/idiomas/idiomas'
+import { formatearMesAnio } from './formatoFechas'
 
 const ESPACIO_FIJO = ' '
 
@@ -13,8 +14,5 @@ export function formatearCifra(cifra: Cifra, idioma: Idioma): string {
 
 export function formatearFuente(cifra: Cifra, idioma: Idioma): string {
   if (!cifra.fecha) return cifra.fuente
-  const fecha = new Intl.DateTimeFormat(idioma, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
-    new Date(cifra.fecha),
-  )
-  return `${cifra.fuente}, ${fecha}`
+  return `${cifra.fuente}, ${formatearMesAnio(cifra.fecha, idioma)}`
 }

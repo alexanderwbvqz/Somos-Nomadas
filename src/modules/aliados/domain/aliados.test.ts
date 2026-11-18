@@ -2,12 +2,11 @@ import { describe, expect, it } from 'vitest'
 import type { Aliado } from './Aliado'
 import { contarPorTipo, esTipoAliado, filtrarAliados, filtroDesde } from './aliados'
 
-const aliados: Aliado[] = [
-  { id: 'a', nombre: 'A', tipo: 'mentores', descripcion: '' },
-  { id: 'b', nombre: 'B', tipo: 'organizadores', descripcion: '' },
-  { id: 'c', nombre: 'C', tipo: 'mentores', descripcion: '' },
-  { id: 'd', nombre: 'D', tipo: 'estrategicos', descripcion: '' },
-]
+function crear(id: string, tipo: Aliado['tipo']): Aliado {
+  return { id, nombre: id.toUpperCase(), tipo, descripcion: '', descripcionLarga: [], datosClave: [], areas: [], apoyos: [], redes: [] }
+}
+
+const aliados: Aliado[] = [crear('a', 'mentores'), crear('b', 'organizadores'), crear('c', 'mentores'), crear('d', 'estrategicos')]
 
 describe('esTipoAliado / filtroDesde', () => {
   it('reconoce los tres tipos y rechaza lo demás', () => {

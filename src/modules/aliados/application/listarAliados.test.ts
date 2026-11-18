@@ -4,9 +4,10 @@ import { listarAliados } from './listarAliados'
 
 describe('listarAliados', () => {
   it('devuelve los aliados del repositorio, en su orden', async () => {
+    const base = { descripcion: '', descripcionLarga: [], datosClave: [], areas: [], apoyos: [], redes: [] }
     const aliados: Aliado[] = [
-      { id: 'b', nombre: 'B', tipo: 'mentores', descripcion: '' },
-      { id: 'a', nombre: 'A', tipo: 'organizadores', descripcion: '' },
+      { id: 'b', nombre: 'B', tipo: 'mentores', ...base },
+      { id: 'a', nombre: 'A', tipo: 'organizadores', ...base },
     ]
     const resultado = await listarAliados({ listarAliados: async () => aliados })
     expect(resultado.map((aliado) => aliado.id)).toEqual(['b', 'a'])

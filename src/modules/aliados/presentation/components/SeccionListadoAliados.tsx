@@ -1,17 +1,14 @@
 'use client'
 
-import Image from 'next/image'
 import { useState } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { useMostrarMas } from '@/shared/lib/useMostrarMas'
 import { Boton } from '@/shared/ui/Boton'
-import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
-import { tiposAliado, type Aliado } from '../../domain/Aliado'
+import { tiposAliado } from '../../domain/Aliado'
 import { contarPorTipo, filtrarAliados, type FiltroAliados } from '../../domain/aliados'
-import { colorTipoAliado } from '../ui/coloresTipoAliado'
+import { TarjetaAliado, type AliadoVista } from '../ui/TarjetaAliado'
 
-/** Un aliado listo para mostrar: el del dominio más su etiqueta de tipo y su enlace */
-export type AliadoVista = Aliado & { etiquetaTipo: string; href: string }
+export type { AliadoVista } from '../ui/TarjetaAliado'
 
 export type SeccionListadoAliadosProps = {
   textos: {
@@ -39,24 +36,7 @@ function ListaPaginada({ textos, aliados, porPagina }: { textos: SeccionListadoA
       <ul className="grid gap-x-10 sm:grid-cols-2 escritorio:grid-cols-3">
         {visibles.map((aliado) => (
           <li key={aliado.id} className="mt-11 flex flex-col">
-            <div className={`flex h-36 items-center justify-center border-b-[1.5px] border-texto p-4 text-center ${colorTipoAliado[aliado.tipo]}`}>
-              {aliado.logoSrc ? (
-                <Image src={aliado.logoSrc} alt="" width={200} height={64} unoptimized className="h-16 w-auto" />
-              ) : (
-                <span aria-hidden="true" className="text-titulo-tarjeta texto-equilibrado">
-                  {aliado.nombre}
-                </span>
-              )}
-            </div>
-            <h3 className="text-titulo-tarjeta-grande mt-5">{aliado.nombre}</h3>
-            <p className="text-etiqueta-chica mt-3">{aliado.etiquetaTipo}</p>
-            {/* Tope de cinco líneas: red de seguridad para textos largos o columnas estrechas; el texto completo irá en su página */}
-            <p className="text-cuerpo mt-3 line-clamp-5 max-w-md">{aliado.descripcion}</p>
-            <div className="mt-5">
-              <EnlaceBoton href={aliado.href} variante="enlace">
-                {textos.leerMas}
-              </EnlaceBoton>
-            </div>
+            <TarjetaAliado aliado={aliado} textoLeerMas={textos.leerMas} />
           </li>
         ))}
       </ul>

@@ -29,6 +29,15 @@
   text-wrap: balance;
 }
 
+/* Dato clave de una ficha (cifra o frase corta) en serif */
+@utility text-dato-clave {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
 /* Número grande de una fecha, en serif */
 @utility text-numero-fecha {
   font-family: var(--font-serif);

@@ -27,4 +27,21 @@ export type TextosAliados = {
     boton: string
     nota: string
   }
+  detalle: {
+    /** Lleva {nombre} */
+    tituloPagina: string
+    volver: string
+    quienEs: string
+    datosClave: string
+    enQuePuedeAyudarte: string
+    paraEquipos: string
+    comoTrabajar: string
+    pasos: { titulo: string; texto: string }[]
+    masAliados: string
+    ficha: { tipo: string; ciudad: string; sitioWeb: string; enLaRed: string; redes: string }
+    agendar: string
+    whatsapp: string
+    notaContacto: string
+    mensajeWhatsapp: string
+  }
 }
