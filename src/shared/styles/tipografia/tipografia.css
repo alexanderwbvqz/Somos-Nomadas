@@ -15,6 +15,33 @@
   letter-spacing: -0.02em;
 }
 
+/* Titular gigante de página interior, en serif */
+@utility text-titulo-gigante {
+  font-family: var(--font-serif);
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+}
+
+/* Etiqueta pequeña con mucho espaciado, encima de un titular */
+@utility text-etiqueta-hero {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* Párrafo introductorio, un punto mayor que el de lectura */
+@utility text-parrafo-grande {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
 /* Cifra destacada en serif */
 @utility text-cifra {
   font-family: var(--font-serif);

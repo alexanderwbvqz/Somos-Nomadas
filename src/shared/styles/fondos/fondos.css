@@ -27,6 +27,11 @@
   }
 }
 
+/* Fondo plano del hero de las páginas interiores (la portada usa el degradado) */
+@utility fondo-hero-interno {
+  background-color: var(--color-degradado-durazno);
+}
+
 /* Recuadro de ejemplo con degradado fijo */
 @utility fondo-ejemplo {
   background-image: linear-gradient(
