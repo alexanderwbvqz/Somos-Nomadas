@@ -97,6 +97,8 @@ export const en: TextosAliados = {
       nombre: 'Name to display',
       nombreAyuda: 'The name of your organization or your own. It will be public.',
       nombreEjemplo: 'For example: Cowork Plaza',
+      personaEjemplo: 'For example: Ana Pérez',
+      correoEjemplo: 'For example: ana@coworkplaza.com',
       persona: 'Contact person',
       correo: 'Email',
       notaPrivada: 'Your contact name and email are not published: only the team sees them, to reply to you.',

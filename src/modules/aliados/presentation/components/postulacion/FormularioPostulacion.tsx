@@ -157,12 +157,12 @@ export function FormularioPostulacion({ textos, alEnviar, hrefAliados, hrefPolit
       <aside
         id="vista-previa"
         aria-labelledby="titulo-vista-previa"
-        className={`fixed inset-x-0 bottom-0 z-40 max-h-[82vh] overflow-y-auto rounded-t-3xl border-t-[1.5px] border-texto bg-fondo px-5 pb-8 pt-4 motion-reduce:[transition:none] ${
+        className={`fixed inset-x-0 bottom-0 z-40 max-h-[82vh] overflow-y-auto rounded-t-3xl [scrollbar-width:none] border-t-[1.5px] border-texto bg-fondo px-5 pb-8 pt-4 motion-reduce:[transition:none] ${
           // Al abrir, visible al instante y se desliza; al cerrar, se desliza y se oculta al terminar
           hojaAbierta
             ? 'visible translate-y-0 [transition:transform_300ms,visibility_0s]'
             : 'invisible translate-y-full [transition:transform_300ms,visibility_0s_300ms]'
-        } escritorio:visible escritorio:sticky escritorio:inset-auto escritorio:top-6 escritorio:z-auto escritorio:col-span-5 escritorio:max-h-[calc(100vh-3rem)] escritorio:translate-y-0 escritorio:rounded-none escritorio:border-0 escritorio:bg-transparent escritorio:p-0`}
+        } escritorio:visible escritorio:sticky escritorio:inset-auto escritorio:top-6 escritorio:z-auto escritorio:col-span-5 escritorio:max-h-none escritorio:translate-y-0 escritorio:overflow-visible escritorio:rounded-none escritorio:border-0 escritorio:bg-transparent escritorio:p-0`}
       >
         <button
           ref={refCerrar}

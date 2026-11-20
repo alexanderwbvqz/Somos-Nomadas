@@ -61,6 +61,7 @@ export function PasoQuien({ textos, datos, errores, cambiar }: PropsPaso) {
           clave="personaContacto"
           etiqueta={t.persona}
           extraEtiqueta={<InsigniaPrivado texto={textos.formulario.privado} />}
+          placeholder={t.personaEjemplo}
           autoComplete="name"
           maxLength={LIMITES.persona * 2}
           valor={datos.personaContacto}
@@ -73,6 +74,7 @@ export function PasoQuien({ textos, datos, errores, cambiar }: PropsPaso) {
           extraEtiqueta={<InsigniaPrivado texto={textos.formulario.privado} />}
           tipo="email"
           inputMode="email"
+          placeholder={t.correoEjemplo}
           autoComplete="email"
           maxLength={LIMITES.correo * 2}
           valor={datos.correo}

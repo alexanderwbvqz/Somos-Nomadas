@@ -79,7 +79,9 @@ export type TextosPostulacion = {
     nombreAyuda: string
     nombreEjemplo: string
     persona: string
+    personaEjemplo: string
     correo: string
+    correoEjemplo: string
     notaPrivada: string
   }
   aporte: {
