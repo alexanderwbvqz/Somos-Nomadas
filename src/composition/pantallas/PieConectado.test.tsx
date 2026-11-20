@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { redesSociales } from '@/modules/landing/domain/contacto'
+import { redesSociales } from '@/modules/sitio/domain/contacto'
 import { idiomas } from '@/shared/idiomas/idiomas'
 import { PieConectado } from './PieConectado'
 

@@ -1,7 +1,7 @@
 import { obtenerEventosProximos } from '@/modules/eventos/application/obtenerEventosProximos'
 import { textosEventos } from '@/modules/eventos/language'
 import { EventosView } from '@/modules/eventos/presentation/EventosView'
-import { enlaceWhatsapp } from '@/modules/landing/domain/contacto'
+import { enlaceWhatsapp } from '@/modules/sitio/domain/contacto'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { crearEventoRepository } from '../fabricas/eventos'
 import { vistaEventoListado, vistaProximoEvento } from '../vistaProximoEvento'

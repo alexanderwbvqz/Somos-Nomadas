@@ -1,15 +1,15 @@
 import { cifras } from '@/modules/landing/domain/cifras'
-import { enlaceWhatsapp, redesSociales } from '@/modules/landing/domain/contacto'
-import { textosLanding } from '@/modules/landing/language'
+import { enlaceWhatsapp, redesSociales } from '@/modules/sitio/domain/contacto'
+import { textosSitio } from '@/modules/sitio/language'
 import { idiomas, nombresIdiomas, type Idioma } from '@/shared/idiomas/idiomas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { Pie } from '@/shared/layout/Pie'
+import { Pie } from '@/modules/sitio/presentation/Pie'
 import { IconoRedSocial, nombresRedesSociales } from '@/shared/ui/IconoRedSocial'
 import { SelectorIdioma } from '@/shared/ui/SelectorIdioma'
 import { formatearCifra } from '../formatoCifras'
 
 export function PieConectado({ idioma }: { idioma: Idioma }) {
-  const t = textosLanding(idioma)
+  const t = textosSitio(idioma)
   const registrados = cifras.find((cifra) => cifra.clave === 'registrados')
   const base = `/${idioma}`
 

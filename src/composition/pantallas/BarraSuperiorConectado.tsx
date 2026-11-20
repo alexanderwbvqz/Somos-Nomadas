@@ -1,9 +1,9 @@
-import { textosLanding } from '@/modules/landing/language'
+import { textosSitio } from '@/modules/sitio/language'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { BarraSuperior } from '@/shared/layout/BarraSuperior'
+import { BarraSuperior } from '@/modules/sitio/presentation/BarraSuperior'
 
 export function BarraSuperiorConectado({ idioma }: { idioma: Idioma }) {
-  const t = textosLanding(idioma).cabecera
+  const t = textosSitio(idioma).cabecera
   return (
     <BarraSuperior
       logoSrc="/logo/logo_somos_nomadas_oscuro.svg"

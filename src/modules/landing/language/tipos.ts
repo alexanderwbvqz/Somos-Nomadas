@@ -11,26 +11,6 @@ export type TextoProblema = {
 }
 
 export type TextosLanding = {
-  cabecera: {
-    logoAlt: string
-    navegacionPrincipal: string
-    postular: string
-  }
-  pie: {
-    descripcion: string
-    registrados: string
-    explorar: { titulo: string; directorio: string; match: string; eventos: string }
-    ecosistema: { titulo: string; red: string; postular: string }
-    privacidad: { titulo: string; politica: string; terminos: string }
-    avisoAntes: string
-    avisoEnlace: string
-    avisoDespues: string
-    /** Lleva {anio} */
-    copyright: string
-    contacto: string
-    redes: string
-    idioma: string
-  }
   hero: {
     tituloInicio: string
     tituloResaltado: string

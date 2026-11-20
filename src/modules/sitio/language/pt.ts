@@ -1,0 +1,23 @@
+import type { TextosSitio } from './tipos'
+
+export const pt: TextosSitio = {
+  cabecera: {
+    logoAlt: 'Nómadas',
+    navegacionPrincipal: 'Navegação principal',
+    postular: 'Candidatar-se',
+  },
+  pie: {
+    descripcion: 'Comunidade aberta que conecta empreendedores com talento complementar para fundar empresas.',
+    registrados: 'pessoas registradas',
+    explorar: { titulo: 'Explorar', directorio: 'Diretório', match: 'Conexões match', eventos: 'Eventos presenciais' },
+    ecosistema: { titulo: 'Ecossistema', red: 'Rede de aliados', postular: 'Candidatar-se como aliado' },
+    privacidad: { titulo: 'Privacidade', politica: 'Política de dados', terminos: 'Termos de convivência' },
+    avisoAntes: 'Usamos os seus dados pessoais apenas para conectar fundadores entre si. Mais informações na',
+    avisoEnlace: 'política de dados',
+    avisoDespues: '.',
+    copyright: '© {anio} Nómadas. Todos os direitos reservados.',
+    contacto: 'Contato',
+    redes: 'Redes sociais',
+    idioma: 'Idioma',
+  },
+}
