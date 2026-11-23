@@ -25,7 +25,7 @@ export function SeccionPlegable({ id, titulo, detalle, abierta, alAlternar, resu
           aria-controls={`seccion-${id}`}
           onClick={alAlternar}
           className={`flex w-full items-center gap-4 px-5 py-3.5 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primario ${
-            abierta ? 'bg-suave' : ''
+            abierta ? 'bg-degradado-amarillo' : ''
           }`}
         >
           <span className="min-w-0 flex-1">

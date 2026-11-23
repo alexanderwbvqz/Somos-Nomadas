@@ -30,6 +30,7 @@ function montar(opciones: { resultado?: (habilidad: HabilidadId) => Resultado; c
       contadasIniciales={opciones.contadas ?? {}}
       alGuardar={alGuardar}
       barra={<p>Barra de arriba</p>}
+      paso={3}
       hrefAtras="/es/habilidades/tareas"
       hrefSiguiente="/es/habilidades/historias"
     />,
@@ -46,6 +47,8 @@ describe('ProfundizarView', () => {
     montar()
     expect(screen.getByRole('heading', { level: 1, name: t.titulo })).toBeInTheDocument()
     expect(screen.getByText(t.porQue)).toBeInTheDocument()
+    expect(screen.getByText(es.comun.porQue)).toBeInTheDocument()
+    expect(screen.getByText('Paso 03')).toBeInTheDocument()
     expect(screen.getByRole('main')).not.toContainElement(screen.getByText('Barra de arriba'))
     expect(screen.getByRole('link', { name: new RegExp(t.atras) })).toHaveAttribute('href', '/es/habilidades/tareas')
   })
