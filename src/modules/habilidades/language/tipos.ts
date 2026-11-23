@@ -1,5 +1,6 @@
 import type { Camino } from '../domain/camino'
-import type { GrupoId, HabilidadId } from '../domain/catalogo'
+import type { AreaId, GrupoId, HabilidadId } from '../domain/catalogo'
+import type { PreguntaFormaId } from '../domain/forma'
 import type { SectorId } from '../domain/historias'
 import type { CampoEnlace, CodigoErrorMaterial } from '../domain/material'
 import type { Frecuencia } from '../domain/puntos'
@@ -50,6 +51,37 @@ export type TextosHabilidades = {
     guardando: string
     /** Mientras no haya ninguna tarea marcada */
     minimo: string
+    avisos: { limite: string; fallo: string }
+  }
+  /** «Tu forma de emprender»: seis preguntas de elegir, el perfil que busca y su socio ideal */
+  forma: {
+    metadatos: { titulo: string; descripcion: string }
+    titulo: string
+    subtitulo: string
+    porQue: string
+    /** El enunciado de cada pregunta */
+    preguntas: Record<PreguntaFormaId, string>
+    /** El título y la frase de cada opción, por su id: no se repite ninguno entre preguntas */
+    opciones: Record<string, { titulo: string; texto: string }>
+    /** Nombre accesible de los puntos de progreso; lleva {n} y {total} */
+    progreso: string
+    elegir: string
+    elegido: string
+    anterior: string
+    saltar: string
+    siguientePregunta: string
+    /** Lleva {n} y {total} */
+    resumen: string
+    /** Lleva {n} y {total} */
+    listo: string
+    cambiar: string
+    busca: { titulo: string; ayuda: string; areas: Record<AreaId, string> }
+    socio: { etiqueta: string; ejemplo: string }
+    opcional: string
+    errores: { textoLargo: string }
+    atras: string
+    terminar: string
+    guardando: string
     avisos: { limite: string; fallo: string }
   }
   /** «Tus historias»: lo que cuenta con sus palabras, los sectores que le mueven y el permiso para analizarlo */

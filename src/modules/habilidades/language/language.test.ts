@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { caminos } from '../domain/camino'
-import { grupos, habilidades } from '../domain/catalogo'
+import { areas, grupos, habilidades } from '../domain/catalogo'
+import { preguntasForma } from '../domain/forma'
 import { sectores } from '../domain/historias'
 import { camposEnlace } from '../domain/material'
 import { preguntasDe, tienePreguntasPropias } from '../domain/preguntas'
@@ -91,6 +92,34 @@ describe('idiomas de habilidades', () => {
         for (const opcion of pregunta.opciones) preguntasPorOpcion.set(opcion, (preguntasPorOpcion.get(opcion) ?? new Set()).add(pregunta.id))
       }
       for (const [opcion, usadaEn] of preguntasPorOpcion) expect(usadaEn.size, opcion).toBe(1)
+    })
+  })
+
+  describe('«Tu forma de emprender»', () => {
+    const idsDeOpciones = preguntasForma.flatMap((pregunta) => [...pregunta.opciones]).sort()
+
+    it('cada idioma tiene el enunciado de todas las preguntas y el texto de todas las opciones, y ninguno más', () => {
+      for (const textos of [es, en, pt]) {
+        expect(Object.keys(textos.forma.preguntas).sort()).toEqual(preguntasForma.map((pregunta) => pregunta.id).sort())
+        expect(Object.keys(textos.forma.opciones).sort()).toEqual(idsDeOpciones)
+        expect(Object.keys(textos.forma.busca.areas).sort()).toEqual([...areas].sort())
+      }
+    })
+
+    it('una misma opción no se repite entre preguntas (los textos se buscan solo por su id)', () => {
+      expect(new Set(idsDeOpciones).size).toBe(idsDeOpciones.length)
+    })
+
+    it('los textos con variables las llevan en todos los idiomas', () => {
+      for (const textos of [es, en, pt]) {
+        expect(textos.forma.progreso).toContain('{n}')
+        expect(textos.forma.progreso).toContain('{total}')
+        expect(textos.forma.resumen).toContain('{n}')
+        expect(textos.forma.resumen).toContain('{total}')
+        expect(textos.forma.listo).toContain('{n}')
+        expect(textos.forma.listo).toContain('{total}')
+        expect(textos.forma.errores.textoLargo).toContain('{max}')
+      }
     })
   })
 
