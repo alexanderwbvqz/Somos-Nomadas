@@ -2,8 +2,8 @@ import { obtenerRespuestas } from '@/modules/habilidades/application/respuestas'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { TareasView } from '@/modules/habilidades/presentation/TareasView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { guardarTareasAccion } from '@/composition/acciones/accionesRespuestas'
-import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
+import { guardarTareasAccion } from '@/composition/habilidades/acciones/accionesRespuestas'
+import { crearRespuestasRepository } from '@/composition/habilidades/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
 const PASO = 1

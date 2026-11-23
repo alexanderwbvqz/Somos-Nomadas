@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { BienvenidaConectado } from '@/composition/pantallas/BienvenidaConectado'
+import { BienvenidaConectado } from '@/composition/fundadores/pantallas/BienvenidaConectado'
 import { textosFundadores } from '@/modules/fundadores/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

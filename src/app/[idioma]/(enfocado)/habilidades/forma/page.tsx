@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { FormaConectado } from '@/composition/pantallas/FormaConectado'
+import { FormaConectado } from '@/composition/habilidades/pantallas/FormaConectado'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

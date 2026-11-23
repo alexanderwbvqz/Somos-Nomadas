@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { LandingConectado } from '@/composition/pantallas/LandingConectado'
+import { LandingConectado } from '@/composition/landing/pantallas/LandingConectado'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 
 export default async function PaginaInicio({ params }: { params: Promise<{ idioma: string }> }) {

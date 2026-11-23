@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { DetalleAliadoConectado, metadatosDetalleAliado } from '@/composition/pantallas/DetalleAliadoConectado'
+import { DetalleAliadoConectado, metadatosDetalleAliado } from '@/composition/aliados/pantallas/DetalleAliadoConectado'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 
 type Parametros = { params: Promise<{ idioma: string; id: string }> }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { ProfundizarConectado } from '@/composition/pantallas/ProfundizarConectado'
+import { ProfundizarConectado } from '@/composition/habilidades/pantallas/ProfundizarConectado'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

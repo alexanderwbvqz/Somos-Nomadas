@@ -1,8 +1,8 @@
 import { textosAcceso } from '@/modules/acceso/language'
 import { RegistroView } from '@/modules/acceso/presentation/RegistroView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { continuarConGoogleAccion, registrarCuentaAccion, reenviarConfirmacionAccion } from '@/composition/acciones/accionesAcceso'
-import { BarraEnfocadaConectado } from './BarraEnfocadaConectado'
+import { continuarConGoogleAccion, registrarCuentaAccion, reenviarConfirmacionAccion } from '@/composition/acceso/acciones/accionesAcceso'
+import { BarraEnfocadaConectado } from '@/composition/sitio/pantallas/BarraEnfocadaConectado'
 
 export function RegistroConectado({ idioma }: { idioma: Idioma }) {
   return (

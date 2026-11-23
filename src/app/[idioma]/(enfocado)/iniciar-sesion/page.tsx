@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { InicioSesionConectado } from '@/composition/pantallas/InicioSesionConectado'
+import { InicioSesionConectado } from '@/composition/acceso/pantallas/InicioSesionConectado'
 import { textosAcceso } from '@/modules/acceso/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

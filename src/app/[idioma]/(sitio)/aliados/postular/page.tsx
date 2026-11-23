@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { PostulacionAliadoConectado } from '@/composition/pantallas/PostulacionAliadoConectado'
+import { PostulacionAliadoConectado } from '@/composition/aliados/pantallas/PostulacionAliadoConectado'
 import { textosAliados } from '@/modules/aliados/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

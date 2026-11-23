@@ -3,8 +3,8 @@ import { textosHabilidades } from '@/modules/habilidades/language'
 import { CierreView } from '@/modules/habilidades/presentation/CierreView'
 import { iniciales } from '@/modules/habilidades/presentation/mappers/iniciales'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { prepararCierreAccion } from '@/composition/acciones/accionesRespuestas'
-import { crearPerfilRepository } from '@/composition/fabricas/perfiles'
+import { prepararCierreAccion } from '@/composition/habilidades/acciones/accionesRespuestas'
+import { crearPerfilRepository } from '@/composition/fundadores/fabricas/perfiles'
 
 // Aquí se juntan dos módulos: el nombre sale del perfil (fundadores) y se le pasa a habilidades como iniciales ya hechas.
 export async function CierreConectado({ idioma }: { idioma: Idioma }) {

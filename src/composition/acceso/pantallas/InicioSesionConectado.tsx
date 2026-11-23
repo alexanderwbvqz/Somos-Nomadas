@@ -1,8 +1,8 @@
 import { textosAcceso } from '@/modules/acceso/language'
 import { InicioSesionView } from '@/modules/acceso/presentation/InicioSesionView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { continuarConGoogleAccion, iniciarSesionAccion } from '@/composition/acciones/accionesAcceso'
-import { BarraEnfocadaConectado } from './BarraEnfocadaConectado'
+import { continuarConGoogleAccion, iniciarSesionAccion } from '@/composition/acceso/acciones/accionesAcceso'
+import { BarraEnfocadaConectado } from '@/composition/sitio/pantallas/BarraEnfocadaConectado'
 
 export function InicioSesionConectado({ idioma }: { idioma: Idioma }) {
   return (

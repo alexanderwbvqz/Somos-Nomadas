@@ -1,7 +1,7 @@
 import { textosAliados } from '@/modules/aliados/language'
 import { PostulacionView } from '@/modules/aliados/presentation/PostulacionView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { enviarPostulacionAccion } from '@/composition/acciones/accionesPostulacion'
+import { enviarPostulacionAccion } from '@/composition/aliados/acciones/accionesPostulacion'
 
 export function PostulacionAliadoConectado({ idioma }: { idioma: Idioma }) {
   const { postulacion } = textosAliados(idioma)

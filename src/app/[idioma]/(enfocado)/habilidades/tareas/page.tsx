@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { TareasConectado } from '@/composition/pantallas/TareasConectado'
+import { TareasConectado } from '@/composition/habilidades/pantallas/TareasConectado'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

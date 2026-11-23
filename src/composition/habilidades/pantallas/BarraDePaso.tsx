@@ -5,7 +5,7 @@ import type { Idioma } from '@/shared/idiomas/idiomas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { ProgresoPaso } from '@/shared/ui/ProgresoPaso'
-import { BarraEnfocadaConectado } from './BarraEnfocadaConectado'
+import { BarraEnfocadaConectado } from '@/composition/sitio/pantallas/BarraEnfocadaConectado'
 
 type Props = {
   idioma: Idioma

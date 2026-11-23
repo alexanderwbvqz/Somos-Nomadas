@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { RegistroConectado } from '@/composition/pantallas/RegistroConectado'
+import { RegistroConectado } from '@/composition/acceso/pantallas/RegistroConectado'
 import { textosAcceso } from '@/modules/acceso/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

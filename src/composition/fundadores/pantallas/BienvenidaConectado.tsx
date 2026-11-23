@@ -1,8 +1,8 @@
 import { textosFundadores } from '@/modules/fundadores/language'
 import { BienvenidaView } from '@/modules/fundadores/presentation/BienvenidaView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { guardarBienvenidaAccion } from '@/composition/acciones/accionesFundadores'
-import { BarraEnfocadaConectado } from './BarraEnfocadaConectado'
+import { guardarBienvenidaAccion } from '@/composition/fundadores/acciones/accionesFundadores'
+import { BarraEnfocadaConectado } from '@/composition/sitio/pantallas/BarraEnfocadaConectado'
 
 export function BienvenidaConectado({ idioma }: { idioma: Idioma }) {
   return (

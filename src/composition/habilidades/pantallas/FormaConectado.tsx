@@ -3,8 +3,8 @@ import { datosFormaVacios } from '@/modules/habilidades/domain/forma'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { FormaView } from '@/modules/habilidades/presentation/FormaView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { guardarFormaAccion } from '@/composition/acciones/accionesRespuestas'
-import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
+import { guardarFormaAccion } from '@/composition/habilidades/acciones/accionesRespuestas'
+import { crearRespuestasRepository } from '@/composition/habilidades/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
 const PASO = 4

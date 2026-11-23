@@ -27,7 +27,10 @@ modules/<modulo>/
   infrastructure/  adaptadores (http, mock, mappers con zod)
   presentation/    hooks, ui/ (ladrillos), components/ (secciones), mappers/ (dominio → pantalla), vistas puras
   language/        textos por idioma (si el módulo tiene pantalla)
-composition/       único sitio que conoce mocks y http: fábricas y pantallas «Conectado»
+composition/<modulo>/   único sitio que conoce mocks y http; una carpeta por módulo, con su mismo nombre:
+  pantallas/       <Nombre>Conectado.tsx (y piezas como la barra o el pie que arma ese módulo)
+  fabricas/        eligen el adaptador (mock o http) de cada puerto
+  acciones/        acciones de servidor (solo si el módulo las necesita)
 shared/            genérico, sin vocabulario de negocio
 ```
 
@@ -41,7 +44,7 @@ Reglas de dependencia:
 - Los campos de la API se mantienen tal cual en el adaptador y se traducen en el mapper (zod).
 - `shared/` no importa de ningún módulo ni de `composition`.
 - Solo `composition/` conoce los adaptadores concretos (mock o http).
-- Cada pantalla: `<Nombre>View.tsx` pura (datos y slots por props) en su módulo + `<Nombre>Conectado.tsx` en `composition/pantallas/`.
+- Cada pantalla: `<Nombre>View.tsx` pura (datos y slots por props) en su módulo + `<Nombre>Conectado.tsx` en `composition/<modulo>/pantallas/`. Lo que una pantalla junta de varios módulos vive en el módulo dueño de esa pantalla; las subcarpetas se crean solo cuando hacen falta.
 - Imports que salen del módulo por alias (`@/shared/...`); las relativas largas (`../../../../`) están prohibidas.
 - Vigilar las reglas con ESLint (`no-restricted-imports`) y un test que corra ESLint sobre archivos imaginarios y exija la violación.
 - Datos de ejemplo solo en `infrastructure/mock/`.

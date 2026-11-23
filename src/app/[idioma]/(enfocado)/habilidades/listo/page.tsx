@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { CierreConectado } from '@/composition/pantallas/CierreConectado'
+import { CierreConectado } from '@/composition/habilidades/pantallas/CierreConectado'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 

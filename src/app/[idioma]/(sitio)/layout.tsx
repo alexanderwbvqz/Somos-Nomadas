@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import { BarraSuperiorConectado } from '@/composition/pantallas/BarraSuperiorConectado'
-import { PieConectado } from '@/composition/pantallas/PieConectado'
+import { BarraSuperiorConectado } from '@/composition/sitio/pantallas/BarraSuperiorConectado'
+import { PieConectado } from '@/composition/sitio/pantallas/PieConectado'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 
 // Páginas públicas del sitio: llevan la cabecera y el pie completos.

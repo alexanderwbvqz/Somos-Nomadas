@@ -3,8 +3,8 @@ import { habilidadesMasFuertes } from '@/modules/habilidades/domain/perfilArea'
 import { textosHabilidades } from '@/modules/habilidades/language'
 import { ProfundizarView } from '@/modules/habilidades/presentation/ProfundizarView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { guardarProfundizacionAccion } from '@/composition/acciones/accionesRespuestas'
-import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
+import { guardarProfundizacionAccion } from '@/composition/habilidades/acciones/accionesRespuestas'
+import { crearRespuestasRepository } from '@/composition/habilidades/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
 const PASO = 2

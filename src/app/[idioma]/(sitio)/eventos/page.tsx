@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { EventosConectado } from '@/composition/pantallas/EventosConectado'
+import { EventosConectado } from '@/composition/eventos/pantallas/EventosConectado'
 import { textosEventos } from '@/modules/eventos/language'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
 
