@@ -33,15 +33,27 @@ describe('BienvenidaView', () => {
     expect(screen.getAllByRole('checkbox')).toHaveLength(5)
   })
 
-  it('con el formulario vacío avisa de lo que falta y lleva el foco al nombre', async () => {
+  it('el botón empieza apagado y no envía nada', async () => {
     const { alGuardar, usuario } = montar()
+    expect(enviar()).toBeDisabled()
     await usuario.click(enviar())
     expect(alGuardar).not.toHaveBeenCalled()
-    expect(screen.getByText(t.errores.nombre)).toBeInTheDocument()
-    expect(screen.getByText(t.errores.apellidos)).toBeInTheDocument()
-    expect(screen.getByText(t.errores.pais)).toBeInTheDocument()
-    expect(screen.getByText(t.errores.busquedaVacia)).toBeInTheDocument()
-    expect(screen.getByLabelText('Nombre')).toHaveFocus()
+  })
+
+  it('se enciende al completar nombre, apellidos, país y una opción, y se apaga si se vacía un campo', async () => {
+    const { usuario } = montar()
+    await rellenar(usuario)
+    expect(enviar()).toBeEnabled()
+    await usuario.clear(screen.getByLabelText('Nombre'))
+    expect(enviar()).toBeDisabled()
+  })
+
+  it('con todo menos una cosa sigue apagado', async () => {
+    const { usuario } = montar()
+    await usuario.type(screen.getByLabelText('Nombre'), 'Ana')
+    await usuario.type(screen.getByLabelText('Apellidos'), 'Torres Rojas')
+    await usuario.click(screen.getByRole('checkbox', { name: t.busca.opciones.socioTecnico }))
+    expect(enviar()).toBeDisabled() // falta el país
   })
 
   it('la ciudad es opcional: se guarda sin ella', async () => {
@@ -71,12 +83,13 @@ describe('BienvenidaView', () => {
     expect(screen.getByRole('checkbox', { name: t.busca.opciones.explorando })).toBeEnabled()
   })
 
-  it('un error corregido desaparece al corregirlo', async () => {
-    const { usuario } = montar()
+  it('un error que devolvió el servidor desaparece al corregir ese campo', async () => {
+    const { usuario } = montar({ ok: false, errores: { apellidos: 'textoLargo' } })
+    await rellenar(usuario)
     await usuario.click(enviar())
-    await usuario.type(screen.getByLabelText('Nombre'), 'Ana')
-    expect(screen.queryByText(t.errores.nombre)).not.toBeInTheDocument()
-    expect(screen.getByText(t.errores.apellidos)).toBeInTheDocument()
+    expect(await screen.findByText(t.errores.textoLargo)).toBeInTheDocument()
+    await usuario.type(screen.getByLabelText('Apellidos'), 'x')
+    expect(screen.queryByText(t.errores.textoLargo)).not.toBeInTheDocument()
   })
 
   it('si el servidor limita los intentos o falla, lo avisa y deja intentar de nuevo', async () => {

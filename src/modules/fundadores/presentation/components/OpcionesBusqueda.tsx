@@ -34,7 +34,7 @@ export function OpcionesBusqueda({ textos, marcadas, alAlternar, error }: Props)
                 className="peer sr-only"
               />
               <span
-                className={`text-parrafo block cursor-pointer rounded-full border-[1.5px] px-4 py-2.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario peer-disabled:cursor-not-allowed peer-disabled:opacity-40 ${
+                className={`text-cuerpo block cursor-pointer rounded-full border-[1.5px] px-4 py-2.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario peer-disabled:cursor-not-allowed peer-disabled:opacity-40 ${
                   error ? 'border-primario' : 'border-texto/45'
                 }`}
               >

@@ -21,7 +21,7 @@ const PASOS_TOTAL = 2
 // Paso 1 del perfil: nombre, dónde está y qué busca. Al guardar muestra un mensaje provisional: el directorio
 // todavía no existe.
 export function BienvenidaView({ textos, alGuardar, hrefInicio }: BienvenidaViewProps) {
-  const { datos, errores, enviando, aviso, nombreGuardado, enfoque, cambiar, alternar, enviar } = useBienvenida(alGuardar)
+  const { datos, errores, enviando, aviso, nombreGuardado, enfoque, completo, cambiar, alternar, enviar } = useBienvenida(alGuardar)
   const t = textos.bienvenida
 
   useEffect(() => {
@@ -40,6 +40,7 @@ export function BienvenidaView({ textos, alGuardar, hrefInicio }: BienvenidaView
         datos={datos}
         errores={errores}
         enviando={enviando}
+        completo={completo}
         aviso={aviso}
         cambiar={cambiar}
         alternar={alternar}

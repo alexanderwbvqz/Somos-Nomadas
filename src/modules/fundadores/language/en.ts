@@ -11,14 +11,14 @@ export const en: TextosFundadores = {
     intro: 'With this you can already see other founders. To be seen in full, you finish your profile afterwards.',
     campos: {
       nombre: 'First name',
-      nombreEjemplo: 'For example: Ana',
+      nombreEjemplo: 'Ana',
       apellidos: 'Last name',
-      apellidosEjemplo: 'For example: Torres Rojas',
+      apellidosEjemplo: 'Torres Rojas',
       pais: 'Where you are',
       paisPlaceholder: 'Choose your country',
       ciudad: 'City',
       ciudadOpcional: '(optional)',
-      ciudadEjemplo: 'For example: Lima',
+      ciudadEjemplo: 'Lima',
     },
     paises: {
       AR: 'Argentina',

@@ -12,14 +12,16 @@ type Props = {
   datos: DatosBienvenida
   errores: ErroresBienvenida
   enviando: boolean
+  /** Falta algo por completar: el botón de enviar sigue apagado */
+  completo: boolean
   aviso?: 'limite' | 'fallo'
   cambiar: (campo: 'nombre' | 'apellidos' | 'pais' | 'ciudad', valor: string) => void
   alternar: (opcion: Busqueda) => void
   alEnviar: () => void
 }
 
-// Formulario de la bienvenida: nombre y apellidos, país y ciudad, y qué busca. Valida al enviar.
-export function FormularioBienvenida({ textos, datos, errores, enviando, aviso, cambiar, alternar, alEnviar }: Props) {
+// Formulario de la bienvenida: nombre y apellidos, país y ciudad, y qué busca. El botón se activa al completarlo.
+export function FormularioBienvenida({ textos, datos, errores, enviando, completo, aviso, cambiar, alternar, alEnviar }: Props) {
   const c = textos.campos
   const error = (campo: keyof ErroresBienvenida) => mensajeDeErrorPerfil(textos, campo, errores[campo])
 
@@ -36,7 +38,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, aviso, 
           etiqueta={c.nombre}
           autoComplete="given-name"
           placeholder={c.nombreEjemplo}
-          maxLength={LIMITES_PERFIL.nombre * 2}
+          maxLength={LIMITES_PERFIL.nombre}
           valor={datos.nombre}
           alCambiar={(valor) => cambiar('nombre', valor)}
           error={error('nombre')}
@@ -46,7 +48,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, aviso, 
           etiqueta={c.apellidos}
           autoComplete="family-name"
           placeholder={c.apellidosEjemplo}
-          maxLength={LIMITES_PERFIL.apellidos * 2}
+          maxLength={LIMITES_PERFIL.apellidos}
           valor={datos.apellidos}
           alCambiar={(valor) => cambiar('apellidos', valor)}
           error={error('apellidos')}
@@ -72,7 +74,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, aviso, 
           }
           autoComplete="address-level2"
           placeholder={c.ciudadEjemplo}
-          maxLength={LIMITES_PERFIL.ciudad * 2}
+          maxLength={LIMITES_PERFIL.ciudad}
           valor={datos.ciudad}
           alCambiar={(valor) => cambiar('ciudad', valor)}
           error={error('ciudad')}
@@ -91,7 +93,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, aviso, 
       )}
 
       <div>
-        <Boton tipo="submit" lleno deshabilitado={enviando}>
+        <Boton tipo="submit" lleno anchoCompleto deshabilitado={enviando || !completo} cursorDeshabilitado={enviando ? 'espera' : 'bloqueado'}>
           {enviando ? textos.enviando : textos.enviar}
         </Boton>
       </div>

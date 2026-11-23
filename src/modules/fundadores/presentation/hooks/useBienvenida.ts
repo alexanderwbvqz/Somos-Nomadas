@@ -74,5 +74,8 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida) {
     }
   }
 
-  return { datos, errores, enviando, aviso, nombreGuardado, enfoque, cambiar, alternar, enviar }
+  /** El botón de enviar solo se activa cuando no falta nada */
+  const completo = !hayErroresPerfil(validarBienvenida(datos))
+
+  return { datos, errores, enviando, aviso, nombreGuardado, enfoque, completo, cambiar, alternar, enviar }
 }

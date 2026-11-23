@@ -11,14 +11,14 @@ export const pt: TextosFundadores = {
     intro: 'Com isso você já vê outros founders. Para que vejam você por completo, depois você termina seu perfil.',
     campos: {
       nombre: 'Nome',
-      nombreEjemplo: 'Por exemplo: Ana',
+      nombreEjemplo: 'Ana',
       apellidos: 'Sobrenome',
-      apellidosEjemplo: 'Por exemplo: Torres Rojas',
+      apellidosEjemplo: 'Torres Rojas',
       pais: 'Onde você está',
       paisPlaceholder: 'Escolha seu país',
       ciudad: 'Cidade',
       ciudadOpcional: '(opcional)',
-      ciudadEjemplo: 'Por exemplo: Lima',
+      ciudadEjemplo: 'Lima',
     },
     paises: {
       AR: 'Argentina',
