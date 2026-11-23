@@ -160,6 +160,21 @@ export const pt: TextosHabilidades = {
       fallo: 'Não conseguimos salvar o que você respondeu. Tente de novo em um momento.',
     },
   },
+  cierre: {
+    metadatos: { titulo: 'Quase lá | Nómadas', descripcion: 'Estamos montando a proposta do seu perfil.' },
+    logoAlt: 'Nómadas',
+    avatar: 'Suas iniciais',
+    esperaTitulo: 'Montando sua proposta…',
+    esperaTexto: 'Estamos reunindo o que você contou. Você pode ficar por aqui.',
+    listoTitulo: 'Já temos o que precisamos.',
+    listoTexto: 'Montamos uma proposta do seu perfil. Agora é sua vez de revisá-la e conhecer outros nômades.',
+    descubrir: 'Ir descobrir',
+    revisarPerfil: 'Revisar meu perfil',
+    pronto: 'Em breve',
+    inicio: 'Ir para o início',
+    fallo: { titulo: 'Não conseguimos montar sua proposta.', texto: 'O que você contou está salvo. Tente de novo em instantes.' },
+    reintentar: 'Tentar de novo',
+  },
   historias: {
     metadatos: {
       titulo: 'Suas histórias | Nómadas',

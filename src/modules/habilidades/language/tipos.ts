@@ -84,6 +84,25 @@ export type TextosHabilidades = {
     guardando: string
     avisos: { limite: string; fallo: string }
   }
+  /** Pantalla de cierre del recorrido: espera, y luego dos caminos (descubrir nómadas o revisar su perfil) */
+  cierre: {
+    metadatos: { titulo: string; descripcion: string }
+    /** Nombre accesible del logo */
+    logoAlt: string
+    /** Nombre accesible de las iniciales de la persona */
+    avatar: string
+    esperaTitulo: string
+    esperaTexto: string
+    listoTitulo: string
+    listoTexto: string
+    descubrir: string
+    revisarPerfil: string
+    /** Insignia de lo que todavía no existe */
+    pronto: string
+    inicio: string
+    fallo: { titulo: string; texto: string }
+    reintentar: string
+  }
   /** «Tus historias»: lo que cuenta con sus palabras, los sectores que le mueven y el permiso para analizarlo */
   historias: {
     metadatos: { titulo: string; descripcion: string }

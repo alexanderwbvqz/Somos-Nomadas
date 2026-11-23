@@ -160,6 +160,21 @@ export const en: TextosHabilidades = {
       fallo: 'We could not save what you answered. Try again in a moment.',
     },
   },
+  cierre: {
+    metadatos: { titulo: 'Almost there | Nómadas', descripcion: 'We are putting together your profile proposal.' },
+    logoAlt: 'Nómadas',
+    avatar: 'Your initials',
+    esperaTitulo: 'Putting your proposal together…',
+    esperaTexto: 'We are gathering what you told us. You can stay here.',
+    listoTitulo: 'We have what we need.',
+    listoTexto: 'We put together a proposal for your profile. Now it is your turn to review it and meet other nomads.',
+    descubrir: 'Go and discover',
+    revisarPerfil: 'Review my profile',
+    pronto: 'Soon',
+    inicio: 'Go to the home page',
+    fallo: { titulo: 'We could not put your proposal together.', texto: 'What you told us is saved. Please try again in a moment.' },
+    reintentar: 'Try again',
+  },
   historias: {
     metadatos: {
       titulo: 'Your stories | Nómadas',
