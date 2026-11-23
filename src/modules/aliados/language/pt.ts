@@ -134,6 +134,8 @@ export const pt: TextosAliados = {
       sitioWeb: 'Site',
       linkedin: 'LinkedIn',
       instagram: 'Instagram',
+      linkedinEjemplo: 'https://www.linkedin.com/…',
+      instagramEjemplo: 'https://www.instagram.com/…',
       directo: 'Contato direto',
       directoNota: 'Os empreendedores vão contatar você diretamente: a Nómadas não intervém. Informe pelo menos uma das duas formas.',
       whatsapp: 'WhatsApp',

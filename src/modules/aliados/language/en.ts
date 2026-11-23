@@ -134,6 +134,8 @@ export const en: TextosAliados = {
       sitioWeb: 'Website',
       linkedin: 'LinkedIn',
       instagram: 'Instagram',
+      linkedinEjemplo: 'https://www.linkedin.com/…',
+      instagramEjemplo: 'https://www.instagram.com/…',
       directo: 'Direct contact',
       directoNota: 'Entrepreneurs will contact you directly: Nómadas does not step in. Provide at least one of the two.',
       whatsapp: 'WhatsApp',

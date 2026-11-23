@@ -1,4 +1,5 @@
-import { Casilla, CampoTexto } from '@/shared/ui/Campos'
+import { CampoTexto } from '@/shared/ui/CampoTexto'
+import { Casilla } from '@/shared/ui/Casilla'
 import { LIMITES } from '@/modules/aliados/domain/postulacion'
 import { mensajeDeError } from '../../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
@@ -32,7 +33,7 @@ export function PasoContacto({ textos, datos, errores, cambiar }: PropsPaso) {
           clave="linkedin"
           etiqueta={t.linkedin}
           {...url}
-          placeholder="https://www.linkedin.com/…"
+          placeholder={t.linkedinEjemplo}
           valor={datos.linkedin}
           alCambiar={(valor) => cambiar('linkedin', valor)}
           error={mensajeDeError(textos, errores.linkedin)}
@@ -41,7 +42,7 @@ export function PasoContacto({ textos, datos, errores, cambiar }: PropsPaso) {
           clave="instagram"
           etiqueta={t.instagram}
           {...url}
-          placeholder="https://www.instagram.com/…"
+          placeholder={t.instagramEjemplo}
           valor={datos.instagram}
           alCambiar={(valor) => cambiar('instagram', valor)}
           error={mensajeDeError(textos, errores.instagram)}

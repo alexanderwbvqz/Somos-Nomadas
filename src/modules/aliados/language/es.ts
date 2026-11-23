@@ -134,6 +134,8 @@ export const es: TextosAliados = {
       sitioWeb: 'Sitio web',
       linkedin: 'LinkedIn',
       instagram: 'Instagram',
+      linkedinEjemplo: 'https://www.linkedin.com/…',
+      instagramEjemplo: 'https://www.instagram.com/…',
       directo: 'Contacto directo',
       directoNota: 'Los emprendedores te contactarán directamente: Nómadas no interviene. Pon al menos una de las dos formas.',
       whatsapp: 'WhatsApp',

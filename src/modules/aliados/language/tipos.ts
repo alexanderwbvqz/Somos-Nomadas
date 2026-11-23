@@ -117,6 +117,9 @@ export type TextosPostulacion = {
     sitioWeb: string
     linkedin: string
     instagram: string
+    /** Ejemplo que se ve en el campo vacío */
+    linkedinEjemplo: string
+    instagramEjemplo: string
     directo: string
     directoNota: string
     whatsapp: string
