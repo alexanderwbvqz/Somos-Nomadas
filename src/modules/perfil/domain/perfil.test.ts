@@ -7,7 +7,7 @@ function perfil(cambios: Partial<Perfil> = {}): Perfil {
     ficha: { nombre: 'Ana', apellidos: 'Torres', ciudad: 'Lima', pais: 'Perú', iniciales: 'AT', areas: ['Tecnología'] },
     buscando: [],
     habilidades: [],
-    tareas: { total: 30, grupos: [{ grupo: 'Construir con tecnología', tareas: [{ texto: 'Programar una página web', veces: 'Es mi trabajo' }] }] },
+    tareas: { total: 40, grupos: [{ grupo: 'Construir con tecnología', tareas: [{ texto: 'Programar una página web', veces: 'Es mi trabajo' }] }] },
     historias: [],
     sectores: { pregunta: 'Sectores que te mueven', respuestas: [] },
     forma: [],
@@ -39,8 +39,8 @@ describe('capasDelPerfil', () => {
   })
 
   it('sin tareas marcadas, el recorrido no está hecho', () => {
-    expect(hechas(perfil({ tareas: { total: 30, grupos: [] } }))).not.toContain('recorrido')
-    expect(hechas(perfil({ tareas: { total: 30, grupos: [{ grupo: 'Definir y organizar', tareas: [] }] } }))).not.toContain('recorrido')
+    expect(hechas(perfil({ tareas: { total: 40, grupos: [] } }))).not.toContain('recorrido')
+    expect(hechas(perfil({ tareas: { total: 40, grupos: [{ grupo: 'Definir y organizar', tareas: [] }] } }))).not.toContain('recorrido')
   })
 
   it('la trayectoria no es una capa: tenerla o no no cambia lo que falta', () => {

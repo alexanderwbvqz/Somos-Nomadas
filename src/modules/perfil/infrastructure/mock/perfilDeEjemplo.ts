@@ -59,7 +59,7 @@ export function perfilDeEjemplo(): Perfil {
       { nombre: 'Contenidos y redes', nivel: 1, estimado: true, resumen: 'Una vez · sin indicar tiempo' },
     ],
     tareas: {
-      total: 30,
+      total: 40,
       grupos: [
         {
           grupo: 'Definir y organizar',
