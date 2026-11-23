@@ -1,5 +1,5 @@
 import type { TextosAcceso } from '../../language/tipos'
-import { BotonGoogle } from '../ui/BotonGoogle'
+import { BotonGoogle } from './BotonGoogle'
 
 type Props = {
   textos: TextosAcceso

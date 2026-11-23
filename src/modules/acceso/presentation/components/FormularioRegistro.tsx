@@ -8,7 +8,7 @@ import { foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITES_CUENTA, fuerzaDeClave, type DatosRegistro, type ErroresRegistro } from '../../domain/cuenta'
 import type { TextosAcceso } from '../../language/tipos'
 import { mensajeDeErrorCuenta } from '../mappers/mensajesError'
-import { AccesoGoogle } from './AccesoGoogle'
+import { AccesoGoogle } from '../ui/AccesoGoogle'
 
 type Props = {
   textos: TextosAcceso

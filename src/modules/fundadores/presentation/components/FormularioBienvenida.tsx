@@ -5,7 +5,7 @@ import { CampoTexto } from '@/shared/ui/CampoTexto'
 import { LIMITES_BIENVENIDA, paises, type Busqueda, type DatosBienvenida, type ErroresBienvenida } from '../../domain/bienvenida'
 import type { TextosFundadores } from '../../language/tipos'
 import { mensajeDeErrorBienvenida } from '../mappers/mensajesError'
-import { OpcionesBusqueda } from './OpcionesBusqueda'
+import { OpcionesBusqueda } from '../ui/OpcionesBusqueda'
 
 type Props = {
   textos: TextosFundadores['bienvenida']
