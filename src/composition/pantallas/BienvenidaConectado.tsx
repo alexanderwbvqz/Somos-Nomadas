@@ -9,7 +9,7 @@ export function BienvenidaConectado({ idioma }: { idioma: Idioma }) {
     <BienvenidaView
       textos={textosFundadores(idioma)}
       alGuardar={guardarBienvenidaAccion}
-      hrefSiguiente={`/${idioma}/habilidades`}
+      hrefSiguiente={`/${idioma}/habilidades/tareas`}
       barra={<BarraEnfocadaConectado idioma={idioma} />}
     />
   )

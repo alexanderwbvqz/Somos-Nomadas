@@ -7,9 +7,9 @@ import { guardarProfundizacionAccion } from '@/composition/acciones/accionesResp
 import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
-const PASO = 3
+const PASO = 2
 
-// Tercer paso del recorrido de «de cero»: de lo marcado en «Qué has hecho» salen sus tres habilidades más fuertes, y de lo
+// Segundo paso del recorrido: de lo marcado en «Qué has hecho» salen sus tres habilidades más fuertes, y de lo
 // ya contado (si vuelve) lo que se enseña de nuevo. La vista no sabe de dónde sale: recibe las habilidades ya elegidas.
 export async function ProfundizarConectado({ idioma }: { idioma: Idioma }) {
   const textos = textosHabilidades(idioma)

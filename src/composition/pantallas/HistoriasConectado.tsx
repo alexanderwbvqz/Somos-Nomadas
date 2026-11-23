@@ -7,9 +7,9 @@ import { guardarHistoriasAccion } from '@/composition/acciones/accionesRespuesta
 import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
-const PASO = 4
+const PASO = 3
 
-// Cuarto paso del recorrido de «de cero»: lo que la persona ya había escrito (si vuelve) se lee aquí y se le pasa a la vista.
+// Tercer paso del recorrido: lo que la persona ya había escrito (si vuelve) se lee aquí y se le pasa a la vista.
 export async function HistoriasConectado({ idioma }: { idioma: Idioma }) {
   const textos = textosHabilidades(idioma)
   const { historias } = await obtenerRespuestas(crearRespuestasRepository())

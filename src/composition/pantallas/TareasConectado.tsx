@@ -6,9 +6,9 @@ import { guardarTareasAccion } from '@/composition/acciones/accionesRespuestas'
 import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
-const PASO = 2
+const PASO = 1
 
-// Segundo paso del recorrido de «de cero»: lo que la persona ya había marcado (si vuelve) se lee aquí y se le pasa a la vista.
+// Primer paso del recorrido: lo que la persona ya había marcado (si vuelve) se lee aquí y se le pasa a la vista.
 export async function TareasConectado({ idioma }: { idioma: Idioma }) {
   const textos = textosHabilidades(idioma)
   const { marcas } = await obtenerRespuestas(crearRespuestasRepository())
@@ -20,7 +20,7 @@ export async function TareasConectado({ idioma }: { idioma: Idioma }) {
       alGuardar={guardarTareasAccion}
       barra={<BarraDePaso idioma={idioma} textos={textos} paso={PASO} nombre={textos.tareas.titulo} />}
       paso={PASO}
-      hrefAtras={`/${idioma}/habilidades`}
+      hrefAtras={`/${idioma}/bienvenida`}
       hrefSiguiente={`/${idioma}/habilidades/profundizar`}
     />
   )

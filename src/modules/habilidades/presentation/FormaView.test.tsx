@@ -18,7 +18,7 @@ type Resultado = ResultadoGuardar<ErroresForma>
 function montar(resultado: Resultado | Promise<Resultado> = { ok: true }, inicial: DatosForma = datosFormaVacios()) {
   const alGuardar = vi.fn<(entrada: EntradaForma) => Promise<Resultado>>(async () => await resultado)
   render(
-    <FormaView textos={es} inicial={inicial} alGuardar={alGuardar} barra={<p>Barra de arriba</p>} paso={5} hrefAtras="/es/habilidades/historias" hrefSiguiente="/es/habilidades/listo" />,
+    <FormaView textos={es} inicial={inicial} alGuardar={alGuardar} barra={<p>Barra de arriba</p>} paso={4} hrefAtras="/es/habilidades/historias" hrefSiguiente="/es/habilidades/listo" />,
   )
   return { alGuardar, usuario: userEvent.setup() }
 }
@@ -45,7 +45,7 @@ describe('FormaView', () => {
     expect(pregunta(t.preguntas.dedicacion)).toBeInTheDocument()
     expect(screen.getAllByRole('radio')).toHaveLength(3)
     expect(screen.queryByText(/Ya respondiste/)).not.toBeInTheDocument()
-    expect(screen.getByText('Paso 05')).toBeInTheDocument()
+    expect(screen.getByText('Paso 04')).toBeInTheDocument()
     expect(screen.getByText(es.comun.porQue)).toBeInTheDocument()
   })
 

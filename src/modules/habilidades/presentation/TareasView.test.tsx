@@ -21,7 +21,7 @@ function montar(resultado: ResultadoGuardar | Promise<ResultadoGuardar> = { ok: 
       marcasIniciales={marcasIniciales}
       alGuardar={alGuardar}
       barra={<p>Barra de arriba</p>}
-      paso={2}
+      paso={1}
       hrefAtras="/es/habilidades"
       hrefSiguiente="/es/habilidades/profundizar"
     />,
@@ -39,7 +39,7 @@ describe('TareasView', () => {
     expect(screen.getByRole('heading', { level: 1, name: t.titulo })).toBeInTheDocument()
     expect(screen.getByText(t.porQue)).toBeInTheDocument()
     expect(screen.getByText(es.comun.porQue)).toBeInTheDocument()
-    expect(screen.getByText('Paso 02')).toBeInTheDocument()
+    expect(screen.getByText('Paso 01')).toBeInTheDocument()
     expect(screen.getByRole('main')).not.toContainElement(screen.getByText('Barra de arriba'))
     expect(screen.getByRole('link', { name: new RegExp(t.atras) })).toHaveAttribute('href', '/es/habilidades')
   })
@@ -166,7 +166,7 @@ describe('TareasView: guardar', () => {
     const alGuardar = vi.fn(async () => {
       throw new Error('x')
     })
-    render(<TareasView textos={es} marcasIniciales={{ ventas: 'unaVez' }} alGuardar={alGuardar} barra={null} paso={2} hrefAtras="/es" hrefSiguiente="/es/siguiente" />)
+    render(<TareasView textos={es} marcasIniciales={{ ventas: 'unaVez' }} alGuardar={alGuardar} barra={null} paso={1} hrefAtras="/es" hrefSiguiente="/es/siguiente" />)
     await userEvent.click(screen.getByRole('button', { name: t.siguiente }))
     expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.fallo)
     expect(push).not.toHaveBeenCalled()

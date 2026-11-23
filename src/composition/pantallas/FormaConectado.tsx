@@ -7,9 +7,9 @@ import { guardarFormaAccion } from '@/composition/acciones/accionesRespuestas'
 import { crearRespuestasRepository } from '@/composition/fabricas/respuestas'
 import { BarraDePaso } from './BarraDePaso'
 
-const PASO = 5
+const PASO = 4
 
-// Quinto y último paso de preguntas del recorrido de «de cero»: lo que ya había contestado (si vuelve) se lee aquí.
+// Cuarto y último paso de preguntas del recorrido: lo que ya había contestado (si vuelve) se lee aquí.
 export async function FormaConectado({ idioma }: { idioma: Idioma }) {
   const textos = textosHabilidades(idioma)
   const { forma } = await obtenerRespuestas(crearRespuestasRepository())
