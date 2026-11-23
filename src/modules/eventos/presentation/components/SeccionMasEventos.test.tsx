@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import { SeccionMasEventos, type EventoListadoVista } from './SeccionMasEventos'
+import type { EventoListadoVista } from '../mappers/vistaProximoEvento'
+import { SeccionMasEventos } from './SeccionMasEventos'
 
 const textos = {
   etiquetaSeccion: 'Más eventos',

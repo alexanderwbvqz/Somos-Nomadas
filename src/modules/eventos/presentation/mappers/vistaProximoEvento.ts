@@ -1,10 +1,31 @@
 import type { Evento } from '@/modules/eventos/domain/Evento'
 import { diasHasta } from '@/modules/eventos/domain/eventos'
 import type { TextosEventos } from '@/modules/eventos/language/tipos'
-import type { EventoListadoVista } from '@/modules/eventos/presentation/components/SeccionMasEventos'
-import type { ProximoEventoVista } from '@/modules/eventos/presentation/components/SeccionProximoEvento'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
+
+export type ProximoEventoVista = {
+  nombre: string
+  dia: string
+  mesAnio: string
+  cuenta: string
+  modalidad: string
+  lugar: string
+  hora: string
+  descripcion: string
+  hrefConfirmar: string
+}
+
+export type EventoListadoVista = {
+  id: string
+  nombre: string
+  /** Fecha ya formateada, por ejemplo "20 ene 2027" */
+  fecha: string
+  lugar: string
+  modalidad: string
+  descripcion: string
+  hrefConfirmar: string
+}
 
 /** Enlace de WhatsApp con un mensaje ya escrito (el enlace base lo da quien llama) */
 export type ConstruirEnlaceWhatsapp = (mensaje: string) => string

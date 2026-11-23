@@ -5,17 +5,7 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Badge } from '@/shared/ui/Badge'
 import { Boton } from '@/shared/ui/Boton'
 import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
-
-export type EventoListadoVista = {
-  id: string
-  nombre: string
-  /** Fecha ya formateada, por ejemplo "20 ene 2027" */
-  fecha: string
-  lugar: string
-  modalidad: string
-  descripcion: string
-  hrefConfirmar: string
-}
+import type { EventoListadoVista } from '../mappers/vistaProximoEvento'
 
 export type SeccionMasEventosProps = {
   textos: {

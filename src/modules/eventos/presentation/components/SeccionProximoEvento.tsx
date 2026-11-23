@@ -1,17 +1,6 @@
 import { Badge } from '@/shared/ui/Badge'
 import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
-
-export type ProximoEventoVista = {
-  nombre: string
-  dia: string
-  mesAnio: string
-  cuenta: string
-  modalidad: string
-  lugar: string
-  hora: string
-  descripcion: string
-  hrefConfirmar: string
-}
+import type { ProximoEventoVista } from '../mappers/vistaProximoEvento'
 
 export type SeccionProximoEventoProps = {
   textos: {
