@@ -4,6 +4,7 @@ import { areas, type AreaId } from '../../domain/catalogo'
 import { LIMITE_SOCIO_IDEAL } from '../../domain/forma'
 import type { TextosHabilidades } from '../../language/tipos'
 import type { PreguntaVista } from '../mappers/vistaForma'
+import { ResumenRespuestas } from './ResumenRespuestas'
 
 type Props = {
   textos: TextosHabilidades['forma']
@@ -27,23 +28,10 @@ export function FinalForma({ textos, preguntas, respondidas, busca, socioIdeal, 
         <h2 id="titulo-pregunta-forma" tabIndex={-1} className="text-titulo-tarjeta texto-equilibrado outline-none">
           {rellenarPlantilla(textos.listo, { n: respondidas, total: preguntas.length })}
         </h2>
-        <p className="text-cuerpo mt-2 opacity-75">{textos.cambiar}</p>
-        <ul className="mt-4 flex flex-wrap gap-2.5">
-          {preguntas.map((pregunta, indice) =>
-            pregunta.respuesta ? (
-              <li key={pregunta.id}>
-                <button
-                  type="button"
-                  onClick={() => alIrA(indice)}
-                  className="text-cuerpo cursor-pointer rounded-full border-[1.5px] border-texto bg-texto px-4 py-2.5 text-fondo focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario"
-                >
-                  <span className="sr-only">{pregunta.titulo} </span>
-                  {pregunta.respuesta.titulo}
-                </button>
-              </li>
-            ) : null,
-          )}
-        </ul>
+        <p className="text-cuerpo mt-2 rounded-xl bg-suave px-4 py-3">{textos.cambiar}</p>
+        <div className="mt-5">
+          <ResumenRespuestas textos={textos} preguntas={preguntas} respondidas={respondidas} alIrA={alIrA} />
+        </div>
       </div>
 
       <fieldset>

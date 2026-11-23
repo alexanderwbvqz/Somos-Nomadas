@@ -18,7 +18,7 @@ type Resultado = ResultadoGuardar<ErroresForma>
 function montar(resultado: Resultado | Promise<Resultado> = { ok: true }, inicial: DatosForma = datosFormaVacios()) {
   const alGuardar = vi.fn<(entrada: EntradaForma) => Promise<Resultado>>(async () => await resultado)
   render(
-    <FormaView textos={es} inicial={inicial} alGuardar={alGuardar} barra={<p>Barra de arriba</p>} hrefAtras="/es/habilidades/historias" hrefSiguiente="/es/habilidades/listo" />,
+    <FormaView textos={es} inicial={inicial} alGuardar={alGuardar} barra={<p>Barra de arriba</p>} paso={5} hrefAtras="/es/habilidades/historias" hrefSiguiente="/es/habilidades/listo" />,
   )
   return { alGuardar, usuario: userEvent.setup() }
 }
@@ -44,7 +44,9 @@ describe('FormaView', () => {
     expect(screen.getByRole('link', { name: new RegExp(t.atras) })).toHaveAttribute('href', '/es/habilidades/historias')
     expect(pregunta(t.preguntas.dedicacion)).toBeInTheDocument()
     expect(screen.getAllByRole('radio')).toHaveLength(3)
-    expect(screen.getByText('Ya respondiste 0 de 6')).toBeInTheDocument()
+    expect(screen.queryByText(/Ya respondiste/)).not.toBeInTheDocument()
+    expect(screen.getByText('Paso 05')).toBeInTheDocument()
+    expect(screen.getByText(es.comun.porQue)).toBeInTheDocument()
   })
 
   it('no nombra ninguna de las áreas mientras responde las seis preguntas', () => {
@@ -74,7 +76,7 @@ describe('FormaView', () => {
     expect(screen.queryByRole('button', { name: new RegExp(t.anterior) })).not.toBeInTheDocument()
     await usuario.click(screen.getByRole('button', { name: t.saltar }))
     expect(pregunta(t.preguntas.arranque)).toBeInTheDocument()
-    expect(screen.getByText('Ya respondiste 0 de 6')).toBeInTheDocument()
+    expect(screen.queryByText(/Ya respondiste/)).not.toBeInTheDocument()
     await usuario.click(screen.getByRole('button', { name: new RegExp(t.anterior) }))
     expect(pregunta(t.preguntas.dedicacion)).toBeInTheDocument()
   })
