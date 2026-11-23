@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { DM_Mono, Hanken_Grotesk, Newsreader } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { BarraSuperiorConectado } from '@/composition/pantallas/BarraSuperiorConectado'
-import { PieConectado } from '@/composition/pantallas/PieConectado'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
 import '../globals.css'
 
@@ -17,6 +15,8 @@ export function generateStaticParams() {
   return idiomas.map((idioma) => ({ idioma }))
 }
 
+// Lo común a todas las páginas: idioma, fuentes y estilos. Lo que rodea a cada página (cabecera y pie del sitio, o solo la
+// barra con el logo) lo ponen los layouts de los grupos (sitio) y (enfocado).
 export default async function LayoutIdioma({
   children,
   params,
@@ -30,9 +30,7 @@ export default async function LayoutIdioma({
   return (
     <html lang={idioma} className={`${fuenteSerif.variable} ${fuenteSans.variable} ${fuenteMono.variable}`}>
       <body className="flex min-h-screen flex-col">
-        <BarraSuperiorConectado idioma={idioma} />
-        <main className="flex-1">{children}</main>
-        <PieConectado idioma={idioma} />
+        {children}
       </body>
     </html>
   )

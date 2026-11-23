@@ -10,7 +10,7 @@ const t = es.bienvenida
 
 function montar(resultado: ResultadoBienvenida = { ok: true, nombre: 'Ana' }) {
   const alGuardar = vi.fn<(datos: DatosBienvenida) => Promise<ResultadoBienvenida>>(async () => resultado)
-  render(<BienvenidaView textos={es} alGuardar={alGuardar} hrefInicio="/es" />)
+  render(<BienvenidaView textos={es} alGuardar={alGuardar} hrefInicio="/es" barraPaso1={<p>Barra del paso 1</p>} barraPaso2={<p>Barra del paso 2</p>} />)
   return { alGuardar, usuario: userEvent.setup() }
 }
 
@@ -25,10 +25,11 @@ async function rellenar(usuario: ReturnType<typeof userEvent.setup>) {
 }
 
 describe('BienvenidaView', () => {
-  it('muestra el paso, el título y los campos', () => {
+  it('muestra su barra, el título y los campos dentro de <main>', () => {
     montar()
-    expect(screen.getByRole('heading', { level: 1, name: t.titulo })).toBeInTheDocument()
-    expect(screen.getByRole('progressbar', { name: 'Paso 1 de 2' })).toBeInTheDocument()
+    expect(screen.getByText('Barra del paso 1')).toBeInTheDocument()
+    expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: t.titulo }))
+    expect(screen.getByRole('main')).not.toContainElement(screen.getByText('Barra del paso 1'))
     expect(screen.getByRole('combobox', { name: t.campos.pais })).toBeInTheDocument()
     expect(screen.getAllByRole('checkbox')).toHaveLength(5)
   })
@@ -62,6 +63,8 @@ describe('BienvenidaView', () => {
     await usuario.click(enviar())
     await waitFor(() => expect(alGuardar).toHaveBeenCalledWith({ nombre: 'Ana', apellidos: 'Torres Rojas', pais: 'PE', ciudad: '', busca: ['socioTecnico'] }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Listo, Ana' })).toBeInTheDocument()
+    expect(screen.getByText('Barra del paso 2')).toBeInTheDocument()
+    expect(screen.queryByText('Barra del paso 1')).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: t.listo.volver })).toHaveAttribute('href', '/es')
   })
 

@@ -2,15 +2,21 @@ import { textosAcceso } from '@/modules/acceso/language'
 import { InicioSesionView } from '@/modules/acceso/presentation/InicioSesionView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { continuarConGoogleAccion, iniciarSesionAccion } from '@/composition/acciones/accionesAcceso'
+import { BarraEnfocadaConectado } from './BarraEnfocadaConectado'
 
 export function InicioSesionConectado({ idioma }: { idioma: Idioma }) {
   return (
-    <InicioSesionView
-      textos={textosAcceso(idioma)}
-      alIniciar={iniciarSesionAccion}
-      alContinuarConGoogle={continuarConGoogleAccion}
-      hrefRegistro={`/${idioma}/registro`}
-      hrefContinuar={`/${idioma}/bienvenida`}
-    />
+    <>
+      <BarraEnfocadaConectado idioma={idioma} />
+      <main className="flex-1">
+        <InicioSesionView
+          textos={textosAcceso(idioma)}
+          alIniciar={iniciarSesionAccion}
+          alContinuarConGoogle={continuarConGoogleAccion}
+          hrefRegistro={`/${idioma}/registro`}
+          hrefContinuar={`/${idioma}/bienvenida`}
+        />
+      </main>
+    </>
   )
 }
