@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { CirculoFlecha, claseBoton } from './EnlaceBoton'
+import { CirculoFlecha } from './CirculoFlecha'
+import { claseBoton } from './EnlaceBoton'
 
 type Props = {
   /** Sin esto el botón no hace nada por sí solo; con `tipo="submit"` envía el formulario que lo contiene */

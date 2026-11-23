@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
-import { CampoArea } from '@/shared/ui/Campos'
+import { CampoArea } from '@/shared/ui/CampoArea'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITE_SOBRE_MI } from '../../domain/sobreMi'
 import type { TextosPerfil } from '../../language/tipos'

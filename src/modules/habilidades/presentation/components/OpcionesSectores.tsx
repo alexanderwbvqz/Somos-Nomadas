@@ -1,5 +1,5 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { MensajeError } from '@/shared/ui/Campos'
+import { MensajeError } from '@/shared/ui/MensajeError'
 import { LIMITES_HISTORIAS, sectores, type SectorId } from '../../domain/historias'
 import type { TextosHabilidades } from '../../language/tipos'
 

@@ -1,5 +1,5 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { CampoArea } from '@/shared/ui/Campos'
+import { CampoArea } from '@/shared/ui/CampoArea'
 import { areas, type AreaId } from '../../domain/catalogo'
 import { LIMITE_SOCIO_IDEAL } from '../../domain/forma'
 import type { TextosHabilidades } from '../../language/tipos'

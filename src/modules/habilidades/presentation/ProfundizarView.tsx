@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, type FormEvent, type ReactNode } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { CampoArea } from '@/shared/ui/Campos'
+import { CampoArea } from '@/shared/ui/CampoArea'
 import { Boton } from '@/shared/ui/Boton'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { FilaAcciones } from '@/shared/ui/FilaAcciones'

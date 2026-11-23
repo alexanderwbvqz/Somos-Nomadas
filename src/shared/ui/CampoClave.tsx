@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
-import { Etiqueta, MensajeError } from './Campos'
+import { Etiqueta } from './Etiqueta'
+import { MensajeError } from './MensajeError'
 import { foco } from './EnlaceBoton'
 
 type Props = {

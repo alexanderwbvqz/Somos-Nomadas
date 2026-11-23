@@ -1,5 +1,5 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { CirculoFlecha } from '@/shared/ui/EnlaceBoton'
+import { CirculoFlecha } from '@/shared/ui/CirculoFlecha'
 import {
   contactoValido,
   partesDelPerfil,

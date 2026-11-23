@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
-import { Etiqueta, MensajeError } from './Campos'
+import { Etiqueta } from './Etiqueta'
+import { MensajeError } from './MensajeError'
 
 type Opcion = { valor: string; texto: string }
 

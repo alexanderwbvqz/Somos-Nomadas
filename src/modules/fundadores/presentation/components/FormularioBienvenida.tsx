@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoLista } from '@/shared/ui/CampoLista'
-import { CampoTexto } from '@/shared/ui/Campos'
+import { CampoTexto } from '@/shared/ui/CampoTexto'
 import { LIMITES_BIENVENIDA, paises, type Busqueda, type DatosBienvenida, type ErroresBienvenida } from '../../domain/bienvenida'
 import type { TextosFundadores } from '../../language/tipos'
 import { mensajeDeErrorBienvenida } from '../mappers/mensajesError'

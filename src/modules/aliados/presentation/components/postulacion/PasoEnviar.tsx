@@ -1,5 +1,5 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { Casilla } from '@/shared/ui/Campos'
+import { Casilla } from '@/shared/ui/Casilla'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { contactoValido, sitioParaMostrar } from '@/modules/aliados/domain/perfilPostulacion'
 import { contarPalabras, type PasoPostulacion } from '@/modules/aliados/domain/postulacion'

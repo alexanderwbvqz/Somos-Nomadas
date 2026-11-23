@@ -1,4 +1,5 @@
-import { CampoTexto, MensajeError } from '@/shared/ui/Campos'
+import { CampoTexto } from '@/shared/ui/CampoTexto'
+import { MensajeError } from '@/shared/ui/MensajeError'
 import { tiposAliado } from '@/modules/aliados/domain/Aliado'
 import { LIMITES } from '@/modules/aliados/domain/postulacion'
 import { colorTipoAliado } from '../../ui/coloresTipoAliado'

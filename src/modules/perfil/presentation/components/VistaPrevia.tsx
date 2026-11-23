@@ -1,7 +1,8 @@
 'use client'
 
 import { useId, useRef } from 'react'
-import { CirculoFlecha, claseBoton, foco } from '@/shared/ui/EnlaceBoton'
+import { CirculoFlecha } from '@/shared/ui/CirculoFlecha'
+import { claseBoton, foco } from '@/shared/ui/EnlaceBoton'
 import type { Perfil } from '../../domain/perfil'
 import type { TextosPerfil } from '../../language/tipos'
 import { TarjetaDirectorio } from './TarjetaDirectorio'

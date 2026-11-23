@@ -1,5 +1,5 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { MensajeError } from '@/shared/ui/Campos'
+import { MensajeError } from '@/shared/ui/MensajeError'
 import { busquedas, LIMITES_BIENVENIDA, type Busqueda } from '../../domain/bienvenida'
 import type { TextosFundadores } from '../../language/tipos'
 
