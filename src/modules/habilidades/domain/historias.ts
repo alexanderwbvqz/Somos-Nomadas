@@ -79,6 +79,12 @@ export function validarHistorias(datos: EntradaHistorias): ErroresHistorias {
   return errores
 }
 
+/** Marca o desmarca un sector respetando el tope; si ya está al tope, no añade */
+export function alternarSector(actuales: SectorId[], sector: SectorId): SectorId[] {
+  if (actuales.includes(sector)) return actuales.filter((actual) => actual !== sector)
+  return actuales.length >= LIMITES_HISTORIAS.sectoresMax ? actuales : [...actuales, sector]
+}
+
 /** Solo se llama con datos que ya pasaron `validarHistorias`: recorta los textos y deja los sectores en el orden de la lista */
 export function limpiarHistorias(datos: EntradaHistorias): DatosHistorias {
   return {

@@ -1,5 +1,6 @@
 import type { Camino } from '../domain/camino'
 import type { GrupoId, HabilidadId } from '../domain/catalogo'
+import type { SectorId } from '../domain/historias'
 import type { CampoEnlace, CodigoErrorMaterial } from '../domain/material'
 import type { Frecuencia } from '../domain/puntos'
 import type { FuenteSugerencia, TareaId } from '../domain/tarea'
@@ -49,6 +50,35 @@ export type TextosHabilidades = {
     guardando: string
     /** Mientras no haya ninguna tarea marcada */
     minimo: string
+    avisos: { limite: string; fallo: string }
+  }
+  /** «Tus historias»: lo que cuenta con sus palabras, los sectores que le mueven y el permiso para analizarlo */
+  historias: {
+    metadatos: { titulo: string; descripcion: string }
+    titulo: string
+    subtitulo: string
+    porQue: string
+    campos: {
+      logro: { etiqueta: string; ayuda: string; ejemplo: string }
+      problemaDificil: { etiqueta: string; ayuda: string; ejemplo: string }
+      problemaMundo: { etiqueta: string; ejemplo: string }
+    }
+    opcional: string
+    nota: string
+    sectores: {
+      titulo: string
+      /** Lleva {max} */
+      ayuda: string
+      /** Lleva {n} y {max} */
+      contador: string
+      nombres: Record<SectorId, string>
+    }
+    permiso: { texto: string; enlace: string }
+    /** Llevan {max}, el largo máximo de un texto o el de sectores */
+    errores: { textoLargo: string; faltaPermiso: string; demasiadosSectores: string; sectorInvalido: string }
+    atras: string
+    siguiente: string
+    guardando: string
     avisos: { limite: string; fallo: string }
   }
   /** «Más de lo que haces»: preguntas de cada una de las tres habilidades más fuertes */

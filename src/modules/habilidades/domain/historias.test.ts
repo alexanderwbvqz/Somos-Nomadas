@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { datosHistoriasVacios, hayTexto, LIMITES_HISTORIAS, limpiarHistorias, validarHistorias, type EntradaHistorias } from './historias'
+import { alternarSector, datosHistoriasVacios, hayTexto, LIMITES_HISTORIAS, limpiarHistorias, validarHistorias, type EntradaHistorias } from './historias'
 
 function conTexto(): EntradaHistorias {
   return { ...datosHistoriasVacios(), logro: 'Armé una tienda en línea', aceptaAnalisis: true }
@@ -64,5 +64,18 @@ describe('limpiarHistorias', () => {
     expect(limpias.logro).toBe('Armé una tienda')
     expect(limpias.sectores).toEqual(['salud', 'agro', 'moda'])
     expect(limpias.aceptaAnalisis).toBe(true)
+  })
+})
+
+describe('alternarSector', () => {
+  it('marca y desmarca', () => {
+    expect(alternarSector([], 'salud')).toEqual(['salud'])
+    expect(alternarSector(['salud'], 'salud')).toEqual([])
+  })
+
+  it('no pasa del tope de cinco, pero sí deja desmarcar estando en él', () => {
+    const cinco = ['salud', 'educacion', 'agro', 'turismo', 'moda'] as const
+    expect(alternarSector([...cinco], 'fintech')).toEqual([...cinco])
+    expect(alternarSector([...cinco], 'agro')).toHaveLength(4)
   })
 })

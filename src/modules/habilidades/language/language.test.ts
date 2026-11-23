@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { caminos } from '../domain/camino'
 import { grupos, habilidades } from '../domain/catalogo'
+import { sectores } from '../domain/historias'
 import { camposEnlace } from '../domain/material'
 import { preguntasDe, tienePreguntasPropias } from '../domain/preguntas'
 import { frecuencias } from '../domain/puntos'
@@ -90,6 +91,22 @@ describe('idiomas de habilidades', () => {
         for (const opcion of pregunta.opciones) preguntasPorOpcion.set(opcion, (preguntasPorOpcion.get(opcion) ?? new Set()).add(pregunta.id))
       }
       for (const [opcion, usadaEn] of preguntasPorOpcion) expect(usadaEn.size, opcion).toBe(1)
+    })
+  })
+
+  describe('«Tus historias»', () => {
+    it('cada idioma nombra todos los sectores del dominio, y ninguno más', () => {
+      for (const textos of [es, en, pt]) expect(Object.keys(textos.historias.sectores.nombres).sort()).toEqual([...sectores].sort())
+    })
+
+    it('los textos con variables las llevan en todos los idiomas', () => {
+      for (const textos of [es, en, pt]) {
+        expect(textos.historias.sectores.ayuda).toContain('{max}')
+        expect(textos.historias.sectores.contador).toContain('{n}')
+        expect(textos.historias.sectores.contador).toContain('{max}')
+        expect(textos.historias.errores.textoLargo).toContain('{max}')
+        expect(textos.historias.errores.demasiadosSectores).toContain('{max}')
+      }
     })
   })
 })
