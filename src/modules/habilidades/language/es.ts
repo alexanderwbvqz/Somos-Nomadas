@@ -1,13 +1,16 @@
 import type { TextosHabilidades } from './tipos'
 
 export const es: TextosHabilidades = {
+  comun: {
+    paso: 'Paso {actual} de {total}',
+    saltar: 'Saltar por ahora',
+    proximo: 'El siguiente paso llega muy pronto.',
+  },
   inicio: {
     metadatos: {
       titulo: 'Empezar | Nómadas',
       descripcion: 'Elige cómo quieres empezar a armar tu perfil.',
     },
-    paso: 'Paso {actual} de {total}',
-    saltar: 'Saltar por ahora',
     saludo: 'Hola, {nombre}. Empecemos por ti.',
     saludoSinNombre: 'Empecemos por ti.',
     subtitulo: 'La gente que te va a leer quiere saber cómo piensas. Elige por dónde arrancar.',
@@ -28,6 +31,71 @@ export const es: TextosHabilidades = {
     },
     arrancar: 'Arrancar',
     notaPublicar: 'Nada se publica hasta que lo revises.',
-    proximo: 'El siguiente paso llega muy pronto.',
+  },
+  escritas: {
+    metadatos: {
+      titulo: 'Sube o pega lo que tengas | Nómadas',
+      descripcion: 'Sube tu CV o tu perfil de LinkedIn en PDF, o pega enlaces, y te proponemos qué has hecho.',
+    },
+    cambiarCamino: 'Cambiar de camino',
+    titulo: 'Sube o pega lo que tengas',
+    subtitulo: 'Lo leemos y te proponemos qué has hecho. Tú lo revisas antes de que se guarde nada.',
+    archivo: {
+      titulo: 'Sube tu CV o tu perfil de LinkedIn en PDF',
+      ayuda: 'Arrastra el archivo aquí o haz clic para elegirlo. Solo PDF, hasta {max} MB.',
+      linkedin: 'En LinkedIn: Más → Guardar como PDF.',
+      quitar: 'Quitar',
+    },
+    separador: 'o pega enlaces',
+    opcional: '(opcional)',
+    enlaces: {
+      web: { etiqueta: 'Tu web o portafolio', ejemplo: 'https://tuweb.com' },
+      github: { etiqueta: 'Tu GitHub', ejemplo: 'https://github.com/tuusuario' },
+      otro: { etiqueta: 'Otro enlace', ejemplo: 'Behance, Medium, tu empresa…' },
+    },
+    otroAyuda: 'Cualquier página pública donde se vea lo que has hecho.',
+    permisoTexto: 'Acepto que Nómadas analice mi PDF y mis enlaces con inteligencia artificial para sugerirme mis habilidades. Podré revisarlo y borrarlo.',
+    permisoEnlace: 'Más información',
+    analizar: 'Analizar lo que subí',
+    pie: 'Tarda menos de un minuto. Nada se publica hasta que lo revises.',
+    errores: {
+      sinMaterial: 'Sube un PDF o pega al menos un enlace.',
+      archivoNoPdf: 'El archivo tiene que ser un PDF.',
+      archivoGrande: 'El PDF pesa demasiado. Máximo {max} MB.',
+      enlaceInvalido: 'Escribe un enlace válido, por ejemplo https://tuweb.com.',
+      enlaceLargo: 'El enlace es demasiado largo.',
+      faltaPermiso: 'Marca la casilla para que podamos analizarlo.',
+    },
+    avisos: {
+      limite: 'Hiciste demasiados intentos seguidos. Inténtalo de nuevo en unos minutos.',
+      fallo: 'No pudimos analizarlo. Inténtalo de nuevo en un momento.',
+    },
+    leyendo: {
+      titulo: 'Leyendo lo que subiste…',
+      texto: 'Estamos buscando qué has hecho. Puedes quedarte aquí; no hace falta que hagas nada.',
+    },
+    revision: {
+      titulo: 'Esto es lo que entendimos',
+      subtitulo: 'Marca lo que sí has hecho y quita lo que no. Si falta algo, lo añades en el siguiente paso.',
+      nivel: 'Nivel estimado {nivel} de 5',
+      fuentes: { pdf: 'Tu PDF', web: 'Tu web', github: 'Tu GitHub', otro: 'Otro enlace' },
+      contador: '{n} de {total} tareas confirmadas.',
+      confirmar: 'Confirmar y seguir',
+      pie: 'Los niveles son una estimación: puedes cambiarlos en el paso siguiente.',
+      vacio: 'No encontramos tareas en lo que subiste. Prueba con otro documento o arranca de cero.',
+      volver: 'Cambiar lo que subí',
+    },
+    tareas: {
+      interfacesWeb: 'Crear interfaces web',
+      apiBackend: 'Construir y publicar una API',
+      publicarProducto: 'Lanzar un producto digital',
+      analizarDatos: 'Analizar datos para decidir',
+      campanas: 'Lanzar una campaña de marketing',
+      contenido: 'Escribir para atraer clientes',
+      ventas: 'Cerrar ventas',
+      presupuesto: 'Armar un presupuesto',
+      operacion: 'Organizar la operación de un equipo',
+      equipo: 'Liderar un equipo pequeño',
+    },
   },
 }

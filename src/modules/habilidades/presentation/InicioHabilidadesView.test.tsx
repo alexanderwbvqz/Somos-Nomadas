@@ -1,13 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Camino } from '../domain/camino'
 import { es } from '../language/es'
 import { InicioHabilidadesView } from './InicioHabilidadesView'
 
 const t = es.inicio
 
-function montar(nombre?: string) {
-  render(<InicioHabilidadesView textos={es} nombre={nombre} barra={<p>Barra de arriba</p>} />)
+// El botón navega con el router de Next, que no existe fuera de la app: se sustituye
+const push = vi.fn()
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }))
+beforeEach(() => push.mockClear())
+
+function montar(nombre?: string, disponibles: readonly Camino[] = ['cero'], rutas: Partial<Record<Camino, string>> = {}) {
+  render(<InicioHabilidadesView textos={es} nombre={nombre} disponibles={disponibles} rutas={rutas} barra={<p>Barra de arriba</p>} />)
   return { usuario: userEvent.setup() }
 }
 
@@ -35,7 +41,7 @@ describe('InicioHabilidadesView', () => {
     expect(escritas()).not.toBeChecked()
   })
 
-  it('"Tengo cosas escritas" está apagado y lleva su etiqueta "Pronto"; "de cero", la de recomendado', () => {
+  it('un camino que no está disponible sale apagado y con su etiqueta "Pronto"; el recomendado, la suya', () => {
     montar('Ana')
     expect(escritas()).toBeDisabled()
     expect(screen.getByText(t.caminos.escritas.etiqueta)).toHaveAttribute('data-tono', 'suave')
@@ -49,6 +55,14 @@ describe('InicioHabilidadesView', () => {
     expect(escritas()).not.toBeChecked()
   })
 
+  it('con los dos disponibles se puede elegir el de lo escrito', async () => {
+    const { usuario } = montar('Ana', ['escritas', 'cero'])
+    expect(escritas()).toBeEnabled()
+    await usuario.click(escritas())
+    expect(escritas()).toBeChecked()
+    expect(cero()).not.toBeChecked()
+  })
+
   it('muestra los tiempos y la frase de que no se publica nada sin revisar', () => {
     montar('Ana')
     expect(screen.getByText(t.caminos.cero.tiempo)).toBeInTheDocument()
@@ -56,10 +70,27 @@ describe('InicioHabilidadesView', () => {
     expect(screen.getByText(t.notaPublicar)).toBeInTheDocument()
   })
 
-  it('"Arrancar" avisa de que el siguiente paso llega pronto, y antes no hay aviso', async () => {
+  it('"Arrancar" en un camino sin paso siguiente avisa de que llega pronto, y no navega', async () => {
     const { usuario } = montar('Ana')
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
     await usuario.click(screen.getByRole('button', { name: t.arrancar }))
-    expect(screen.getByRole('status')).toHaveTextContent(t.proximo)
+    expect(screen.getByRole('status')).toHaveTextContent(es.comun.proximo)
+    expect(push).not.toHaveBeenCalled()
+  })
+
+  it('"Arrancar" en un camino con ruta navega a ella', async () => {
+    const { usuario } = montar('Ana', ['escritas', 'cero'], { escritas: '/es/habilidades/escritas' })
+    await usuario.click(escritas())
+    await usuario.click(screen.getByRole('button', { name: t.arrancar }))
+    expect(push).toHaveBeenCalledWith('/es/habilidades/escritas')
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
+  it('el aviso provisional desaparece al cambiar de camino', async () => {
+    const { usuario } = montar('Ana', ['escritas', 'cero'])
+    await usuario.click(screen.getByRole('button', { name: t.arrancar }))
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    await usuario.click(escritas())
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 })

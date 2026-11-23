@@ -1,13 +1,16 @@
 import type { TextosHabilidades } from './tipos'
 
 export const pt: TextosHabilidades = {
+  comun: {
+    paso: 'Passo {actual} de {total}',
+    saltar: 'Pular por enquanto',
+    proximo: 'O próximo passo chega muito em breve.',
+  },
   inicio: {
     metadatos: {
       titulo: 'Começar | Nómadas',
       descripcion: 'Escolha como você quer começar a montar seu perfil.',
     },
-    paso: 'Passo {actual} de {total}',
-    saltar: 'Pular por enquanto',
     saludo: 'Olá, {nombre}. Vamos começar por você.',
     saludoSinNombre: 'Vamos começar por você.',
     subtitulo: 'As pessoas que vão ler você querem saber como você pensa. Escolha por onde começar.',
@@ -28,6 +31,71 @@ export const pt: TextosHabilidades = {
     },
     arrancar: 'Começar',
     notaPublicar: 'Nada é publicado até você revisar.',
-    proximo: 'O próximo passo chega muito em breve.',
+  },
+  escritas: {
+    metadatos: {
+      titulo: 'Envie ou cole o que você tem | Nómadas',
+      descripcion: 'Envie seu CV ou seu perfil do LinkedIn em PDF, ou cole links, e sugerimos o que você já fez.',
+    },
+    cambiarCamino: 'Mudar de caminho',
+    titulo: 'Envie ou cole o que você tem',
+    subtitulo: 'Lemos e sugerimos o que você já fez. Você revisa antes de salvar qualquer coisa.',
+    archivo: {
+      titulo: 'Envie seu CV ou seu perfil do LinkedIn em PDF',
+      ayuda: 'Arraste o arquivo aqui ou clique para escolhê-lo. Só PDF, até {max} MB.',
+      linkedin: 'No LinkedIn: Mais → Salvar como PDF.',
+      quitar: 'Remover',
+    },
+    separador: 'ou cole links',
+    opcional: '(opcional)',
+    enlaces: {
+      web: { etiqueta: 'Seu site ou portfólio', ejemplo: 'https://seusite.com' },
+      github: { etiqueta: 'Seu GitHub', ejemplo: 'https://github.com/seuusuario' },
+      otro: { etiqueta: 'Outro link', ejemplo: 'Behance, Medium, sua empresa…' },
+    },
+    otroAyuda: 'Qualquer página pública onde se veja o que você já fez.',
+    permisoTexto: 'Aceito que a Nómadas analise meu PDF e meus links com inteligência artificial para sugerir minhas habilidades. Poderei revisar e apagar.',
+    permisoEnlace: 'Mais informações',
+    analizar: 'Analisar o que enviei',
+    pie: 'Leva menos de um minuto. Nada é publicado até você revisar.',
+    errores: {
+      sinMaterial: 'Envie um PDF ou cole pelo menos um link.',
+      archivoNoPdf: 'O arquivo precisa ser um PDF.',
+      archivoGrande: 'O PDF é grande demais. Máximo {max} MB.',
+      enlaceInvalido: 'Escreva um link válido, por exemplo https://seusite.com.',
+      enlaceLargo: 'O link é longo demais.',
+      faltaPermiso: 'Marque a caixa para podermos analisar.',
+    },
+    avisos: {
+      limite: 'Você fez muitas tentativas seguidas. Tente de novo em alguns minutos.',
+      fallo: 'Não conseguimos analisar. Tente de novo em um momento.',
+    },
+    leyendo: {
+      titulo: 'Lendo o que você enviou…',
+      texto: 'Estamos procurando o que você já fez. Pode ficar aqui; não precisa fazer nada.',
+    },
+    revision: {
+      titulo: 'Isto é o que entendemos',
+      subtitulo: 'Marque o que você já fez e tire o que não fez. Se faltar algo, você adiciona no próximo passo.',
+      nivel: 'Nível estimado {nivel} de 5',
+      fuentes: { pdf: 'Seu PDF', web: 'Seu site', github: 'Seu GitHub', otro: 'Outro link' },
+      contador: '{n} de {total} tarefas confirmadas.',
+      confirmar: 'Confirmar e continuar',
+      pie: 'Os níveis são uma estimativa: você pode mudá-los no próximo passo.',
+      vacio: 'Não encontramos tarefas no que você enviou. Tente com outro documento ou comece do zero.',
+      volver: 'Mudar o que enviei',
+    },
+    tareas: {
+      interfacesWeb: 'Criar interfaces web',
+      apiBackend: 'Construir e publicar uma API',
+      publicarProducto: 'Lançar um produto digital',
+      analizarDatos: 'Analisar dados para decidir',
+      campanas: 'Lançar uma campanha de marketing',
+      contenido: 'Escrever para atrair clientes',
+      ventas: 'Fechar vendas',
+      presupuesto: 'Montar um orçamento',
+      operacion: 'Organizar a operação de uma equipe',
+      equipo: 'Liderar uma equipe pequena',
+    },
   },
 }

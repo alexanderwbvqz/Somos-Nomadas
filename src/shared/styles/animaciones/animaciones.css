@@ -64,3 +64,18 @@
     display: none;
   }
 }
+
+/* Giro continuo de una rueda de espera; con movimiento reducido se queda quieta (el texto ya dice que se está esperando) */
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility girar {
+  animation: girar 1s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
