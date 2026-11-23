@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   alternarBusqueda,
   datosBienvenidaVacios,
-  LIMITES_PERFIL,
+  LIMITES_BIENVENIDA,
   limpiarBienvenida,
   validarBienvenida,
   type DatosBienvenida,
-} from './perfil'
+} from './bienvenida'
 
 function completos(): DatosBienvenida {
   return { nombre: 'Ana', apellidos: 'Torres Rojas', pais: 'PE', ciudad: '', busca: ['socioTecnico'] }
@@ -31,10 +31,10 @@ describe('validarBienvenida', () => {
   })
 
   it('rechaza textos que pasan el límite, ciudad incluida', () => {
-    const largo = 'a'.repeat(LIMITES_PERFIL.ciudad + 1)
+    const largo = 'a'.repeat(LIMITES_BIENVENIDA.ciudad + 1)
     expect(validarBienvenida({ ...completos(), ciudad: largo }).ciudad).toBe('textoLargo')
-    expect(validarBienvenida({ ...completos(), nombre: 'a'.repeat(LIMITES_PERFIL.nombre + 1) }).nombre).toBe('textoLargo')
-    expect(validarBienvenida({ ...completos(), apellidos: 'a'.repeat(LIMITES_PERFIL.apellidos + 1) }).apellidos).toBe('textoLargo')
+    expect(validarBienvenida({ ...completos(), nombre: 'a'.repeat(LIMITES_BIENVENIDA.nombre + 1) }).nombre).toBe('textoLargo')
+    expect(validarBienvenida({ ...completos(), apellidos: 'a'.repeat(LIMITES_BIENVENIDA.apellidos + 1) }).apellidos).toBe('textoLargo')
   })
 
   it('un país que no está en la lista no vale', () => {

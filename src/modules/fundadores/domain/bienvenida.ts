@@ -1,7 +1,7 @@
 // Reglas del perfil de un founder. Esta es la primera parte (la bienvenida): cómo se llama, dónde está y qué busca.
 // La validación es una sola y la usan el formulario (para avisar) y el servidor (que no se fía del navegador).
 
-export const LIMITES_PERFIL = {
+export const LIMITES_BIENVENIDA = {
   nombre: 60,
   apellidos: 80,
   ciudad: 80,
@@ -30,11 +30,11 @@ export function datosBienvenidaVacios(): DatosBienvenida {
   return { nombre: '', apellidos: '', pais: '', ciudad: '', busca: [] }
 }
 
-export type CodigoErrorPerfil = 'obligatorio' | 'textoLargo' | 'busquedaVacia'
+export type CodigoErrorBienvenida = 'obligatorio' | 'textoLargo' | 'busquedaVacia'
 
-export type ErroresBienvenida = Partial<Record<'nombre' | 'apellidos' | 'pais' | 'ciudad' | 'busca', CodigoErrorPerfil>>
+export type ErroresBienvenida = Partial<Record<'nombre' | 'apellidos' | 'pais' | 'ciudad' | 'busca', CodigoErrorBienvenida>>
 
-export function hayErroresPerfil(errores: object): boolean {
+export function hayErroresBienvenida(errores: object): boolean {
   return Object.keys(errores).length > 0
 }
 
@@ -52,23 +52,23 @@ export function validarBienvenida(datos: DatosBienvenida): ErroresBienvenida {
 
   const nombre = limpiarTexto(datos.nombre)
   if (nombre === '') errores.nombre = 'obligatorio'
-  else if (nombre.length > LIMITES_PERFIL.nombre) errores.nombre = 'textoLargo'
+  else if (nombre.length > LIMITES_BIENVENIDA.nombre) errores.nombre = 'textoLargo'
 
   const apellidos = limpiarTexto(datos.apellidos)
   if (apellidos === '') errores.apellidos = 'obligatorio'
-  else if (apellidos.length > LIMITES_PERFIL.apellidos) errores.apellidos = 'textoLargo'
+  else if (apellidos.length > LIMITES_BIENVENIDA.apellidos) errores.apellidos = 'textoLargo'
 
   if (!esPais(datos.pais)) errores.pais = 'obligatorio'
 
   // La ciudad es opcional, pero si viene no puede pasarse del límite
-  if (limpiarTexto(datos.ciudad).length > LIMITES_PERFIL.ciudad) errores.ciudad = 'textoLargo'
+  if (limpiarTexto(datos.ciudad).length > LIMITES_BIENVENIDA.ciudad) errores.ciudad = 'textoLargo'
 
   if (datos.busca.length === 0) errores.busca = 'busquedaVacia'
   return errores
 }
 
 /** Lo que se guarda del perfil, ya revisado y ordenado */
-export type PerfilBienvenida = {
+export type Bienvenida = {
   nombre: string
   apellidos: string
   pais: Pais
@@ -77,7 +77,7 @@ export type PerfilBienvenida = {
 }
 
 /** Solo se llama con datos que ya pasaron `validarBienvenida` */
-export function limpiarBienvenida(datos: DatosBienvenida & { pais: Pais }): PerfilBienvenida {
+export function limpiarBienvenida(datos: DatosBienvenida & { pais: Pais }): Bienvenida {
   return {
     nombre: limpiarTexto(datos.nombre),
     apellidos: limpiarTexto(datos.apellidos),
@@ -91,5 +91,5 @@ export function limpiarBienvenida(datos: DatosBienvenida & { pais: Pais }): Perf
 /** Marca o desmarca una opción respetando el tope; si ya está al tope, no añade */
 export function alternarBusqueda(actuales: Busqueda[], opcion: Busqueda): Busqueda[] {
   if (actuales.includes(opcion)) return actuales.filter((actual) => actual !== opcion)
-  return actuales.length >= LIMITES_PERFIL.busquedasMax ? actuales : [...actuales, opcion]
+  return actuales.length >= LIMITES_BIENVENIDA.busquedasMax ? actuales : [...actuales, opcion]
 }

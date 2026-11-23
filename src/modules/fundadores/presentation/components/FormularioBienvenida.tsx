@@ -2,9 +2,9 @@ import type { FormEvent } from 'react'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoLista } from '@/shared/ui/CampoLista'
 import { CampoTexto } from '@/shared/ui/Campos'
-import { LIMITES_PERFIL, paises, type Busqueda, type DatosBienvenida, type ErroresBienvenida } from '../../domain/perfil'
+import { LIMITES_BIENVENIDA, paises, type Busqueda, type DatosBienvenida, type ErroresBienvenida } from '../../domain/bienvenida'
 import type { TextosFundadores } from '../../language/tipos'
-import { mensajeDeErrorPerfil } from '../mappers/mensajesError'
+import { mensajeDeErrorBienvenida } from '../mappers/mensajesError'
 import { OpcionesBusqueda } from './OpcionesBusqueda'
 
 type Props = {
@@ -25,7 +25,7 @@ type Props = {
 // Formulario de la bienvenida: nombre y apellidos, país y ciudad, y qué busca. El botón se activa al completarlo.
 export function FormularioBienvenida({ textos, datos, errores, enviando, guardado, completo, aviso, cambiar, alternar, alEnviar }: Props) {
   const c = textos.campos
-  const error = (campo: keyof ErroresBienvenida) => mensajeDeErrorPerfil(textos, campo, errores[campo])
+  const error = (campo: keyof ErroresBienvenida) => mensajeDeErrorBienvenida(textos, campo, errores[campo])
 
   function alEnviarFormulario(evento: FormEvent) {
     evento.preventDefault()
@@ -40,7 +40,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, guardad
           etiqueta={c.nombre}
           autoComplete="given-name"
           placeholder={c.nombreEjemplo}
-          maxLength={LIMITES_PERFIL.nombre}
+          maxLength={LIMITES_BIENVENIDA.nombre}
           valor={datos.nombre}
           alCambiar={(valor) => cambiar('nombre', valor)}
           error={error('nombre')}
@@ -50,7 +50,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, guardad
           etiqueta={c.apellidos}
           autoComplete="family-name"
           placeholder={c.apellidosEjemplo}
-          maxLength={LIMITES_PERFIL.apellidos}
+          maxLength={LIMITES_BIENVENIDA.apellidos}
           valor={datos.apellidos}
           alCambiar={(valor) => cambiar('apellidos', valor)}
           error={error('apellidos')}
@@ -76,7 +76,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, guardad
           }
           autoComplete="address-level2"
           placeholder={c.ciudadEjemplo}
-          maxLength={LIMITES_PERFIL.ciudad}
+          maxLength={LIMITES_BIENVENIDA.ciudad}
           valor={datos.ciudad}
           alCambiar={(valor) => cambiar('ciudad', valor)}
           error={error('ciudad')}

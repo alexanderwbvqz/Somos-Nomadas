@@ -1,6 +1,6 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { MensajeError } from '@/shared/ui/Campos'
-import { busquedas, LIMITES_PERFIL, type Busqueda } from '../../domain/perfil'
+import { busquedas, LIMITES_BIENVENIDA, type Busqueda } from '../../domain/bienvenida'
 import type { TextosFundadores } from '../../language/tipos'
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 // «Qué estás buscando»: opciones para marcar, con un tope. Al llegar al tope las demás quedan desactivadas.
 export function OpcionesBusqueda({ textos, marcadas, alAlternar, error }: Props) {
   const t = textos.busca
-  const alTope = marcadas.length >= LIMITES_PERFIL.busquedasMax
+  const alTope = marcadas.length >= LIMITES_BIENVENIDA.busquedasMax
 
   return (
     <fieldset aria-describedby={error ? 'error-busca' : 'ayuda-busca'}>
@@ -45,7 +45,7 @@ export function OpcionesBusqueda({ textos, marcadas, alAlternar, error }: Props)
         })}
       </div>
       <p id="ayuda-busca" className="text-nota mt-2 opacity-70">
-        {rellenarPlantilla(t.ayuda, { max: LIMITES_PERFIL.busquedasMax })}
+        {rellenarPlantilla(t.ayuda, { max: LIMITES_BIENVENIDA.busquedasMax })}
       </p>
       {error && <MensajeError id="error-busca">{error}</MensajeError>}
     </fieldset>

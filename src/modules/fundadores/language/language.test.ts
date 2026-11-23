@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { busquedas, paises } from '../domain/perfil'
+import { busquedas, paises } from '../domain/bienvenida'
 import { en } from './en'
 import { es } from './es'
 import { pt } from './pt'

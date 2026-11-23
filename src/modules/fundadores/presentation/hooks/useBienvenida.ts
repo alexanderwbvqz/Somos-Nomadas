@@ -6,12 +6,12 @@ import type { ResultadoBienvenida } from '../../application/guardarBienvenida'
 import {
   alternarBusqueda,
   datosBienvenidaVacios,
-  hayErroresPerfil,
+  hayErroresBienvenida,
   validarBienvenida,
   type Busqueda,
   type DatosBienvenida,
   type ErroresBienvenida,
-} from '../../domain/perfil'
+} from '../../domain/bienvenida'
 
 export type AccionGuardarBienvenida = (datos: DatosBienvenida) => Promise<ResultadoBienvenida>
 
@@ -32,7 +32,7 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida, hrefSiguiente:
 
   // Con errores a la vista, los ya corregidos desaparecen al cambiar; no aparecen errores nuevos hasta volver a enviar
   function revisar(nuevos: DatosBienvenida) {
-    if (!hayErroresPerfil(errores)) return
+    if (!hayErroresBienvenida(errores)) return
     const actuales = validarBienvenida(nuevos)
     setErrores(Object.fromEntries(Object.entries(actuales).filter(([campo]) => campo in errores)) as ErroresBienvenida)
   }
@@ -60,7 +60,7 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida, hrefSiguiente:
     if (enviando || guardado) return
     setAviso(undefined)
     const encontrados = validarBienvenida(datos)
-    if (hayErroresPerfil(encontrados)) return mostrarErrores(encontrados)
+    if (hayErroresBienvenida(encontrados)) return mostrarErrores(encontrados)
 
     setEnviando(true)
     try {
@@ -69,7 +69,7 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida, hrefSiguiente:
         setErrores({})
         setGuardado(true)
         router.push(hrefSiguiente)
-      } else if (hayErroresPerfil(resultado.errores)) mostrarErrores(resultado.errores)
+      } else if (hayErroresBienvenida(resultado.errores)) mostrarErrores(resultado.errores)
       else setAviso(resultado.motivo ?? 'fallo')
     } catch {
       setAviso('fallo')
@@ -79,7 +79,7 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida, hrefSiguiente:
   }
 
   /** El botón de enviar solo se activa cuando no falta nada */
-  const completo = !hayErroresPerfil(validarBienvenida(datos))
+  const completo = !hayErroresBienvenida(validarBienvenida(datos))
 
   return { datos, errores, enviando, guardado, aviso, enfoque, completo, cambiar, alternar, enviar }
 }

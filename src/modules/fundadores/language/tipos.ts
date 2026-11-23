@@ -1,4 +1,4 @@
-import type { Busqueda, Pais } from '../domain/perfil'
+import type { Busqueda, Pais } from '../domain/bienvenida'
 
 export type TextosFundadores = {
   bienvenida: {

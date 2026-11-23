@@ -1,12 +1,12 @@
-import type { PerfilRepository } from '../domain/PerfilRepository'
+import type { BienvenidaRepository } from '../domain/BienvenidaRepository'
 import {
   esPais,
-  hayErroresPerfil,
+  hayErroresBienvenida,
   limpiarBienvenida,
   validarBienvenida,
   type DatosBienvenida,
   type ErroresBienvenida,
-} from '../domain/perfil'
+} from '../domain/bienvenida'
 
 export type ResultadoBienvenida =
   | { ok: true; nombre: string }
@@ -19,9 +19,9 @@ export type ResultadoBienvenida =
     }
 
 // Valida otra vez, en el servidor, lo que mandó el navegador; si todo está bien guarda la bienvenida.
-export async function guardarBienvenida(repositorio: PerfilRepository, datos: DatosBienvenida): Promise<ResultadoBienvenida> {
+export async function guardarBienvenida(repositorio: BienvenidaRepository, datos: DatosBienvenida): Promise<ResultadoBienvenida> {
   const errores = validarBienvenida(datos)
-  if (hayErroresPerfil(errores) || !esPais(datos.pais)) return { ok: false, errores }
+  if (hayErroresBienvenida(errores) || !esPais(datos.pais)) return { ok: false, errores }
 
   const perfil = limpiarBienvenida({ ...datos, pais: datos.pais })
   try {

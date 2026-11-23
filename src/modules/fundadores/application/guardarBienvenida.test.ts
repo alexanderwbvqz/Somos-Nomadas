@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { PerfilRepository } from '../domain/PerfilRepository'
-import { datosBienvenidaVacios, type DatosBienvenida } from '../domain/perfil'
-import { MockPerfilRepository } from '../infrastructure/mock/MockPerfilRepository'
+import type { BienvenidaRepository } from '../domain/BienvenidaRepository'
+import { datosBienvenidaVacios, type DatosBienvenida } from '../domain/bienvenida'
+import { MockBienvenidaRepository } from '../infrastructure/mock/MockBienvenidaRepository'
 import { guardarBienvenida } from './guardarBienvenida'
 
 function completos(): DatosBienvenida {
@@ -9,11 +9,11 @@ function completos(): DatosBienvenida {
 }
 
 describe('guardarBienvenida', () => {
-  beforeEach(() => MockPerfilRepository.vaciar())
+  beforeEach(() => MockBienvenidaRepository.vaciar())
 
   it('guarda el perfil ya limpio y devuelve el nombre', async () => {
-    expect(await guardarBienvenida(new MockPerfilRepository(), completos())).toEqual({ ok: true, nombre: 'Ana' })
-    expect(MockPerfilRepository.guardado()).toEqual({
+    expect(await guardarBienvenida(new MockBienvenidaRepository(), completos())).toEqual({ ok: true, nombre: 'Ana' })
+    expect(MockBienvenidaRepository.guardado()).toEqual({
       nombre: 'Ana',
       apellidos: 'Torres Rojas',
       pais: 'PE',
@@ -23,14 +23,14 @@ describe('guardarBienvenida', () => {
   })
 
   it('devuelve los errores y no guarda nada si los datos no son válidos', async () => {
-    const resultado = await guardarBienvenida(new MockPerfilRepository(), datosBienvenidaVacios())
+    const resultado = await guardarBienvenida(new MockBienvenidaRepository(), datosBienvenidaVacios())
     expect(resultado.ok).toBe(false)
     if (!resultado.ok) expect(resultado.errores).toMatchObject({ nombre: 'obligatorio', pais: 'obligatorio', busca: 'busquedaVacia' })
-    expect(MockPerfilRepository.guardado()).toBeUndefined()
+    expect(MockBienvenidaRepository.guardado()).toBeUndefined()
   })
 
   it('si el repositorio falla, avisa con "fallo" y no con errores de datos', async () => {
-    const roto: PerfilRepository = {
+    const roto: BienvenidaRepository = {
       guardarBienvenida: async () => { throw new Error('x') },
       obtenerBienvenida: async () => { throw new Error('x') },
     }

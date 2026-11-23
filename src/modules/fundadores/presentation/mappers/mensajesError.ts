@@ -1,13 +1,13 @@
-import type { CodigoErrorPerfil } from '../../domain/perfil'
+import type { CodigoErrorBienvenida } from '../../domain/bienvenida'
 import type { TextosFundadores } from '../../language/tipos'
 
 type CampoObligatorio = 'nombre' | 'apellidos' | 'pais'
 
 /** El mensaje, en el idioma de la persona, del error de un campo; undefined si no hay error */
-export function mensajeDeErrorPerfil(
+export function mensajeDeErrorBienvenida(
   textos: TextosFundadores['bienvenida'],
   campo: string,
-  codigo: CodigoErrorPerfil | undefined,
+  codigo: CodigoErrorBienvenida | undefined,
 ): string | undefined {
   if (!codigo) return undefined
   const e = textos.errores

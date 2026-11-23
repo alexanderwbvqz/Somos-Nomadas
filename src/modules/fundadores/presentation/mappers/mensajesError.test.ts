@@ -1,23 +1,23 @@
 import { describe, expect, it } from 'vitest'
 import { en } from '../../language/en'
 import { es } from '../../language/es'
-import { mensajeDeErrorPerfil } from './mensajesError'
+import { mensajeDeErrorBienvenida } from './mensajesError'
 
-describe('mensajeDeErrorPerfil', () => {
+describe('mensajeDeErrorBienvenida', () => {
   it('sin código de error no hay mensaje', () => {
-    expect(mensajeDeErrorPerfil(es.bienvenida, 'nombre', undefined)).toBeUndefined()
+    expect(mensajeDeErrorBienvenida(es.bienvenida, 'nombre', undefined)).toBeUndefined()
   })
 
   it('el mensaje de "obligatorio" depende del campo', () => {
-    expect(mensajeDeErrorPerfil(es.bienvenida, 'nombre', 'obligatorio')).toBe('Escribe tu nombre.')
-    expect(mensajeDeErrorPerfil(es.bienvenida, 'apellidos', 'obligatorio')).toBe('Escribe tus apellidos.')
-    expect(mensajeDeErrorPerfil(es.bienvenida, 'pais', 'obligatorio')).toBe('Elige tu país.')
+    expect(mensajeDeErrorBienvenida(es.bienvenida, 'nombre', 'obligatorio')).toBe('Escribe tu nombre.')
+    expect(mensajeDeErrorBienvenida(es.bienvenida, 'apellidos', 'obligatorio')).toBe('Escribe tus apellidos.')
+    expect(mensajeDeErrorBienvenida(es.bienvenida, 'pais', 'obligatorio')).toBe('Elige tu país.')
   })
 
   it('los demás códigos tienen su mensaje y cambian con el idioma', () => {
     for (const codigo of ['textoLargo', 'busquedaVacia'] as const) {
-      expect(mensajeDeErrorPerfil(es.bienvenida, 'ciudad', codigo)).toBeTruthy()
-      expect(mensajeDeErrorPerfil(en.bienvenida, 'ciudad', codigo)).not.toBe(mensajeDeErrorPerfil(es.bienvenida, 'ciudad', codigo))
+      expect(mensajeDeErrorBienvenida(es.bienvenida, 'ciudad', codigo)).toBeTruthy()
+      expect(mensajeDeErrorBienvenida(en.bienvenida, 'ciudad', codigo)).not.toBe(mensajeDeErrorBienvenida(es.bienvenida, 'ciudad', codigo))
     }
   })
 })
