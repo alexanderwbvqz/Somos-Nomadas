@@ -16,19 +16,19 @@ export function FilaDeTarea({ textos, fila, alAlternar, alCambiarFrecuencia }: P
   const marcada = fila.frecuencia !== undefined
 
   return (
-    <li className={`rounded-xl border-[1.5px] p-3.5 ${marcada ? 'border-texto bg-suave' : 'border-texto/20 bg-tarjeta'}`}>
-      <label className="text-parrafo flex cursor-pointer items-start gap-3">
+    <li className={`rounded-2xl border-[1.5px] px-[1.125rem] py-3.5 ${marcada ? 'border-texto bg-degradado-amarillo' : 'border-texto/30 bg-tarjeta'}`}>
+      <label className="text-parrafo flex cursor-pointer items-center justify-between gap-3.5">
+        <span>{fila.texto}</span>
         <input
           type="checkbox"
           checked={marcada}
           onChange={() => alAlternar(fila.habilidad)}
-          className="mt-1.5 size-5 flex-none accent-texto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario"
+          className="size-6 flex-none accent-texto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario"
         />
-        <span>{fila.texto}</span>
       </label>
 
       {marcada && (
-        <fieldset className="mt-3 flex flex-wrap items-center gap-2 sm:pl-8">
+        <fieldset className="mt-3 flex flex-wrap items-center gap-2">
           <legend className="sr-only">{rellenarPlantilla(textos.vecesDe, { tarea: fila.texto })}</legend>
           <span aria-hidden="true" className="text-nota mr-1 w-full opacity-70 sm:w-auto">
             {textos.cuantasVeces}

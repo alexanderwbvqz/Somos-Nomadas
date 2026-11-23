@@ -12,6 +12,10 @@ export type TextosHabilidades = {
     /** Lleva {actual} y {total}, por ejemplo "Paso 1 de 5" */
     paso: string
     saltar: string
+    /** Lleva {n} con dos cifras, por ejemplo "Paso 02"; va encima del título de cada paso */
+    numeroPaso: string
+    /** El rótulo del porqué de cada paso */
+    porQue: string
     /** Aviso provisional mientras el paso siguiente no exista */
     proximo: string
   }

@@ -4,6 +4,8 @@ export const en: TextosHabilidades = {
   comun: {
     paso: 'Step {actual} of {total}',
     saltar: 'Skip for now',
+    numeroPaso: 'Step {n}',
+    porQue: 'Why we ask',
     proximo: 'The next step is coming very soon.',
   },
   inicio: {

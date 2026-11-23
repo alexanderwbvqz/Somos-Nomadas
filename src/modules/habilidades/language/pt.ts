@@ -4,6 +4,8 @@ export const pt: TextosHabilidades = {
   comun: {
     paso: 'Passo {actual} de {total}',
     saltar: 'Pular por enquanto',
+    numeroPaso: 'Passo {n}',
+    porQue: 'Por que perguntamos',
     proximo: 'O próximo passo chega muito em breve.',
   },
   inicio: {
