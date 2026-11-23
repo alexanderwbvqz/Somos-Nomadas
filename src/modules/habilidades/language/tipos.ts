@@ -89,7 +89,7 @@ export type TextosHabilidades = {
     fallo: { titulo: string; texto: string }
     reintentar: string
   }
-  /** «Tus historias»: lo que cuenta con sus palabras, los sectores que le mueven y el permiso para analizarlo */
+  /** «Tus historias»: lo que cuenta con sus palabras, los sectores que le mueven y el permiso para mostrarlo en su perfil */
   historias: {
     metadatos: { titulo: string; descripcion: string }
     titulo: string

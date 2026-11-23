@@ -28,7 +28,7 @@ const historiasSchema = z.object({
   problemaDificil: z.string().max(LIMITES_HISTORIAS.texto * holgura),
   problemaMundo: z.string().max(LIMITES_HISTORIAS.texto * holgura),
   sectores: z.array(z.string().max(40)).max(sectores.length * 2),
-  aceptaAnalisis: z.boolean(),
+  aceptaMostrar: z.boolean(),
 })
 
 const formaSchema = z.object({

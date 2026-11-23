@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { alternarSector, datosHistoriasVacios, hayTexto, LIMITES_HISTORIAS, limpiarHistorias, validarHistorias, type EntradaHistorias } from './historias'
 
 function conTexto(): EntradaHistorias {
-  return { ...datosHistoriasVacios(), logro: 'Armé una tienda en línea', aceptaAnalisis: true }
+  return { ...datosHistoriasVacios(), logro: 'Armé una tienda en línea', aceptaMostrar: true }
 }
 
 describe('hayTexto', () => {
@@ -26,11 +26,11 @@ describe('validarHistorias', () => {
   })
 
   it('si escribió algo sin dar el permiso, falta el permiso', () => {
-    expect(validarHistorias({ ...conTexto(), aceptaAnalisis: false })).toEqual({ aceptaAnalisis: 'faltaPermiso' })
+    expect(validarHistorias({ ...conTexto(), aceptaMostrar: false })).toEqual({ aceptaMostrar: 'faltaPermiso' })
   })
 
   it('sin escribir nada no hace falta el permiso', () => {
-    expect(validarHistorias({ ...datosHistoriasVacios(), aceptaAnalisis: false })).toEqual({})
+    expect(validarHistorias({ ...datosHistoriasVacios(), aceptaMostrar: false })).toEqual({})
   })
 
   it('un texto vale hasta el límite y ni uno más, contando sin los espacios de los extremos', () => {
@@ -53,8 +53,8 @@ describe('validarHistorias', () => {
   })
 
   it('puede tener varios errores a la vez', () => {
-    const errores = validarHistorias({ ...conTexto(), aceptaAnalisis: false, sectores: ['nada'], logro: 'a'.repeat(5000) })
-    expect(Object.keys(errores).sort()).toEqual(['aceptaAnalisis', 'logro', 'sectores'])
+    const errores = validarHistorias({ ...conTexto(), aceptaMostrar: false, sectores: ['nada'], logro: 'a'.repeat(5000) })
+    expect(Object.keys(errores).sort()).toEqual(['aceptaMostrar', 'logro', 'sectores'])
   })
 })
 
@@ -63,7 +63,7 @@ describe('limpiarHistorias', () => {
     const limpias = limpiarHistorias({ ...conTexto(), logro: '  Armé una tienda  ', sectores: ['moda', 'salud', 'agro'] })
     expect(limpias.logro).toBe('Armé una tienda')
     expect(limpias.sectores).toEqual(['salud', 'agro', 'moda'])
-    expect(limpias.aceptaAnalisis).toBe(true)
+    expect(limpias.aceptaMostrar).toBe(true)
   })
 })
 

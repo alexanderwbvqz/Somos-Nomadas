@@ -30,9 +30,9 @@ describe('recepcionRespuestas', () => {
     expect(await recibirProfundizacion(repositorio, { habilidad: 'alianzas', respuestas: {} }, 'cliente-prof')).toEqual({ ok: false, errores: { habilidad: 'noEsFuerte' } })
   })
 
-  it('las historias sin permiso para analizarlas se rechazan en el servidor', async () => {
-    const entrada = { logro: 'Armé algo', problemaDificil: '', problemaMundo: '', sectores: [], aceptaAnalisis: false }
-    expect(await recibirHistorias(new MockRespuestasRepository(), entrada, 'cliente-hist')).toEqual({ ok: false, errores: { aceptaAnalisis: 'faltaPermiso' } })
+  it('las historias sin permiso para mostrarlas se rechazan en el servidor', async () => {
+    const entrada = { logro: 'Armé algo', problemaDificil: '', problemaMundo: '', sectores: [], aceptaMostrar: false }
+    expect(await recibirHistorias(new MockRespuestasRepository(), entrada, 'cliente-hist')).toEqual({ ok: false, errores: { aceptaMostrar: 'faltaPermiso' } })
   })
 
   it('la forma de emprender se valida contra las opciones posibles', async () => {

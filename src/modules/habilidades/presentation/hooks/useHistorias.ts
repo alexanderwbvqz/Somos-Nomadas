@@ -18,7 +18,7 @@ export type AccionGuardarHistorias = (entrada: DatosHistorias) => Promise<Result
 type CampoDeTexto = 'logro' | 'problemaDificil' | 'problemaMundo'
 
 // Orden en que aparecen los campos: el foco va al primero que tenga error
-const ordenCampos = ['logro', 'problemaDificil', 'problemaMundo', 'sectores', 'aceptaAnalisis'] as const
+const ordenCampos = ['logro', 'problemaDificil', 'problemaMundo', 'sectores', 'aceptaMostrar'] as const
 const idDeCampo = (campo: (typeof ordenCampos)[number]) => (campo === 'sectores' ? 'campo-sector-0' : `campo-${campo}`)
 
 /** `hrefSiguiente` es adónde va la persona en cuanto se guarda lo que escribió */
@@ -55,7 +55,7 @@ export function useHistorias(inicial: DatosHistorias, alGuardar: AccionGuardarHi
   }
 
   function darPermiso(marcado: boolean) {
-    const nuevos = { ...datos, aceptaAnalisis: marcado }
+    const nuevos = { ...datos, aceptaMostrar: marcado }
     setDatos(nuevos)
     revisar(nuevos)
   }

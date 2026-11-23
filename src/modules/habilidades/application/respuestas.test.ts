@@ -88,7 +88,7 @@ describe('guardarHistorias', () => {
 
   it('guarda lo escrito, limpio, cuando hay permiso', async () => {
     const repositorio = new MockRespuestasRepository()
-    const resultado = await guardarHistorias(repositorio, { ...datosHistoriasVacios(), logro: '  Armé una tienda ', sectores: ['moda', 'salud'], aceptaAnalisis: true })
+    const resultado = await guardarHistorias(repositorio, { ...datosHistoriasVacios(), logro: '  Armé una tienda ', sectores: ['moda', 'salud'], aceptaMostrar: true })
     expect(resultado).toEqual({ ok: true })
     expect((await obtenerRespuestas(repositorio)).historias).toMatchObject({ logro: 'Armé una tienda', sectores: ['salud', 'moda'] })
   })
@@ -96,7 +96,7 @@ describe('guardarHistorias', () => {
   it('sin el permiso no guarda nada y lo dice', async () => {
     const repositorio = new MockRespuestasRepository()
     const resultado = await guardarHistorias(repositorio, { ...datosHistoriasVacios(), logro: 'Armé una tienda' })
-    expect(resultado).toEqual({ ok: false, errores: { aceptaAnalisis: 'faltaPermiso' } })
+    expect(resultado).toEqual({ ok: false, errores: { aceptaMostrar: 'faltaPermiso' } })
     expect((await obtenerRespuestas(repositorio)).historias).toBeUndefined()
   })
 

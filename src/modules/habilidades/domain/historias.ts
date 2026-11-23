@@ -1,5 +1,5 @@
 // «Tus historias»: lo que la persona cuenta con sus palabras y los sectores que le mueven. Todo es opcional, pero si escribe
-// algo hace falta su permiso para que se analice con inteligencia artificial.
+// algo hace falta su permiso para mostrarlo en su perfil, donde lo leerán otros nómadas.
 // La validación es una sola y la usan el formulario (para avisar) y el servidor (que no se fía del navegador).
 
 export const sectores = [
@@ -35,20 +35,20 @@ export type DatosHistorias = {
   /** Qué problema del mundo le gustaría resolver */
   problemaMundo: string
   sectores: SectorId[]
-  /** Permiso para analizar lo escrito con inteligencia artificial */
-  aceptaAnalisis: boolean
+  /** Permiso para mostrar lo escrito en su perfil, donde lo leerán otros nómadas */
+  aceptaMostrar: boolean
 }
 
 /** Lo mismo, tal como llega del navegador: los sectores todavía no se sabe si son válidos */
 export type EntradaHistorias = Omit<DatosHistorias, 'sectores'> & { sectores: readonly string[] }
 
 export function datosHistoriasVacios(): DatosHistorias {
-  return { logro: '', problemaDificil: '', problemaMundo: '', sectores: [], aceptaAnalisis: false }
+  return { logro: '', problemaDificil: '', problemaMundo: '', sectores: [], aceptaMostrar: false }
 }
 
 export type CodigoErrorHistorias = 'textoLargo' | 'sectorInvalido' | 'demasiadosSectores' | 'faltaPermiso'
 
-export type ErroresHistorias = Partial<Record<'logro' | 'problemaDificil' | 'problemaMundo' | 'sectores' | 'aceptaAnalisis', CodigoErrorHistorias>>
+export type ErroresHistorias = Partial<Record<'logro' | 'problemaDificil' | 'problemaMundo' | 'sectores' | 'aceptaMostrar', CodigoErrorHistorias>>
 
 export function hayErroresHistorias(errores: object): boolean {
   return Object.keys(errores).length > 0
@@ -75,7 +75,7 @@ export function validarHistorias(datos: EntradaHistorias): ErroresHistorias {
   if (!datos.sectores.every(esSector) || new Set(datos.sectores).size !== datos.sectores.length) errores.sectores = 'sectorInvalido'
   else if (datos.sectores.length > LIMITES_HISTORIAS.sectoresMax) errores.sectores = 'demasiadosSectores'
 
-  if (hayTexto(datos) && !datos.aceptaAnalisis) errores.aceptaAnalisis = 'faltaPermiso'
+  if (hayTexto(datos) && !datos.aceptaMostrar) errores.aceptaMostrar = 'faltaPermiso'
   return errores
 }
 
@@ -92,6 +92,6 @@ export function limpiarHistorias(datos: EntradaHistorias): DatosHistorias {
     problemaDificil: datos.problemaDificil.trim(),
     problemaMundo: datos.problemaMundo.trim(),
     sectores: sectores.filter((sector) => datos.sectores.includes(sector)),
-    aceptaAnalisis: datos.aceptaAnalisis,
+    aceptaMostrar: datos.aceptaMostrar,
   }
 }

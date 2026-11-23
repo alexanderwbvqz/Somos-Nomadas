@@ -78,7 +78,7 @@ export const es: TextosHabilidades = {
     },
     titulo: 'Tu forma de emprender',
     subtitulo: 'Seis preguntas rápidas: cuánto tiempo, cuándo y cómo quieres emprender. Responde lo primero que pienses.',
-    porQue: 'No cambia de qué área eres. Nos sirve para proponerte personas que quieran lo mismo que tú. No se muestra en el directorio.',
+    porQue: 'No cambia de qué área eres. Nos sirve para proponerte personas que quieran lo mismo que tú. Otros nómadas lo verán en tu perfil.',
     preguntas: {
       dedicacion: '¿Cuánto tiempo dedicarías a un proyecto propio?',
       arranque: '¿Cuándo quieres arrancar?',
@@ -199,12 +199,12 @@ export const es: TextosHabilidades = {
       },
     },
     permiso: {
-      texto: 'Acepto que Nómadas analice con inteligencia artificial lo que escribí en esta pantalla para entender mejor mi perfil. Podré borrarlo.',
+      texto: 'Acepto que lo que escribí en esta pantalla aparezca en mi perfil y lo puedan leer otros nómadas. Podré borrarlo.',
       enlace: 'Más información',
     },
     errores: {
       textoLargo: 'Es demasiado largo. Máximo {max} caracteres.',
-      faltaPermiso: 'Marca la casilla para que podamos analizarlo, o borra lo que escribiste.',
+      faltaPermiso: 'Marca la casilla para que podamos mostrarlo en tu perfil, o borra lo que escribiste.',
       demasiadosSectores: 'Elige como máximo {max} sectores.',
       sectorInvalido: 'Hay un sector que no podemos reconocer. Vuelve a elegirlos.',
     },

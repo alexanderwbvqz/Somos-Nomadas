@@ -37,7 +37,7 @@ describe('leerProfundizacion', () => {
   })
 })
 
-const historias = { logro: 'a', problemaDificil: '', problemaMundo: '', sectores: ['salud'], aceptaAnalisis: true }
+const historias = { logro: 'a', problemaDificil: '', problemaMundo: '', sectores: ['salud'], aceptaMostrar: true }
 
 describe('leerHistorias', () => {
   it('lee la forma correcta, sin comprobar aún si los sectores existen (eso es del dominio)', () => {
@@ -46,7 +46,7 @@ describe('leerHistorias', () => {
   })
 
   it('rechaza tipos erróneos, textos enormes y demasiados sectores', () => {
-    expect(leerHistorias({ ...historias, aceptaAnalisis: 'si' })).toBeUndefined()
+    expect(leerHistorias({ ...historias, aceptaMostrar: 'si' })).toBeUndefined()
     expect(leerHistorias({ ...historias, logro: 5 })).toBeUndefined()
     expect(leerHistorias({ ...historias, logro: 'a'.repeat(10000) })).toBeUndefined()
     expect(leerHistorias({ ...historias, sectores: Array.from({ length: 31 }, () => 'salud') })).toBeUndefined()

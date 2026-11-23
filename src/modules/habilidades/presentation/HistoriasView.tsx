@@ -31,7 +31,7 @@ export type HistoriasViewProps = {
 }
 
 // «Tus historias»: tres textos y los sectores que le mueven, todo opcional. Si escribe algo, aparece la casilla del permiso
-// para analizarlo con inteligencia artificial; sin ese permiso no se guarda.
+// para mostrarlo en su perfil; sin ese permiso no se guarda.
 export function HistoriasView({ textos, inicial, alGuardar, barra, paso, hrefAtras, hrefSiguiente, hrefInformacion }: HistoriasViewProps) {
   const t = textos.historias
   const e = useHistorias(inicial, alGuardar, hrefSiguiente)
@@ -98,7 +98,7 @@ export function HistoriasView({ textos, inicial, alGuardar, barra, paso, hrefAtr
             <p className="text-cuerpo rounded-xl bg-suave px-4 py-3">{t.nota}</p>
 
             {e.pidePermiso && (
-              <Casilla clave="aceptaAnalisis" marcada={e.datos.aceptaAnalisis} alCambiar={e.darPermiso} error={error('aceptaAnalisis')}>
+              <Casilla clave="aceptaMostrar" marcada={e.datos.aceptaMostrar} alCambiar={e.darPermiso} error={error('aceptaMostrar')}>
                 {t.permiso.texto}{' '}
                 <a href={hrefInformacion} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${foco}`}>
                   {t.permiso.enlace}

@@ -78,7 +78,7 @@ export const en: TextosHabilidades = {
     },
     titulo: 'Your way of starting up',
     subtitulo: 'Six quick questions: how much time, when and how you want to start up. Answer with the first thing that comes to mind.',
-    porQue: 'It does not change which area you are in. It helps us suggest people who want the same as you. It is not shown in the directory.',
+    porQue: 'It does not change which area you are in. It helps us suggest people who want the same as you. Other nomads will see it on your profile.',
     preguntas: {
       dedicacion: 'How much time would you give to a project of your own?',
       arranque: 'When do you want to start?',
@@ -199,12 +199,12 @@ export const en: TextosHabilidades = {
       },
     },
     permiso: {
-      texto: 'I agree that Nómadas analyzes what I wrote on this screen with artificial intelligence to understand my profile better. I will be able to delete it.',
+      texto: 'I agree that what I wrote on this screen appears on my profile and can be read by other nomads. I will be able to delete it.',
       enlace: 'More information',
     },
     errores: {
       textoLargo: 'This is too long. Maximum {max} characters.',
-      faltaPermiso: 'Tick the box so we can analyze it, or delete what you wrote.',
+      faltaPermiso: 'Tick the box so we can show it on your profile, or delete what you wrote.',
       demasiadosSectores: 'Choose at most {max} sectors.',
       sectorInvalido: 'There is a sector we cannot recognize. Choose them again.',
     },

@@ -110,7 +110,7 @@ describe('HistoriasView: guardar', () => {
     await usuario.click(siguiente())
 
     await waitFor(() => expect(push).toHaveBeenCalledTimes(1))
-    expect(alGuardar).toHaveBeenCalledWith({ logro: 'Armé una tienda', problemaDificil: '', problemaMundo: '', sectores: ['moda'], aceptaAnalisis: true })
+    expect(alGuardar).toHaveBeenCalledWith({ logro: 'Armé una tienda', problemaDificil: '', problemaMundo: '', sectores: ['moda'], aceptaMostrar: true })
     const guardando = screen.getByRole('button', { name: t.guardando })
     expect(guardando).toBeDisabled()
     await usuario.click(guardando)
@@ -149,7 +149,7 @@ describe('HistoriasView: guardar', () => {
   })
 
   it('si el servidor rechaza algo, lo muestra junto a su campo', async () => {
-    const { usuario } = montar({ ok: false, errores: { aceptaAnalisis: 'faltaPermiso' } }, { ...datosHistoriasVacios(), logro: 'Armé algo', aceptaAnalisis: true })
+    const { usuario } = montar({ ok: false, errores: { aceptaMostrar: 'faltaPermiso' } }, { ...datosHistoriasVacios(), logro: 'Armé algo', aceptaMostrar: true })
     await usuario.click(siguiente())
     expect(await screen.findByText(t.errores.faltaPermiso)).toBeInTheDocument()
     expect(push).not.toHaveBeenCalled()
@@ -177,7 +177,7 @@ describe('HistoriasView: guardar', () => {
   })
 
   it('si vuelve a este paso, enseña lo que ya había escrito, con el permiso dado y los sectores marcados', () => {
-    montar({ ok: true }, { logro: 'Armé una tienda', problemaDificil: '', problemaMundo: 'El crédito', sectores: ['fintech', 'moda'], aceptaAnalisis: true })
+    montar({ ok: true }, { logro: 'Armé una tienda', problemaDificil: '', problemaMundo: 'El crédito', sectores: ['fintech', 'moda'], aceptaMostrar: true })
     expect(logro()).toHaveValue('Armé una tienda')
     expect(permiso()).toBeChecked()
     expect(sector('Fintech')).toBeChecked()
