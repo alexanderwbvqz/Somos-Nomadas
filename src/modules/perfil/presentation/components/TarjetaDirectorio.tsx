@@ -1,7 +1,7 @@
 import { Badge } from '@/shared/ui/Badge'
 import type { Perfil } from '../../domain/perfil'
 import type { TextosPerfil } from '../../language/tipos'
-import { PuntosNivel } from './PuntosNivel'
+import { PuntosNivel } from '../ui/PuntosNivel'
 
 // Cómo se vería la persona en el directorio: lo principal de su perfil en una tarjeta. Si no escribió «Sobre mí», esa línea no va.
 export function TarjetaDirectorio({ perfil, textos }: { perfil: Perfil; textos: TextosPerfil }) {

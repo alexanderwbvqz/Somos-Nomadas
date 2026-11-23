@@ -11,7 +11,7 @@ import type { TextosPerfil } from '../../language/tipos'
 import type { useTrayectoria } from '../hooks/useTrayectoria'
 import { mensajeDeListaTrayectoria, mensajesDeEntradaTrayectoria } from '../mappers/mensajesError'
 import { rangoAnios } from '../mappers/rangoAnios'
-import { TarjetaBloque } from './TarjetaBloque'
+import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; trayectoria: ReturnType<typeof useTrayectoria> }
 

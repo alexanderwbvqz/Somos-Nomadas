@@ -9,7 +9,7 @@ import { LIMITE_SOBRE_MI } from '../../domain/sobreMi'
 import type { TextosPerfil } from '../../language/tipos'
 import type { useSobreMi } from '../hooks/useSobreMi'
 import { mensajeDeErrorSobreMi } from '../mappers/mensajesError'
-import { TarjetaBloque } from './TarjetaBloque'
+import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; sobreMi: ReturnType<typeof useSobreMi> }
 

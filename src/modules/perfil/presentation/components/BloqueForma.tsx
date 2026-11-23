@@ -1,9 +1,9 @@
 import type { Perfil } from '../../domain/perfil'
 import type { TextosPerfil } from '../../language/tipos'
 import type { PasoPerfil } from '../pasos'
-import { EnlaceEditar } from './EnlaceEditar'
-import { ParRespuesta, Respuestas } from './ParRespuesta'
-import { TarjetaBloque } from './TarjetaBloque'
+import { EnlaceEditar } from '../ui/EnlaceEditar'
+import { ParRespuesta, Respuestas } from '../ui/ParRespuesta'
+import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; paso: PasoPerfil; forma: Perfil['forma']; buscaPerfil: Perfil['buscaPerfil']; socioIdeal: Perfil['socioIdeal'] }
 

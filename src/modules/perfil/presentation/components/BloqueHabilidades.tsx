@@ -6,10 +6,10 @@ import { foco } from '@/shared/ui/EnlaceBoton'
 import type { HabilidadPerfil } from '../../domain/perfil'
 import type { TextosPerfil } from '../../language/tipos'
 import type { PasoPerfil } from '../pasos'
-import { EnlaceEditar } from './EnlaceEditar'
-import { ParRespuesta, Respuestas } from './ParRespuesta'
-import { PuntosNivel } from './PuntosNivel'
-import { TarjetaBloque } from './TarjetaBloque'
+import { EnlaceEditar } from '../ui/EnlaceEditar'
+import { ParRespuesta, Respuestas } from '../ui/ParRespuesta'
+import { PuntosNivel } from '../ui/PuntosNivel'
+import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; paso: PasoPerfil; habilidades: HabilidadPerfil[] }
 

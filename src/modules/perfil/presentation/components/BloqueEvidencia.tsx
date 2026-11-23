@@ -9,7 +9,7 @@ import { LIMITES_EVIDENCIA } from '../../domain/evidencia'
 import type { TextosPerfil } from '../../language/tipos'
 import type { useEvidencia } from '../hooks/useEvidencia'
 import { mensajeDeErrorEvidencia } from '../mappers/mensajesError'
-import { TarjetaBloque } from './TarjetaBloque'
+import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; evidencia: ReturnType<typeof useEvidencia> }
 
