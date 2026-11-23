@@ -13,8 +13,14 @@ describe('BarraEnfocada', () => {
     expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
   })
 
-  it('muestra a la derecha lo que le pase cada pantalla', () => {
-    render(<BarraEnfocada {...props} derecha={<p>Paso 1 de 2</p>} />)
-    expect(screen.getByText('Paso 1 de 2')).toBeInTheDocument()
+  it('muestra en el centro y a la derecha lo que le pase cada pantalla', () => {
+    render(<BarraEnfocada {...props} centro={<p>Paso 1 de 6</p>} derecha={<p>Saltar por ahora</p>} />)
+    expect(screen.getByText('Paso 1 de 6')).toBeInTheDocument()
+    expect(screen.getByText('Saltar por ahora')).toBeInTheDocument()
+  })
+
+  it('sin centro ni derecha no deja huecos vacíos', () => {
+    const { container } = render(<BarraEnfocada {...props} />)
+    expect(container.querySelectorAll('header > div > div')).toHaveLength(0)
   })
 })

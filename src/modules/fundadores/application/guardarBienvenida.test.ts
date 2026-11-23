@@ -30,7 +30,10 @@ describe('guardarBienvenida', () => {
   })
 
   it('si el repositorio falla, avisa con "fallo" y no con errores de datos', async () => {
-    const roto: PerfilRepository = { guardarBienvenida: async () => { throw new Error('x') } }
+    const roto: PerfilRepository = {
+      guardarBienvenida: async () => { throw new Error('x') },
+      obtenerBienvenida: async () => { throw new Error('x') },
+    }
     expect(await guardarBienvenida(roto, completos())).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
   })
 })

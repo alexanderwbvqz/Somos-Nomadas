@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ResultadoBienvenida } from '../application/guardarBienvenida'
 import type { DatosBienvenida } from '../domain/perfil'
 import { es } from '../language/es'
@@ -8,9 +8,14 @@ import { BienvenidaView } from './BienvenidaView'
 
 const t = es.bienvenida
 
+// El hook navega con el router de Next, que no existe fuera de la app: se sustituye
+const push = vi.fn()
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }))
+beforeEach(() => push.mockClear())
+
 function montar(resultado: ResultadoBienvenida = { ok: true, nombre: 'Ana' }) {
   const alGuardar = vi.fn<(datos: DatosBienvenida) => Promise<ResultadoBienvenida>>(async () => resultado)
-  render(<BienvenidaView textos={es} alGuardar={alGuardar} hrefInicio="/es" barraPaso1={<p>Barra del paso 1</p>} barraPaso2={<p>Barra del paso 2</p>} />)
+  render(<BienvenidaView textos={es} alGuardar={alGuardar} hrefSiguiente="/es/habilidades" barra={<p>Barra de arriba</p>} />)
   return { alGuardar, usuario: userEvent.setup() }
 }
 
@@ -27,9 +32,9 @@ async function rellenar(usuario: ReturnType<typeof userEvent.setup>) {
 describe('BienvenidaView', () => {
   it('muestra su barra, el título y los campos dentro de <main>', () => {
     montar()
-    expect(screen.getByText('Barra del paso 1')).toBeInTheDocument()
+    expect(screen.getByText('Barra de arriba')).toBeInTheDocument()
     expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: t.titulo }))
-    expect(screen.getByRole('main')).not.toContainElement(screen.getByText('Barra del paso 1'))
+    expect(screen.getByRole('main')).not.toContainElement(screen.getByText('Barra de arriba'))
     expect(screen.getByRole('combobox', { name: t.campos.pais })).toBeInTheDocument()
     expect(screen.getAllByRole('checkbox')).toHaveLength(5)
   })
@@ -62,10 +67,28 @@ describe('BienvenidaView', () => {
     await rellenar(usuario)
     await usuario.click(enviar())
     await waitFor(() => expect(alGuardar).toHaveBeenCalledWith({ nombre: 'Ana', apellidos: 'Torres Rojas', pais: 'PE', ciudad: '', busca: ['socioTecnico'] }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Listo, Ana' })).toBeInTheDocument()
-    expect(screen.getByText('Barra del paso 2')).toBeInTheDocument()
-    expect(screen.queryByText('Barra del paso 1')).not.toBeInTheDocument()
-    expect(screen.getByRole('link', { name: t.listo.volver })).toHaveAttribute('href', '/es')
+    await waitFor(() => expect(push).toHaveBeenCalledWith('/es/habilidades'))
+  })
+
+  it('al guardar lleva al paso siguiente una sola vez y deja el botón apagado', async () => {
+    const { alGuardar, usuario } = montar()
+    await rellenar(usuario)
+    await usuario.click(enviar())
+    await waitFor(() => expect(push).toHaveBeenCalledTimes(1))
+    // Mientras se va al paso siguiente el botón sigue apagado y dice que está guardando
+    const guardando = screen.getByRole('button', { name: t.enviando })
+    expect(guardando).toBeDisabled()
+    await usuario.click(guardando)
+    expect(alGuardar).toHaveBeenCalledTimes(1)
+    expect(push).toHaveBeenCalledTimes(1)
+  })
+
+  it('si el servidor no guarda, no navega', async () => {
+    const { usuario } = montar({ ok: false, errores: {}, motivo: 'fallo' })
+    await rellenar(usuario)
+    await usuario.click(enviar())
+    expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.fallo)
+    expect(push).not.toHaveBeenCalled()
   })
 
   it('manda la ciudad cuando se escribe', async () => {

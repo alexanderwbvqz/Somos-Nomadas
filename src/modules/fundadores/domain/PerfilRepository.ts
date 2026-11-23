@@ -6,4 +6,6 @@ export interface PerfilRepository {
    * recibirá también de quién es; mientras tanto el adaptador simulado guarda un único perfil.
    */
   guardarBienvenida(perfil: PerfilBienvenida): Promise<void>
+  /** Lo que se guardó en la bienvenida, o undefined si todavía no se ha guardado nada */
+  obtenerBienvenida(): Promise<PerfilBienvenida | undefined>
 }

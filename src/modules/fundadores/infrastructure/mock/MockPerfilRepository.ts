@@ -12,6 +12,10 @@ export class MockPerfilRepository implements PerfilRepository {
     memoria.actual = perfil
   }
 
+  async obtenerBienvenida(): Promise<PerfilBienvenida | undefined> {
+    return memoria.actual
+  }
+
   /** Solo para pruebas */
   static guardado(): PerfilBienvenida | undefined {
     return memoria.actual

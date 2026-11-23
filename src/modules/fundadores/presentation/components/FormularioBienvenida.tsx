@@ -12,6 +12,8 @@ type Props = {
   datos: DatosBienvenida
   errores: ErroresBienvenida
   enviando: boolean
+  /** Ya se guardó y se está yendo al paso siguiente */
+  guardado: boolean
   /** Falta algo por completar: el botón de enviar sigue apagado */
   completo: boolean
   aviso?: 'limite' | 'fallo'
@@ -21,7 +23,7 @@ type Props = {
 }
 
 // Formulario de la bienvenida: nombre y apellidos, país y ciudad, y qué busca. El botón se activa al completarlo.
-export function FormularioBienvenida({ textos, datos, errores, enviando, completo, aviso, cambiar, alternar, alEnviar }: Props) {
+export function FormularioBienvenida({ textos, datos, errores, enviando, guardado, completo, aviso, cambiar, alternar, alEnviar }: Props) {
   const c = textos.campos
   const error = (campo: keyof ErroresBienvenida) => mensajeDeErrorPerfil(textos, campo, errores[campo])
 
@@ -93,8 +95,8 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, complet
       )}
 
       <div>
-        <Boton tipo="submit" lleno anchoCompleto deshabilitado={enviando || !completo} cursorDeshabilitado={enviando ? 'espera' : 'bloqueado'}>
-          {enviando ? textos.enviando : textos.enviar}
+        <Boton tipo="submit" lleno anchoCompleto deshabilitado={enviando || guardado || !completo} cursorDeshabilitado={enviando || guardado ? 'espera' : 'bloqueado'}>
+          {enviando || guardado ? textos.enviando : textos.enviar}
         </Boton>
       </div>
     </form>

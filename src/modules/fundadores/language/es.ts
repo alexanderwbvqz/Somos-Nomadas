@@ -6,7 +6,6 @@ export const es: TextosFundadores = {
       titulo: 'Bienvenida | Nómadas',
       descripcion: 'Cuéntanos quién eres, dónde estás y qué buscas para empezar a ver a otros founders.',
     },
-    paso: 'Paso {actual} de {total}',
     titulo: 'Tres cosas y entras',
     intro: 'Con esto ya ves a otros founders. Para que te vean completo, después terminas tu perfil.',
     campos: {
@@ -56,11 +55,5 @@ export const es: TextosFundadores = {
     },
     enviar: 'Ver founders',
     enviando: 'Guardando…',
-    listo: {
-      etiqueta: 'Founders',
-      titulo: 'Listo, {nombre}',
-      texto: 'Guardamos tus datos. El directorio de founders abre muy pronto con los primeros 100 usuarios.',
-      volver: 'Volver al inicio',
-    },
   },
 }

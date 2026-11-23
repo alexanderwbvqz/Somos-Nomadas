@@ -3,8 +3,6 @@ import type { Busqueda, Pais } from '../domain/perfil'
 export type TextosFundadores = {
   bienvenida: {
     metadatos: { titulo: string; descripcion: string }
-    /** Lleva {actual} y {total}, por ejemplo "Paso 1 de 2" */
-    paso: string
     titulo: string
     intro: string
     campos: {
@@ -36,13 +34,5 @@ export type TextosFundadores = {
     avisos: { limite: string; fallo: string }
     enviar: string
     enviando: string
-    /** Lo que se ve al guardar, mientras no exista el directorio */
-    listo: {
-      etiqueta: string
-      /** Lleva {nombre} */
-      titulo: string
-      texto: string
-      volver: string
-    }
   }
 }

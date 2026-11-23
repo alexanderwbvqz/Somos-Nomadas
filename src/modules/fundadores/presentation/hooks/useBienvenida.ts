@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import type { ResultadoBienvenida } from '../../application/guardarBienvenida'
 import {
@@ -18,13 +19,15 @@ export type AccionGuardarBienvenida = (datos: DatosBienvenida) => Promise<Result
 const ordenCampos = ['nombre', 'apellidos', 'pais', 'ciudad', 'busca'] as const
 const idDeCampo = (campo: (typeof ordenCampos)[number]) => (campo === 'busca' ? 'campo-busca-0' : `campo-${campo}`)
 
-export function useBienvenida(alGuardar: AccionGuardarBienvenida) {
+/** `hrefSiguiente` es adónde va la persona en cuanto se guarda la bienvenida */
+export function useBienvenida(alGuardar: AccionGuardarBienvenida, hrefSiguiente: string) {
+  const router = useRouter()
   const [datos, setDatos] = useState<DatosBienvenida>(datosBienvenidaVacios)
   const [errores, setErrores] = useState<ErroresBienvenida>({})
   const [enviando, setEnviando] = useState(false)
   const [aviso, setAviso] = useState<'limite' | 'fallo' | undefined>()
-  /** El nombre con el que se guardó; mientras no exista el directorio, es lo único que se muestra después */
-  const [nombreGuardado, setNombreGuardado] = useState<string | undefined>()
+  /** Ya se guardó y se está yendo al paso siguiente: el formulario no vuelve a enviarse */
+  const [guardado, setGuardado] = useState(false)
   const [enfoque, setEnfoque] = useState<{ id: string } | undefined>()
 
   // Con errores a la vista, los ya corregidos desaparecen al cambiar; no aparecen errores nuevos hasta volver a enviar
@@ -54,7 +57,7 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida) {
   }
 
   async function enviar() {
-    if (enviando) return
+    if (enviando || guardado) return
     setAviso(undefined)
     const encontrados = validarBienvenida(datos)
     if (hayErroresPerfil(encontrados)) return mostrarErrores(encontrados)
@@ -64,7 +67,8 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida) {
       const resultado = await alGuardar(datos)
       if (resultado.ok) {
         setErrores({})
-        setNombreGuardado(resultado.nombre)
+        setGuardado(true)
+        router.push(hrefSiguiente)
       } else if (hayErroresPerfil(resultado.errores)) mostrarErrores(resultado.errores)
       else setAviso(resultado.motivo ?? 'fallo')
     } catch {
@@ -77,5 +81,5 @@ export function useBienvenida(alGuardar: AccionGuardarBienvenida) {
   /** El botón de enviar solo se activa cuando no falta nada */
   const completo = !hayErroresPerfil(validarBienvenida(datos))
 
-  return { datos, errores, enviando, aviso, nombreGuardado, enfoque, completo, cambiar, alternar, enviar }
+  return { datos, errores, enviando, guardado, aviso, enfoque, completo, cambiar, alternar, enviar }
 }
