@@ -24,9 +24,6 @@ export type TextosAcceso = {
   google: {
     continuar: string
     separador: string
-    /** Nota de aceptación de la política que acompaña al botón en el registro */
-    notaInicio: string
-    notaEnlace: string
   }
   registro: {
     metadatos: Metadatos

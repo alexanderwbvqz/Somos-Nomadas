@@ -23,8 +23,14 @@ export type RegistroViewProps = {
 // Pantalla de crear cuenta: el formulario (con Google o con correo y contraseña) y, si fue con correo, la
 // confirmación de que el enlace va en camino. Con Google entra directo: su correo ya viene verificado.
 export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGoogle, hrefInicioSesion, hrefPolitica, hrefContinuar }: RegistroViewProps) {
-  const { datos, errores, enviando, aviso, correoEnviado, enfoque, cambiar, enviar, volverAlFormulario } = useRegistro(alRegistrar)
+  const { datos, errores, enviando, aviso, correoEnviado, enfoque, cambiar, enviar, exigirPolitica, volverAlFormulario } =
+    useRegistro(alRegistrar)
   const google = useGoogle(alContinuarConGoogle)
+
+  // También con Google hay que haber aceptado la política de datos
+  function alPulsarGoogle() {
+    if (exigirPolitica()) google.continuar()
+  }
 
   // Si hay un error, el foco va al primer campo con problema
   useEffect(() => {
@@ -70,7 +76,7 @@ export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGo
         aviso={aviso}
         cambiar={cambiar}
         alEnviar={enviar}
-        google={{ cargando: google.cargando, aviso: google.aviso, alPulsar: google.continuar }}
+        google={{ cargando: google.cargando, aviso: google.aviso, alPulsar: alPulsarGoogle }}
         hrefInicioSesion={hrefInicioSesion}
         hrefPolitica={hrefPolitica}
       />

@@ -12,8 +12,8 @@ import {
 
 export type AccionRegistrar = (datos: DatosRegistro) => Promise<ResultadoRegistro>
 
-// Orden de los campos, para llevar el foco al primero que tenga un error
-const ordenCampos: (keyof DatosRegistro)[] = ['correo', 'clave', 'aceptaPolitica']
+// Orden de los campos tal como se ven (la casilla va arriba, antes de Google), para llevar el foco al primero con error
+const ordenCampos: (keyof DatosRegistro)[] = ['aceptaPolitica', 'correo', 'clave']
 
 export function idDelCampoRegistro(clave: keyof DatosRegistro): string {
   return `campo-${clave}`
@@ -67,11 +67,22 @@ export function useRegistro(alRegistrar: AccionRegistrar) {
     }
   }
 
+  /**
+   * La política de datos hay que aceptarla también para entrar con Google. Si no está marcada, avisa en la casilla,
+   * lleva el foco a ella y devuelve false; así quien llama no sigue adelante.
+   */
+  function exigirPolitica(): boolean {
+    if (datos.aceptaPolitica) return true
+    setErrores((actuales) => ({ ...actuales, aceptaPolitica: 'politicaRequerida' }))
+    setEnfoque({ id: idDelCampoRegistro('aceptaPolitica') })
+    return false
+  }
+
   /** Vuelve al formulario con lo que ya había escrito, para corregir el correo */
   function volverAlFormulario() {
     setCorreoEnviado(undefined)
     setEnfoque({ id: idDelCampoRegistro('correo') })
   }
 
-  return { datos, errores, enviando, aviso, correoEnviado, enfoque, cambiar, enviar, volverAlFormulario }
+  return { datos, errores, enviando, aviso, correoEnviado, enfoque, cambiar, enviar, exigirPolitica, volverAlFormulario }
 }

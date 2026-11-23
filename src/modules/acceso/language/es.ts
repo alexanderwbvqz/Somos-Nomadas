@@ -24,8 +24,6 @@ export const es: TextosAcceso = {
   google: {
     continuar: 'Continuar con Google',
     separador: 'o con tu correo',
-    notaInicio: 'Al continuar con Google aceptas la',
-    notaEnlace: 'política de datos',
   },
   registro: {
     metadatos: {

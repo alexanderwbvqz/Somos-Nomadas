@@ -36,6 +36,8 @@ async function rellenar(usuario: Usuario, clave = 'clave-segura-9') {
   await usuario.click(screen.getByRole('checkbox', { name: /política de datos/ }))
 }
 
+const aceptarPolitica = (usuario: Usuario) => usuario.click(screen.getByRole('checkbox', { name: /política de datos/ }))
+
 const crearCuenta = () => screen.getByRole('button', { name: t.registro.enviar })
 
 describe('RegistroView', () => {
@@ -56,7 +58,7 @@ describe('RegistroView', () => {
     expect(screen.getByLabelText('Contraseña')).toBeInTheDocument()
   })
 
-  it('con el formulario vacío muestra los errores y lleva el foco al correo', async () => {
+  it('con el formulario vacío muestra los errores y lleva el foco a la primera casilla o campo con error: la política', async () => {
     const { alRegistrar, usuario } = montar()
     await usuario.click(crearCuenta())
 
@@ -64,7 +66,16 @@ describe('RegistroView', () => {
     expect(screen.getByText(t.errores.correo)).toBeInTheDocument()
     expect(screen.getByText('Usa al menos 8 caracteres.')).toBeInTheDocument()
     expect(screen.getByText(t.errores.politicaRequerida)).toBeInTheDocument()
-    expect(screen.getByLabelText('Correo')).toHaveFocus()
+    expect(screen.getByRole('checkbox', { name: /política de datos/ })).toHaveFocus()
+  })
+
+  it('la casilla de la política va antes que Google y que el formulario de correo', () => {
+    montar()
+    const casilla = screen.getByRole('checkbox', { name: /política de datos/ })
+    const google = screen.getByRole('button', { name: t.google.continuar })
+    const correo = screen.getByLabelText('Correo')
+    expect(casilla.compareDocumentPosition(google) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(google.compareDocumentPosition(correo) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('pide una contraseña de al menos 8 caracteres', async () => {
@@ -141,13 +152,32 @@ describe('RegistroView', () => {
 })
 
 describe('RegistroView con Google', () => {
-  it('bajo el botón avisa de que continuar implica aceptar la política de datos', () => {
+  it('bajo el botón de Google no hay nota de aceptación: la política se acepta con la casilla del formulario', () => {
     montar()
-    expect(screen.getAllByRole('link', { name: t.google.notaEnlace })[0]).toHaveAttribute('href', '/es/politica-de-datos')
+    expect(screen.queryByText(/Al continuar con Google/)).not.toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: 'política de datos' })).toHaveLength(1)
+  })
+
+  it('sin aceptar la política, Google no se llama: avisa en la casilla y lleva el foco a ella', async () => {
+    const { alContinuarConGoogle, usuario } = montar()
+    await usuario.click(screen.getByRole('button', { name: t.google.continuar }))
+    expect(alContinuarConGoogle).not.toHaveBeenCalled()
+    expect(screen.getByText(t.errores.politicaRequerida)).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: /política de datos/ })).toHaveFocus()
+  })
+
+  it('el aviso de la política desaparece al marcar la casilla y entonces Google sí se llama', async () => {
+    const { alContinuarConGoogle, usuario } = montar()
+    await usuario.click(screen.getByRole('button', { name: t.google.continuar }))
+    await aceptarPolitica(usuario)
+    expect(screen.queryByText(t.errores.politicaRequerida)).not.toBeInTheDocument()
+    await usuario.click(screen.getByRole('button', { name: t.google.continuar }))
+    await waitFor(() => expect(alContinuarConGoogle).toHaveBeenCalledTimes(1))
   })
 
   it('entra directo con Google: sin confirmar el correo y sin tocar el formulario', async () => {
     const { alContinuarConGoogle, alRegistrar, usuario } = montar()
+    await aceptarPolitica(usuario)
     await usuario.click(screen.getByRole('button', { name: t.google.continuar }))
 
     await waitFor(() => expect(alContinuarConGoogle).toHaveBeenCalledTimes(1))
@@ -160,6 +190,7 @@ describe('RegistroView con Google', () => {
 
   it('si Google no valida la cuenta, avisa y se queda en el formulario', async () => {
     const { usuario } = montar(undefined, { ok: false, motivo: 'rechazada' })
+    await aceptarPolitica(usuario)
     await usuario.click(screen.getByRole('button', { name: t.google.continuar }))
     expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.google)
     expect(screen.getByLabelText('Correo')).toBeInTheDocument()
@@ -167,6 +198,7 @@ describe('RegistroView con Google', () => {
 
   it('avisa si hubo demasiados intentos con Google', async () => {
     const { usuario } = montar(undefined, { ok: false, motivo: 'limite' })
+    await aceptarPolitica(usuario)
     await usuario.click(screen.getByRole('button', { name: t.google.continuar }))
     expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.limite)
   })

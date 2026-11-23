@@ -37,7 +37,8 @@ function FuerzaClave({ clave, textos }: { clave: string; textos: TextosAcceso['r
   )
 }
 
-// Formulario de crear cuenta: con Google, o con correo y contraseña (con un campo trampa contra robots).
+// Formulario de crear cuenta: con Google, o con correo y contraseña (con un campo trampa contra robots). La casilla de la
+// política de datos va arriba porque vale para los dos caminos.
 // Una cuenta es solo identidad; el nombre y el país se piden después, dentro, al completar el perfil.
 export function FormularioRegistro({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, google, hrefInicioSesion, hrefPolitica }: Props) {
   const t = textos.registro
@@ -53,7 +54,22 @@ export function FormularioRegistro({ textos, datos, errores, enviando, aviso, ca
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
       <p className="text-parrafo mt-2 opacity-80">{t.tarjeta.intro}</p>
 
-      <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} hrefPolitica={hrefPolitica} />
+      <div className="mt-6">
+        <Casilla
+          clave="aceptaPolitica"
+          marcada={datos.aceptaPolitica}
+          alCambiar={(marcada) => cambiar('aceptaPolitica', marcada)}
+          error={error('aceptaPolitica')}
+        >
+          {t.politicaInicio}{' '}
+          <a href={hrefPolitica} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${foco}`}>
+            {t.politicaEnlace}
+          </a>
+          .
+        </Casilla>
+      </div>
+
+      <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />
 
       <form noValidate onSubmit={alEnviarFormulario} className="relative mt-6 grid gap-6">
         <CampoTexto
@@ -82,19 +98,6 @@ export function FormularioRegistro({ textos, datos, errores, enviando, aviso, ca
           pie={<FuerzaClave clave={datos.clave} textos={t.fuerza} />}
           idPie="fuerza-clave"
         />
-
-        <Casilla
-          clave="aceptaPolitica"
-          marcada={datos.aceptaPolitica}
-          alCambiar={(marcada) => cambiar('aceptaPolitica', marcada)}
-          error={error('aceptaPolitica')}
-        >
-          {t.politicaInicio}{' '}
-          <a href={hrefPolitica} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${foco}`}>
-            {t.politicaEnlace}
-          </a>
-          .
-        </Casilla>
 
         {/* Campo trampa: una persona no lo ve ni lo rellena, un robot sí */}
         <div aria-hidden="true" className="absolute -left-[9999px] size-0 overflow-hidden">
