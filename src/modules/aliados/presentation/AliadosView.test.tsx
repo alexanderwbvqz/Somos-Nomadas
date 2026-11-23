@@ -43,7 +43,7 @@ describe('AliadosView', () => {
   it('y debajo el filtro y el listado de aliados', () => {
     render(<AliadosView {...props} />)
     expect(screen.getByRole('group', { name: 'Filtrar por tipo' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 3, name: 'Un aliado' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Un aliado' })).toBeInTheDocument()
   })
 
   it('y al final el llamado a ser aliado', () => {

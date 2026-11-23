@@ -36,7 +36,7 @@ function ListaPaginada({ textos, aliados, porPagina }: { textos: SeccionListadoA
       <ul className="grid gap-x-10 sm:grid-cols-2 escritorio:grid-cols-3">
         {visibles.map((aliado) => (
           <li key={aliado.id} className="mt-11 flex flex-col">
-            <TarjetaAliado aliado={aliado} textoLeerMas={textos.leerMas} />
+            <TarjetaAliado aliado={aliado} textoLeerMas={textos.leerMas} nivelTitulo="h2" />
           </li>
         ))}
       </ul>

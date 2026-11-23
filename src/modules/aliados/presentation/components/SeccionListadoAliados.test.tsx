@@ -44,7 +44,7 @@ describe('SeccionListadoAliados', () => {
 
   it('cada aliado muestra nombre, tipo, descripción y un Leer más hacia su página', () => {
     render(<SeccionListadoAliados textos={textos} aliados={aliados} />)
-    expect(screen.getByRole('heading', { level: 3, name: 'Aliado 1' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Aliado 1' })).toBeInTheDocument()
     expect(screen.getAllByText('Mentor').length).toBeGreaterThan(0)
     expect(screen.getByText('Descripción 1')).toBeInTheDocument()
     const enlaces = screen.getAllByRole('link', { name: 'Leer más' })
@@ -57,7 +57,7 @@ describe('SeccionListadoAliados', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Mentores · 3' }))
     expect(screen.getByRole('button', { name: 'Mentores · 3' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'Todos · 6' })).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Aliado 1', 'Aliado 4', 'Aliado 6'])
+    expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual(['Aliado 1', 'Aliado 4', 'Aliado 6'])
   })
 
   it('al elegir un tipo se actualiza la URL con ?tipo= y "Todos" la deja sin parámetro', async () => {
@@ -71,22 +71,22 @@ describe('SeccionListadoAliados', () => {
   it('con filtroInicial abre ya filtrado', () => {
     render(<SeccionListadoAliados textos={textos} aliados={aliados} filtroInicial="estrategicos" />)
     expect(screen.getByRole('button', { name: 'Aliados estratégicos · 1' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(1)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(1)
   })
 
   it('con un tipo sin aliados muestra el aviso en lugar del listado', () => {
     render(<SeccionListadoAliados textos={textos} aliados={[aliado(1, 'mentores')]} filtroInicial="organizadores" />)
     expect(screen.getByText('Todavía no hay aliados de este tipo.')).toBeInTheDocument()
-    expect(screen.queryAllByRole('heading', { level: 3 })).toHaveLength(0)
+    expect(screen.queryAllByRole('heading', { level: 2 })).toHaveLength(0)
   })
 
   it('muestra nueve y Ver más añade el resto; el contador se actualiza', async () => {
     const muchos = Array.from({ length: 12 }, (_, i) => aliado(i + 1, 'mentores'))
     render(<SeccionListadoAliados textos={textos} aliados={muchos} />)
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(9)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(9)
     expect(screen.getByText('Mostrando 9 de 12')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Ver más aliados' }))
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(12)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(12)
     expect(screen.queryByRole('button', { name: 'Ver más aliados' })).not.toBeInTheDocument()
     expect(screen.getByText('Mostrando 12 de 12')).toHaveFocus()
   })
@@ -98,9 +98,9 @@ describe('SeccionListadoAliados', () => {
     ]
     render(<SeccionListadoAliados textos={textos} aliados={muchos} />)
     await userEvent.click(screen.getByRole('button', { name: 'Ver más aliados' }))
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(18)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(18)
     await userEvent.click(screen.getByRole('button', { name: 'Organizadores · 11' }))
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(9)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(9)
     expect(screen.getByText('Mostrando 9 de 11')).toBeInTheDocument()
   })
 })

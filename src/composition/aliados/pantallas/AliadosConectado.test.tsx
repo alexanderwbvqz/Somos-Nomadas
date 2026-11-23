@@ -8,6 +8,11 @@ async function dibujar(idioma: (typeof idiomas)[number], tipo?: string) {
   return render(await AliadosConectado({ idioma, tipo }))
 }
 
+// El nombre de cada tarjeta es un h2 dentro de la lista (la página tiene además otro h2 con la invitación a postular)
+function nombresDeTarjetas() {
+  return screen.getAllByRole('heading', { level: 2 }).filter((h) => h.closest('li'))
+}
+
 describe('AliadosConectado', () => {
   it.each([
     ['es', 'Red de aliados'],
@@ -20,7 +25,7 @@ describe('AliadosConectado', () => {
 
   it('lista los aliados del adaptador, con el tipo en singular y el enlace a su página en el idioma', async () => {
     await dibujar('es')
-    expect(screen.getByRole('heading', { level: 3, name: 'Mentoría en producto' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Mentoría en producto' })).toBeInTheDocument()
     const enlaces = screen.getAllByRole('link', { name: 'Leer más' })
     expect(enlaces[0]).toHaveAttribute('href', '/es/aliados/mentoria-producto')
   })
@@ -46,7 +51,7 @@ describe('AliadosConectado', () => {
   it('?tipo=mentores abre la página filtrada; un tipo inválido deja "todos"', async () => {
     const { unmount } = await dibujar('es', 'mentores')
     expect(screen.getByRole('button', { name: 'Mentores · 4' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(4)
+    expect(nombresDeTarjetas()).toHaveLength(4)
     unmount()
 
     await dibujar('es', 'inventado')
@@ -55,7 +60,7 @@ describe('AliadosConectado', () => {
 
   it('el listado muestra nueve y deja "Ver más" para los tres restantes', async () => {
     await dibujar('es')
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(9)
+    expect(nombresDeTarjetas()).toHaveLength(9)
     expect(screen.getByText('Mostrando 9 de 12')).toBeInTheDocument()
   })
 

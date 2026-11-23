@@ -8,7 +8,9 @@ export type AliadoVista = Pick<Aliado, 'id' | 'nombre' | 'tipo' | 'descripcion' 
 
 // Tarjeta de un aliado: bloque con su logo (o su nombre) sobre el color de su tipo, nombre, tipo, texto y "Leer más".
 // La usan el listado de la red y los "más aliados de este tipo" de cada página de detalle.
-export function TarjetaAliado({ aliado, textoLeerMas }: { aliado: AliadoVista; textoLeerMas: string }) {
+// `nivelTitulo` es el nivel del encabezado con el nombre: h2 si la tarjeta cuelga directo del título de la página, h3 si hay una sección encima.
+export function TarjetaAliado({ aliado, textoLeerMas, nivelTitulo = 'h3' }: { aliado: AliadoVista; textoLeerMas: string; nivelTitulo?: 'h2' | 'h3' }) {
+  const Titulo = nivelTitulo
   return (
     <>
       <div className={`flex h-36 items-center justify-center border-b-[1.5px] border-texto p-4 text-center ${colorTipoAliado[aliado.tipo]}`}>
@@ -20,7 +22,7 @@ export function TarjetaAliado({ aliado, textoLeerMas }: { aliado: AliadoVista; t
           </span>
         )}
       </div>
-      <h3 className="text-titulo-tarjeta-grande mt-5">{aliado.nombre}</h3>
+      <Titulo className="text-titulo-tarjeta-grande mt-5">{aliado.nombre}</Titulo>
       <p className="text-etiqueta-chica mt-3">{aliado.etiquetaTipo}</p>
       {/* Tope de cinco líneas: red de seguridad para textos largos o columnas estrechas; el texto completo está en su página */}
       <p className="text-cuerpo mt-3 line-clamp-5 max-w-md">{aliado.descripcion}</p>
