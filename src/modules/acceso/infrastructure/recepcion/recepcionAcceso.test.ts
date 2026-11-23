@@ -1,21 +1,26 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { datosRegistroVacios } from '../../domain/cuenta'
-import { MockCuentaRepository } from '../mock/MockCuentaRepository'
-import { recibirInicioSesion, recibirRegistro, recibirReenvio } from './recepcionAcceso'
+import { CORREO_GOOGLE_SIMULADO, MockCuentaRepository } from '../mock/MockCuentaRepository'
+import { recibirGoogle, recibirInicioSesion, recibirRegistro, recibirReenvio } from './recepcionAcceso'
 
-const validos = { ...datosRegistroVacios(), nombre: 'Ana', apellidos: 'Pérez', pais: 'PE', correo: 'ana@correo.com', clave: 'clave-segura-9', aceptaPolitica: true }
+const validos = { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'clave-segura-9', aceptaPolitica: true }
 
 describe('recepcionAcceso', () => {
   beforeEach(() => MockCuentaRepository.vaciar())
 
   it('registra y luego deja iniciar sesión', async () => {
     expect(await recibirRegistro(new MockCuentaRepository(), validos, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
-    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'clave-segura-9' }, 'c-flujo')).toEqual({ ok: true, nombre: 'Ana' })
+    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'clave-segura-9' }, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
+  })
+
+  it('entra con Google', async () => {
+    expect(await recibirGoogle(new MockCuentaRepository(), 'credencial', 'c-google')).toEqual({ ok: true, correo: CORREO_GOOGLE_SIMULADO })
   })
 
   it('rechaza lo que no tiene la forma esperada', async () => {
     expect(await recibirRegistro(new MockCuentaRepository(), { cualquier: 'cosa' }, 'c-forma')).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
     expect(await recibirInicioSesion(new MockCuentaRepository(), 'hola', 'c-forma')).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
+    expect(await recibirGoogle(new MockCuentaRepository(), { token: 1 }, 'c-forma')).toEqual({ ok: false, motivo: 'rechazada' })
     expect(await recibirReenvio(new MockCuentaRepository(), 42, 'c-forma')).toEqual({ ok: false, motivo: 'fallo' })
   })
 
@@ -37,6 +42,11 @@ describe('recepcionAcceso', () => {
     await recibirRegistro(new MockCuentaRepository(), validos, 'c-alta')
     for (let i = 0; i < 10; i++) await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'incorrecta-1' }, 'c-limite-sesion')
     expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'clave-segura-9' }, 'c-limite-sesion')).toEqual({ ok: false, errores: {}, motivo: 'limite' })
+  })
+
+  it('limita los intentos con Google', async () => {
+    for (let i = 0; i < 10; i++) await recibirGoogle(new MockCuentaRepository(), 'credencial', 'c-limite-google')
+    expect(await recibirGoogle(new MockCuentaRepository(), 'credencial', 'c-limite-google')).toEqual({ ok: false, motivo: 'limite' })
   })
 
   it('limita los reenvíos por cliente y correo', async () => {

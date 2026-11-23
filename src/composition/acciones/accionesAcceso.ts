@@ -1,9 +1,10 @@
 'use server'
 
+import type { ResultadoGoogle } from '@/modules/acceso/application/continuarConGoogle'
 import type { ResultadoInicioSesion } from '@/modules/acceso/application/iniciarSesion'
 import type { ResultadoReenvio } from '@/modules/acceso/application/reenviarConfirmacion'
 import type { ResultadoRegistro } from '@/modules/acceso/application/registrarCuenta'
-import { recibirInicioSesion, recibirRegistro, recibirReenvio } from '@/modules/acceso/infrastructure/recepcion/recepcionAcceso'
+import { recibirGoogle, recibirInicioSesion, recibirRegistro, recibirReenvio } from '@/modules/acceso/infrastructure/recepcion/recepcionAcceso'
 import { identificarCliente } from '@/shared/lib/identificarCliente'
 import { crearCuentaRepository } from '../fabricas/cuentas'
 
@@ -15,6 +16,10 @@ export async function registrarCuentaAccion(entrada: unknown): Promise<Resultado
 
 export async function iniciarSesionAccion(entrada: unknown): Promise<ResultadoInicioSesion> {
   return await recibirInicioSesion(crearCuentaRepository(), entrada, await identificarCliente())
+}
+
+export async function continuarConGoogleAccion(entrada: unknown): Promise<ResultadoGoogle> {
+  return await recibirGoogle(crearCuentaRepository(), entrada, await identificarCliente())
 }
 
 export async function reenviarConfirmacionAccion(entrada: unknown): Promise<ResultadoReenvio> {

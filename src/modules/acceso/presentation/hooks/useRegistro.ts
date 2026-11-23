@@ -13,7 +13,7 @@ import {
 export type AccionRegistrar = (datos: DatosRegistro) => Promise<ResultadoRegistro>
 
 // Orden de los campos, para llevar el foco al primero que tenga un error
-const ordenCampos: (keyof DatosRegistro)[] = ['nombre', 'apellidos', 'pais', 'correo', 'clave', 'aceptaPolitica']
+const ordenCampos: (keyof DatosRegistro)[] = ['correo', 'clave', 'aceptaPolitica']
 
 export function idDelCampoRegistro(clave: keyof DatosRegistro): string {
   return `campo-${clave}`

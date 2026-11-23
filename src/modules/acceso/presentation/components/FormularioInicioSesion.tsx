@@ -7,6 +7,7 @@ import { foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITES_CUENTA, type DatosInicioSesion, type ErroresInicioSesion } from '../../domain/cuenta'
 import type { TextosAcceso } from '../../language/tipos'
 import { mensajeDeErrorCuenta } from '../ui/mensajesError'
+import { AccesoGoogle } from './AccesoGoogle'
 
 type Props = {
   textos: TextosAcceso
@@ -16,12 +17,13 @@ type Props = {
   aviso?: 'credenciales' | 'limite' | 'fallo'
   cambiar: (clave: keyof DatosInicioSesion, valor: string) => void
   alEnviar: () => void
+  google: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
   hrefRegistro: string
 }
 
-// Formulario de iniciar sesión: correo y contraseña. Un aviso general cubre los datos que no corresponden,
-// sin decir cuál de los dos falla.
-export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, hrefRegistro }: Props) {
+// Formulario de iniciar sesión: con Google, o con correo y contraseña. Un aviso general cubre los datos que no
+// corresponden, sin decir cuál de los dos falla.
+export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, google, hrefRegistro }: Props) {
   const t = textos.inicio
   const error = (campo: keyof DatosInicioSesion) => mensajeDeErrorCuenta(textos, campo, errores[campo])
 
@@ -34,6 +36,8 @@ export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso
     <>
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
       <p className="text-parrafo mt-2 opacity-80">{t.tarjeta.intro}</p>
+
+      <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />
 
       {aviso && (
         <p role="alert" className="text-cuerpo mt-6 flex items-start gap-2.5 rounded-xl border-2 border-primario px-4 py-3 font-medium">

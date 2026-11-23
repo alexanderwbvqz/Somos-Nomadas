@@ -11,15 +11,7 @@ import {
 } from './cuenta'
 
 function completos(): DatosRegistro {
-  return {
-    ...datosRegistroVacios(),
-    nombre: 'Ana',
-    apellidos: 'Pérez Rojas',
-    pais: 'PE',
-    correo: 'Ana@Correo.com',
-    clave: 'clave-segura-9',
-    aceptaPolitica: true,
-  }
+  return { ...datosRegistroVacios(), correo: 'Ana@Correo.com', clave: 'clave-segura-9', aceptaPolitica: true }
 }
 
 describe('validarRegistro', () => {
@@ -27,17 +19,13 @@ describe('validarRegistro', () => {
     expect(hayErroresCuenta(validarRegistro(completos()))).toBe(false)
   })
 
-  it('pide todos los campos si está vacío', () => {
-    expect(Object.keys(validarRegistro(datosRegistroVacios())).sort()).toEqual(['aceptaPolitica', 'apellidos', 'clave', 'correo', 'nombre', 'pais'])
-  })
-
-  it('rechaza un país que no está en la lista', () => {
-    expect(validarRegistro({ ...completos(), pais: '' }).pais).toBe('obligatorio')
-    expect(validarRegistro({ ...completos(), pais: 'XX' as never }).pais).toBe('obligatorio')
+  it('con el formulario vacío pide solo correo, contraseña y la política: nada de nombre ni país', () => {
+    expect(Object.keys(validarRegistro(datosRegistroVacios())).sort()).toEqual(['aceptaPolitica', 'clave', 'correo'])
   })
 
   it('detecta un correo inválido', () => {
     expect(validarRegistro({ ...completos(), correo: 'ana@correo' }).correo).toBe('correoInvalido')
+    expect(validarRegistro({ ...completos(), correo: 'a'.repeat(121) + '@correo.com' }).correo).toBe('correoInvalido')
   })
 
   it('exige al menos 8 caracteres en la contraseña, sin recortar espacios', () => {
@@ -46,9 +34,8 @@ describe('validarRegistro', () => {
     expect(validarRegistro({ ...completos(), clave: 'a'.repeat(129) }).clave).toBe('claveLarga')
   })
 
-  it('exige aceptar la política y no admite textos larguísimos', () => {
+  it('exige aceptar la política', () => {
     expect(validarRegistro({ ...completos(), aceptaPolitica: false }).aceptaPolitica).toBe('politicaRequerida')
-    expect(validarRegistro({ ...completos(), nombre: 'a'.repeat(61) }).nombre).toBe('muyLargo')
   })
 })
 
@@ -78,8 +65,10 @@ describe('fuerzaDeClave', () => {
 })
 
 describe('limpiarRegistro', () => {
-  it('ordena los datos: correo en minúsculas, sin espacios sobrantes y la contraseña intacta', () => {
-    const limpia = limpiarRegistro({ ...completos(), nombre: '  Ana   María ', clave: ' clave con espacios ' })
-    expect(limpia).toMatchObject({ nombre: 'Ana María', correo: 'ana@correo.com', pais: 'PE', clave: ' clave con espacios ' })
+  it('pone el correo en minúsculas y deja la contraseña intacta', () => {
+    expect(limpiarRegistro({ ...completos(), correo: '  Ana@Correo.com ', clave: ' clave con espacios ' })).toEqual({
+      correo: 'ana@correo.com',
+      clave: ' clave con espacios ',
+    })
   })
 })

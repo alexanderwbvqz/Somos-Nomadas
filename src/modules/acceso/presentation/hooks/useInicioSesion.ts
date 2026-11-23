@@ -16,8 +16,8 @@ export function useInicioSesion(alIniciar: AccionIniciarSesion) {
   const [errores, setErrores] = useState<ErroresInicioSesion>({})
   const [enviando, setEnviando] = useState(false)
   const [aviso, setAviso] = useState<'credenciales' | 'limite' | 'fallo' | undefined>()
-  /** La persona que entró; mientras no exista el panel, es lo único que se muestra */
-  const [sesion, setSesion] = useState<{ nombre: string } | undefined>()
+  /** El correo de la cuenta con la que se entró; mientras no exista el panel, es lo único que se muestra */
+  const [correoDentro, setCorreoDentro] = useState<string | undefined>()
   const [enfoque, setEnfoque] = useState<{ id: string } | undefined>()
 
   function cambiar<K extends keyof DatosInicioSesion>(clave: K, valor: string) {
@@ -47,7 +47,7 @@ export function useInicioSesion(alIniciar: AccionIniciarSesion) {
       const resultado = await alIniciar(datos)
       if (resultado.ok) {
         setErrores({})
-        setSesion({ nombre: resultado.nombre })
+        setCorreoDentro(resultado.correo)
       } else if (hayErroresCuenta(resultado.errores)) mostrarErrores(resultado.errores)
       else {
         setAviso(resultado.motivo ?? 'fallo')
@@ -64,5 +64,5 @@ export function useInicioSesion(alIniciar: AccionIniciarSesion) {
     }
   }
 
-  return { datos, errores, enviando, aviso, sesion, enfoque, cambiar, enviar }
+  return { datos, errores, enviando, aviso, correoDentro, enfoque, cambiar, enviar }
 }

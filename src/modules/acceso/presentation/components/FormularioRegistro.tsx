@@ -2,17 +2,12 @@ import Link from 'next/link'
 import type { FormEvent } from 'react'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoClave } from '@/shared/ui/CampoClave'
-import { Casilla, CampoSelect, CampoTexto } from '@/shared/ui/Campos'
+import { Casilla, CampoTexto } from '@/shared/ui/Campos'
 import { foco } from '@/shared/ui/EnlaceBoton'
-import {
-  LIMITES_CUENTA,
-  PAISES,
-  fuerzaDeClave,
-  type DatosRegistro,
-  type ErroresRegistro,
-} from '../../domain/cuenta'
+import { LIMITES_CUENTA, fuerzaDeClave, type DatosRegistro, type ErroresRegistro } from '../../domain/cuenta'
 import type { TextosAcceso } from '../../language/tipos'
 import { mensajeDeErrorCuenta } from '../ui/mensajesError'
+import { AccesoGoogle } from './AccesoGoogle'
 
 type Props = {
   textos: TextosAcceso
@@ -22,6 +17,7 @@ type Props = {
   aviso?: 'limite' | 'fallo'
   cambiar: <K extends keyof DatosRegistro>(clave: K, valor: DatosRegistro[K]) => void
   alEnviar: () => void
+  google: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
   hrefInicioSesion: string
   hrefPolitica: string
 }
@@ -41,8 +37,9 @@ function FuerzaClave({ clave, textos }: { clave: string; textos: TextosAcceso['r
   )
 }
 
-// Formulario de crear cuenta: nombre, apellidos, país, correo y contraseña, con un campo trampa contra robots.
-export function FormularioRegistro({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, hrefInicioSesion, hrefPolitica }: Props) {
+// Formulario de crear cuenta: con Google, o con correo y contraseña (con un campo trampa contra robots).
+// Una cuenta es solo identidad; el nombre y el país se piden después, dentro, al completar el perfil.
+export function FormularioRegistro({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, google, hrefInicioSesion, hrefPolitica }: Props) {
   const t = textos.registro
   const error = (campo: keyof DatosRegistro) => mensajeDeErrorCuenta(textos, campo, errores[campo])
 
@@ -56,41 +53,9 @@ export function FormularioRegistro({ textos, datos, errores, enviando, aviso, ca
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
       <p className="text-parrafo mt-2 opacity-80">{t.tarjeta.intro}</p>
 
-      <form noValidate onSubmit={alEnviarFormulario} className="relative mt-8 grid gap-6">
-        <div className="grid gap-6 sm:grid-cols-2">
-          <CampoTexto
-            clave="nombre"
-            etiqueta={t.nombre}
-            placeholder={t.nombreEjemplo}
-            autoComplete="given-name"
-            maxLength={LIMITES_CUENTA.nombre * 2}
-            valor={datos.nombre}
-            alCambiar={(valor) => cambiar('nombre', valor)}
-            error={error('nombre')}
-          />
-          <CampoTexto
-            clave="apellidos"
-            etiqueta={t.apellidos}
-            placeholder={t.apellidosEjemplo}
-            autoComplete="family-name"
-            maxLength={LIMITES_CUENTA.apellidos * 2}
-            valor={datos.apellidos}
-            alCambiar={(valor) => cambiar('apellidos', valor)}
-            error={error('apellidos')}
-          />
-        </div>
+      <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} hrefPolitica={hrefPolitica} />
 
-        <CampoSelect
-          clave="pais"
-          etiqueta={t.pais}
-          placeholder={t.paisElige}
-          autoComplete="country-name"
-          valor={datos.pais}
-          alCambiar={(valor) => cambiar('pais', valor as DatosRegistro['pais'])}
-          opciones={PAISES.map((pais) => ({ valor: pais, texto: textos.paises[pais] }))}
-          error={error('pais')}
-        />
-
+      <form noValidate onSubmit={alEnviarFormulario} className="relative mt-6 grid gap-6">
         <CampoTexto
           clave="correo"
           etiqueta={textos.campos.correo}

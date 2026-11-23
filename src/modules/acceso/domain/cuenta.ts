@@ -1,24 +1,16 @@
 import { esCorreoValido } from '@/modules/aliados/domain/postulacion'
 
-// Reglas de la cuenta: crear una (registro) y entrar con ella (inicio de sesión).
+// Reglas de la cuenta: crear una (registro) y entrar con ella (inicio de sesión). Una cuenta es solo identidad:
+// quién entra. El nombre, el país y lo demás son del perfil y se piden dentro, no aquí.
 // La validación es una sola y la usan el formulario (para avisar) y el servidor (que no se fía del navegador).
 
 export const LIMITES_CUENTA = {
-  nombre: 60,
-  apellidos: 80,
   correo: 120,
   claveMin: 8,
   claveMax: 128,
 } as const
 
-/** Países entre los que se puede elegir al registrarse; el nombre de cada uno va en los textos */
-export const PAISES = ['AR', 'BO', 'BR', 'CL', 'CO', 'EC', 'MX', 'PY', 'PE', 'UY', 'OTRO'] as const
-export type CodigoPais = (typeof PAISES)[number]
-
 export type DatosRegistro = {
-  nombre: string
-  apellidos: string
-  pais: CodigoPais | ''
   /** Privado: solo para el acceso y para escribirle */
   correo: string
   clave: string
@@ -28,18 +20,12 @@ export type DatosRegistro = {
 }
 
 export function datosRegistroVacios(): DatosRegistro {
-  return { nombre: '', apellidos: '', pais: '', correo: '', clave: '', aceptaPolitica: false, sitioSecundario: '' }
+  return { correo: '', clave: '', aceptaPolitica: false, sitioSecundario: '' }
 }
 
 export type DatosInicioSesion = { correo: string; clave: string }
 
-export type CodigoErrorCuenta =
-  | 'obligatorio'
-  | 'muyLargo'
-  | 'correoInvalido'
-  | 'claveCorta'
-  | 'claveLarga'
-  | 'politicaRequerida'
+export type CodigoErrorCuenta = 'obligatorio' | 'correoInvalido' | 'claveCorta' | 'claveLarga' | 'politicaRequerida'
 
 export type ErroresRegistro = Partial<Record<keyof DatosRegistro, CodigoErrorCuenta>>
 export type ErroresInicioSesion = Partial<Record<keyof DatosInicioSesion, CodigoErrorCuenta>>
@@ -56,14 +42,6 @@ function errorDeCorreo(correo: string): CodigoErrorCuenta | undefined {
 
 export function validarRegistro(datos: DatosRegistro): ErroresRegistro {
   const errores: ErroresRegistro = {}
-
-  if (datos.nombre.trim() === '') errores.nombre = 'obligatorio'
-  else if (datos.nombre.trim().length > LIMITES_CUENTA.nombre) errores.nombre = 'muyLargo'
-
-  if (datos.apellidos.trim() === '') errores.apellidos = 'obligatorio'
-  else if (datos.apellidos.trim().length > LIMITES_CUENTA.apellidos) errores.apellidos = 'muyLargo'
-
-  if (!(PAISES as readonly string[]).includes(datos.pais)) errores.pais = 'obligatorio'
 
   const correo = errorDeCorreo(datos.correo)
   if (correo) errores.correo = correo
@@ -101,19 +79,10 @@ export function fuerzaDeClave(clave: string): FuerzaClave {
 
 /** Los datos de una cuenta ya revisados y ordenados, listos para crearla */
 export type CuentaNueva = {
-  nombre: string
-  apellidos: string
-  pais: CodigoPais
   correo: string
   clave: string
 }
 
 export function limpiarRegistro(datos: DatosRegistro): CuentaNueva {
-  return {
-    nombre: datos.nombre.trim().replace(/\s+/g, ' '),
-    apellidos: datos.apellidos.trim().replace(/\s+/g, ' '),
-    pais: datos.pais as CodigoPais,
-    correo: datos.correo.trim().toLowerCase(),
-    clave: datos.clave,
-  }
+  return { correo: datos.correo.trim().toLowerCase(), clave: datos.clave }
 }

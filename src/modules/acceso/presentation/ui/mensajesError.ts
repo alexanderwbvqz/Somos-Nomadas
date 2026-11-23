@@ -2,7 +2,7 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { LIMITES_CUENTA, type CodigoErrorCuenta } from '../../domain/cuenta'
 import type { TextosAcceso } from '../../language/tipos'
 
-type CampoConMensaje = 'nombre' | 'apellidos' | 'pais' | 'correo' | 'clave'
+type CampoConMensaje = 'correo' | 'clave'
 
 /** El mensaje, en el idioma de la persona, del error de un campo; undefined si no hay error */
 export function mensajeDeErrorCuenta(textos: TextosAcceso, campo: string, codigo: CodigoErrorCuenta | undefined): string | undefined {
@@ -10,9 +10,7 @@ export function mensajeDeErrorCuenta(textos: TextosAcceso, campo: string, codigo
   const e = textos.errores
   switch (codigo) {
     case 'obligatorio':
-      return e[campo as CampoConMensaje] ?? e.muyLargo
-    case 'muyLargo':
-      return e.muyLargo
+      return e[campo as CampoConMensaje]
     case 'correoInvalido':
       return e.correoInvalido
     case 'claveCorta':
