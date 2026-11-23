@@ -3,7 +3,7 @@ import type { GrupoId, HabilidadId } from '../../domain/catalogo'
 import type { Frecuencia } from '../../domain/puntos'
 import type { TextosHabilidades } from '../../language/tipos'
 import type { GrupoTareas } from '../mappers/vistaTareas'
-import { FilaDeTarea } from './FilaDeTarea'
+import { FilaDeTarea } from '../ui/FilaDeTarea'
 
 type Props = {
   textos: TextosHabilidades['tareas']
