@@ -14,5 +14,5 @@ export function caminosDisponibles({ analisisDisponible }: { analisisDisponible:
   return analisisDisponible ? caminos : [caminoPorDefecto]
 }
 
-/** Cuántos pasos tiene el recorrido para armar el perfil de habilidades (propuesta, pendiente de definir cada uno) */
-export const PASOS_TOTAL = 6
+/** Cuántos pasos tiene el recorrido para armar el perfil de habilidades: elegir cómo empezar, qué has hecho, más de lo que haces, tus historias y tu forma de emprender */
+export const PASOS_TOTAL = 5

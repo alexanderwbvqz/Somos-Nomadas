@@ -34,8 +34,7 @@ export async function HabilidadesConectado({ idioma }: { idioma: Idioma }) {
       textos={textos}
       nombre={perfil?.nombre}
       disponibles={caminosDisponibles({ analisisDisponible: hayAnalisis() })}
-      // «cero» todavía no tiene paso siguiente: sin ruta, «Arrancar» avisa de que llega pronto
-      rutas={{ escritas: `/${idioma}/habilidades/escritas` }}
+      rutas={{ escritas: `/${idioma}/habilidades/escritas`, cero: `/${idioma}/habilidades/tareas` }}
       barra={barra}
     />
   )

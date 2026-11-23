@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { caminos } from '../domain/camino'
+import { grupos, habilidades } from '../domain/catalogo'
 import { camposEnlace } from '../domain/material'
+import { frecuencias } from '../domain/puntos'
 import { tareas } from '../domain/tarea'
 import { en } from './en'
 import { es } from './es'
@@ -25,6 +27,9 @@ describe('idiomas de habilidades', () => {
       expect(Object.keys(textos.inicio.caminos).sort()).toEqual([...caminos].sort())
       expect(Object.keys(textos.escritas.enlaces).sort()).toEqual([...camposEnlace].sort())
       expect(Object.keys(textos.escritas.tareas).sort()).toEqual([...tareas].sort())
+      expect(Object.keys(textos.tareas.tareas).sort()).toEqual([...habilidades].sort())
+      expect(Object.keys(textos.tareas.grupos).sort()).toEqual([...grupos].sort())
+      expect(Object.keys(textos.tareas.frecuencias).sort()).toEqual([...frecuencias].sort())
     }
   })
 
@@ -41,6 +46,9 @@ describe('idiomas de habilidades', () => {
       expect(textos.escritas.revision.nivel).toContain('{nivel}')
       expect(textos.escritas.revision.contador).toContain('{n}')
       expect(textos.escritas.revision.contador).toContain('{total}')
+      expect(textos.tareas.contadorGrupo).toContain('{n}')
+      expect(textos.tareas.contadorTotal).toContain('{total}')
+      expect(textos.tareas.vecesDe).toContain('{tarea}')
     }
   })
 })

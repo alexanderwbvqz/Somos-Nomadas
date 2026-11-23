@@ -1,11 +1,13 @@
 import type { Camino } from '../domain/camino'
+import type { GrupoId, HabilidadId } from '../domain/catalogo'
 import type { CampoEnlace, CodigoErrorMaterial } from '../domain/material'
+import type { Frecuencia } from '../domain/puntos'
 import type { FuenteSugerencia, TareaId } from '../domain/tarea'
 
 export type TextosHabilidades = {
   /** Lo que comparten varias pantallas del recorrido */
   comun: {
-    /** Lleva {actual} y {total}, por ejemplo "Paso 1 de 6" */
+    /** Lleva {actual} y {total}, por ejemplo "Paso 1 de 5" */
     paso: string
     saltar: string
     /** Aviso provisional mientras el paso siguiente no exista */
@@ -23,6 +25,31 @@ export type TextosHabilidades = {
     caminos: Record<Camino, { titulo: string; texto: string; tiempo: string; etiqueta: string }>
     arrancar: string
     notaPublicar: string
+  }
+  /** «Qué has hecho»: marcar las tareas que ya hizo y cuántas veces */
+  tareas: {
+    metadatos: { titulo: string; descripcion: string }
+    titulo: string
+    subtitulo: string
+    porQue: string
+    /** El nombre de cada grupo de tareas; no dicen de qué área son */
+    grupos: Record<GrupoId, string>
+    /** Lleva {n} y {total}: cuántas tareas del grupo hay marcadas */
+    contadorGrupo: string
+    /** Lleva {n} y {total}: cuántas tareas hay marcadas en total */
+    contadorTotal: string
+    cuantasVeces: string
+    /** Lleva {tarea}: nombre accesible de las opciones de cuántas veces la hizo */
+    vecesDe: string
+    frecuencias: Record<Frecuencia, string>
+    /** La tarea por la que se pregunta de cada habilidad */
+    tareas: Record<HabilidadId, string>
+    atras: string
+    siguiente: string
+    guardando: string
+    /** Mientras no haya ninguna tarea marcada */
+    minimo: string
+    avisos: { limite: string; fallo: string }
   }
   /** Subir un PDF o pegar enlaces, y revisar lo que se entendió */
   escritas: {
