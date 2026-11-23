@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { caminos } from '../domain/camino'
 import { grupos, habilidades } from '../domain/catalogo'
 import { camposEnlace } from '../domain/material'
+import { preguntasDe, tienePreguntasPropias } from '../domain/preguntas'
 import { frecuencias } from '../domain/puntos'
 import { tareas } from '../domain/tarea'
 import { en } from './en'
@@ -49,6 +50,46 @@ describe('idiomas de habilidades', () => {
       expect(textos.tareas.contadorGrupo).toContain('{n}')
       expect(textos.tareas.contadorTotal).toContain('{total}')
       expect(textos.tareas.vecesDe).toContain('{tarea}')
+      expect(textos.profundizar.habilidadN).toContain('{n}')
+      expect(textos.profundizar.habilidadN).toContain('{total}')
+      expect(textos.profundizar.loHasHecho).toContain('{veces}')
+      expect(textos.profundizar.siguienteHabilidad).toContain('{habilidad}')
+      expect(textos.profundizar.preguntas.tiempo).toContain('{habilidad}')
+      expect(textos.profundizar.preguntas.quien).toContain('{habilidad}')
+      expect(textos.profundizar.preguntas.textoGenerico.pregunta).toContain('{habilidad}')
+      expect(textos.profundizar.preguntas.textoGenerico.ejemplo).toContain('{habilidad}')
     }
+  })
+
+  describe('«Más de lo que haces»', () => {
+    const preguntas = habilidades.flatMap((habilidad) => preguntasDe(habilidad))
+    const idsDeOpciones = [...new Set(preguntas.flatMap((pregunta) => (pregunta.tipo === 'texto' ? [] : pregunta.opciones)))].sort()
+    const generales = ['tiempo', 'quien', 'texto']
+    const idsPropios = [...new Set(preguntas.filter((pregunta) => !generales.includes(pregunta.id)).map((pregunta) => pregunta.id))].sort()
+    const conTextoPropio = habilidades.filter(tienePreguntasPropias).sort()
+
+    it('cada idioma nombra todas las habilidades', () => {
+      for (const textos of [es, en, pt]) expect(Object.keys(textos.profundizar.habilidades).sort()).toEqual([...habilidades].sort())
+    })
+
+    it('cada idioma tiene texto para todas las opciones de las preguntas, y para ninguna que no exista', () => {
+      for (const textos of [es, en, pt]) expect(Object.keys(textos.profundizar.preguntas.opciones).sort()).toEqual(idsDeOpciones)
+    })
+
+    it('cada idioma tiene el enunciado de todas las preguntas propias y el texto de las habilidades que lo tienen propio', () => {
+      for (const textos of [es, en, pt]) {
+        expect(Object.keys(textos.profundizar.preguntas.propias).sort()).toEqual(idsPropios)
+        expect(Object.keys(textos.profundizar.preguntas.textoPropio).sort()).toEqual(conTextoPropio)
+      }
+    })
+
+    it('una misma opción no se usa en dos preguntas distintas (los textos se buscan solo por su id)', () => {
+      const preguntasPorOpcion = new Map<string, Set<string>>()
+      for (const pregunta of preguntas) {
+        if (pregunta.tipo === 'texto') continue
+        for (const opcion of pregunta.opciones) preguntasPorOpcion.set(opcion, (preguntasPorOpcion.get(opcion) ?? new Set()).add(pregunta.id))
+      }
+      for (const [opcion, usadaEn] of preguntasPorOpcion) expect(usadaEn.size, opcion).toBe(1)
+    })
   })
 })

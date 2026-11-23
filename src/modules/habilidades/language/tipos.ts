@@ -51,6 +51,43 @@ export type TextosHabilidades = {
     minimo: string
     avisos: { limite: string; fallo: string }
   }
+  /** «Más de lo que haces»: preguntas de cada una de las tres habilidades más fuertes */
+  profundizar: {
+    metadatos: { titulo: string; descripcion: string }
+    titulo: string
+    subtitulo: string
+    porQue: string
+    /** Cuando todavía no marcó ninguna tarea */
+    vacio: string
+    volverATareas: string
+    /** Lleva {n} y {total} */
+    habilidadN: string
+    /** Lleva {veces}, por ejemplo «es mi trabajo» */
+    loHasHecho: string
+    lista: string
+    pendiente: string
+    /** Lleva {habilidad} */
+    siguienteHabilidad: string
+    opcional: string
+    atras: string
+    siguiente: string
+    guardando: string
+    avisos: { limite: string; fallo: string }
+    /** El nombre de cada habilidad */
+    habilidades: Record<HabilidadId, string>
+    preguntas: {
+      /** Llevan {habilidad}, en minúscula: la pregunta nombra la habilidad de la que habla */
+      tiempo: string
+      quien: string
+      textoGenerico: { pregunta: string; ejemplo: string }
+      /** El enunciado de cada pregunta propia de una habilidad, por su id */
+      propias: Record<string, string>
+      /** La pregunta de texto de las habilidades que tienen las suyas */
+      textoPropio: Record<string, { pregunta: string; ejemplo: string }>
+      /** El texto de cada opción, por su id: no se repite ninguno entre preguntas */
+      opciones: Record<string, string>
+    }
+  }
   /** Subir un PDF o pegar enlaces, y revisar lo que se entendió */
   escritas: {
     metadatos: { titulo: string; descripcion: string }

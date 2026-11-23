@@ -95,11 +95,12 @@ type CampoAreaProps = CampoBase & {
   alCambiar: (valor: string) => void
   filas?: number
   maxLength?: number
+  placeholder?: string
   /** Contenido a la derecha de la ayuda, como un contador de palabras */
   contador?: ReactNode
 }
 
-export function CampoArea({ clave, etiqueta, extraEtiqueta, ayuda, error, valor, alCambiar, filas = 4, maxLength, contador }: CampoAreaProps) {
+export function CampoArea({ clave, etiqueta, extraEtiqueta, ayuda, error, valor, alCambiar, filas = 4, maxLength, placeholder, contador }: CampoAreaProps) {
   const id = `campo-${clave}`
   return (
     <div>
@@ -111,6 +112,7 @@ export function CampoArea({ clave, etiqueta, extraEtiqueta, ayuda, error, valor,
         name={clave}
         rows={filas}
         maxLength={maxLength}
+        placeholder={placeholder}
         value={valor}
         onChange={(evento) => alCambiar(evento.target.value)}
         aria-invalid={error ? true : undefined}
