@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PASOS_TOTAL } from '@/modules/habilidades/domain/camino'
+import { PASOS_TOTAL } from '@/modules/habilidades/domain/recorrido'
 import type { TextosHabilidades } from '@/modules/habilidades/language/tipos'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'

@@ -1,12 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { caminos } from '../domain/camino'
 import { areas, grupos, habilidades } from '../domain/catalogo'
 import { preguntasForma } from '../domain/forma'
 import { sectores } from '../domain/historias'
-import { camposEnlace } from '../domain/material'
 import { preguntasDe, tienePreguntasPropias } from '../domain/preguntas'
 import { frecuencias } from '../domain/puntos'
-import { tareas } from '../domain/tarea'
 import { en } from './en'
 import { es } from './es'
 import { pt } from './pt'
@@ -25,30 +22,18 @@ describe('idiomas de habilidades', () => {
     expect(claves(pt)).toEqual(claves(es))
   })
 
-  it('cada idioma tiene un texto para cada camino, cada campo de enlace y cada tarea del dominio', () => {
+  it('cada idioma tiene un texto para cada tarea, cada grupo y cada frecuencia del dominio', () => {
     for (const textos of [es, en, pt]) {
-      expect(Object.keys(textos.inicio.caminos).sort()).toEqual([...caminos].sort())
-      expect(Object.keys(textos.escritas.enlaces).sort()).toEqual([...camposEnlace].sort())
-      expect(Object.keys(textos.escritas.tareas).sort()).toEqual([...tareas].sort())
       expect(Object.keys(textos.tareas.tareas).sort()).toEqual([...habilidades].sort())
       expect(Object.keys(textos.tareas.grupos).sort()).toEqual([...grupos].sort())
       expect(Object.keys(textos.tareas.frecuencias).sort()).toEqual([...frecuencias].sort())
     }
   })
 
-  it('los saludos con nombre llevan {nombre} en todos los idiomas', () => {
-    for (const textos of [es, en, pt]) expect(textos.inicio.saludo).toContain('{nombre}')
-  })
-
   it('los textos con variables las llevan en todos los idiomas', () => {
     for (const textos of [es, en, pt]) {
       expect(textos.comun.paso).toContain('{actual}')
       expect(textos.comun.paso).toContain('{total}')
-      expect(textos.escritas.archivo.ayuda).toContain('{max}')
-      expect(textos.escritas.errores.archivoGrande).toContain('{max}')
-      expect(textos.escritas.revision.nivel).toContain('{nivel}')
-      expect(textos.escritas.revision.contador).toContain('{n}')
-      expect(textos.escritas.revision.contador).toContain('{total}')
       expect(textos.tareas.contadorGrupo).toContain('{n}')
       expect(textos.tareas.contadorTotal).toContain('{total}')
       expect(textos.tareas.vecesDe).toContain('{tarea}')
