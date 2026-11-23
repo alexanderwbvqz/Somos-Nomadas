@@ -17,16 +17,19 @@ export type CierreViewProps = {
   /** El isotipo, que hace de avatar cuando no se sabe el nombre */
   isotipoSrc: string
   hrefInicio: string
+  /** Adónde lleva «Revisar mi perfil» */
+  hrefPerfil: string
   alPreparar: AccionPrepararCierre
   /** Cuánto espera como mínimo antes de mostrar el resultado; las pruebas la ponen en cero */
   esperaMinima?: number
 }
 
-const claseBotonInactivo = 'text-etiqueta inline-flex items-center gap-3 rounded-full border-2 px-7 py-[0.9375rem] cursor-not-allowed'
+const claseBoton = 'text-etiqueta inline-flex items-center gap-3 rounded-full border-2 px-7 py-[0.9375rem]'
 
 // Pantalla final del recorrido, sobre un fondo oscuro de puntos: primero una espera («armando tu propuesta») y luego dos caminos.
-// Ni el directorio ni «Mi perfil» existen todavía: los dos caminos se muestran apagados y con la insignia «Pronto».
-export function CierreView({ textos, iniciales, logoSrc, isotipoSrc, hrefInicio, alPreparar, esperaMinima }: CierreViewProps) {
+// «Revisar mi perfil» lleva a la página del perfil. El directorio todavía no existe: «Ir a descubrir» se muestra apagado y con la
+// insignia «Pronto».
+export function CierreView({ textos, iniciales, logoSrc, isotipoSrc, hrefInicio, hrefPerfil, alPreparar, esperaMinima }: CierreViewProps) {
   const t = textos.cierre
   const { estado, reintentar } = useCierre(alPreparar, esperaMinima)
   const titulo = useRef<HTMLHeadingElement>(null)
@@ -76,12 +79,12 @@ export function CierreView({ textos, iniciales, logoSrc, isotipoSrc, hrefInicio,
 
         {estado === 'listo' && (
           <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <button type="button" disabled className={`${claseBotonInactivo} border-fondo bg-fondo text-texto`}>
+            <button type="button" disabled className={`${claseBoton} cursor-not-allowed border-fondo bg-fondo text-texto`}>
               {t.descubrir} <span aria-hidden="true">→</span> <Badge>{t.pronto}</Badge>
             </button>
-            <button type="button" disabled className={`${claseBotonInactivo} border-fondo/60 bg-fondo-oscuro text-fondo`}>
-              {t.revisarPerfil} <Badge tono="oscuro">{t.pronto}</Badge>
-            </button>
+            <Link href={hrefPerfil} className={`${claseBoton} border-fondo/60 bg-fondo-oscuro text-fondo hover:bg-fondo hover:text-texto ${foco}`}>
+              {t.revisarPerfil}
+            </Link>
           </div>
         )}
 

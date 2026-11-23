@@ -12,7 +12,7 @@ vi.mock('@/shared/ui/FondoPuntos', () => ({ FondoPuntos: () => <div data-testid=
 type Resultado = { ok: true } | { ok: false }
 
 function montar(alPreparar: () => Promise<Resultado>, esperaMinima = 0, iniciales = 'AT') {
-  render(<CierreView textos={es} iniciales={iniciales} logoSrc="/logo.svg" isotipoSrc="/isotipo.svg" hrefInicio="/es" alPreparar={alPreparar} esperaMinima={esperaMinima} />)
+  render(<CierreView textos={es} iniciales={iniciales} logoSrc="/logo.svg" isotipoSrc="/isotipo.svg" hrefInicio="/es" hrefPerfil="/es/perfil" alPreparar={alPreparar} esperaMinima={esperaMinima} />)
 }
 
 describe('CierreView', () => {
@@ -24,13 +24,16 @@ describe('CierreView', () => {
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
   })
 
-  it('al terminar muestra que está listo, con los dos caminos apagados y la insignia «Pronto», y el foco en el título', async () => {
+  it('al terminar muestra que está listo, con «Revisar mi perfil» como enlace y «Ir a descubrir» apagado y con «Pronto», y el foco en el título', async () => {
     montar(async () => ({ ok: true }))
     const titulo = await screen.findByRole('heading', { level: 1, name: t.listoTitulo })
     expect(screen.getByText(t.listoTexto)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: new RegExp(t.descubrir) })).toBeDisabled()
-    expect(screen.getByRole('button', { name: new RegExp(t.revisarPerfil) })).toBeDisabled()
-    expect(screen.getAllByText(t.pronto)).toHaveLength(2)
+    expect(screen.getByRole('link', { name: t.revisarPerfil })).toHaveAttribute('href', '/es/perfil')
+    expect(screen.queryByRole('button', { name: new RegExp(t.revisarPerfil) })).not.toBeInTheDocument()
+    // La insignia «Pronto» queda solo en lo que todavía no existe
+    expect(screen.getAllByText(t.pronto)).toHaveLength(1)
+    expect(screen.getByRole('button', { name: new RegExp(t.descubrir) })).toHaveTextContent(t.pronto)
     await waitFor(() => expect(titulo).toHaveFocus())
     expect(screen.getByRole('link', { name: t.inicio })).toHaveAttribute('href', '/es')
   })
@@ -53,7 +56,7 @@ describe('CierreView', () => {
   })
 
   it('muestra las iniciales como avatar; sin nombre, el isotipo en su lugar', () => {
-    const { unmount } = render(<CierreView textos={es} iniciales="AT" logoSrc="/logo.svg" isotipoSrc="/isotipo.svg" hrefInicio="/es" alPreparar={() => new Promise<Resultado>(() => {})} esperaMinima={0} />)
+    const { unmount } = render(<CierreView textos={es} iniciales="AT" logoSrc="/logo.svg" isotipoSrc="/isotipo.svg" hrefInicio="/es" hrefPerfil="/es/perfil" alPreparar={() => new Promise<Resultado>(() => {})} esperaMinima={0} />)
     const avatar = screen.getByRole('img', { name: t.avatar })
     expect(avatar).toHaveTextContent('AT')
     expect(avatar.querySelector('img')).toBeNull()

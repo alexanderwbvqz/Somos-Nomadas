@@ -34,6 +34,12 @@ composition/<modulo>/   único sitio que conoce mocks y http; una carpeta por m�
 shared/            genérico, sin vocabulario de negocio
 ```
 
+Rutas (`app/[idioma]/`): una carpeta de grupo según lo que rodea a la página.
+
+- `(sitio)`: páginas públicas, con la cabecera y el pie completos.
+- `(enfocado)`: pantallas de una sola tarea (cuenta, bienvenida, recorrido de habilidades): sin cabecera ni pie; cada pantalla pone su propia barra y su `<main>`.
+- `(cuenta)`: páginas de la cuenta de la persona (perfil, y más adelante descubrir, conversaciones, guardados): su `layout.tsx` pone la barra de la cuenta y el `<main>` una sola vez; sin pie. La barra es de `sitio`.
+
 Reglas de dependencia:
 
 - `domain` no importa nada de afuera (ni React, ni `fetch`, ni zod, ni otros módulos salvo su `domain`).
