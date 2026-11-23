@@ -5,7 +5,7 @@ import { DetalleAliadoView } from '@/modules/aliados/presentation/DetalleAliadoV
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { crearAliadoRepository } from '../fabricas/aliados'
-import { vistaDetalleAliado } from '@/modules/aliados/presentation/vistaDetalleAliado'
+import { vistaDetalleAliado } from '@/modules/aliados/presentation/mappers/vistaDetalleAliado'
 
 /** Título y descripción de la página de un aliado; undefined si el aliado no existe */
 export async function metadatosDetalleAliado(idioma: Idioma, id: string) {

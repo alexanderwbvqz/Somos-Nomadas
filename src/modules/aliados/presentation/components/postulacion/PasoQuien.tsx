@@ -2,7 +2,8 @@ import { CampoTexto, MensajeError } from '@/shared/ui/Campos'
 import { tiposAliado } from '@/modules/aliados/domain/Aliado'
 import { LIMITES } from '@/modules/aliados/domain/postulacion'
 import { colorTipoAliado } from '../../ui/coloresTipoAliado'
-import { mensajeDeError, type PropsPaso } from './tiposPaso'
+import { mensajeDeError } from '../../mappers/mensajesError'
+import type { PropsPaso } from './tiposPaso'
 
 function InsigniaPrivado({ texto }: { texto: string }) {
   return <span className="text-etiqueta-chica ml-2 rounded-md bg-texto px-2 py-0.5 align-middle text-fondo">{texto}</span>

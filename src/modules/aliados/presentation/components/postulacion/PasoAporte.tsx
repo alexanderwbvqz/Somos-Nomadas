@@ -3,7 +3,8 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { CampoArea, CampoTexto, Etiqueta, MensajeError } from '@/shared/ui/Campos'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { contarPalabras, LIMITES } from '@/modules/aliados/domain/postulacion'
-import { mensajeDeError, type PropsPaso } from './tiposPaso'
+import { mensajeDeError } from '../../mappers/mensajesError'
+import type { PropsPaso } from './tiposPaso'
 
 const claseControl =
   'w-full rounded-xl border-[1.5px] border-texto/45 bg-tarjeta px-4 py-3 text-base text-texto placeholder:text-texto/45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario'

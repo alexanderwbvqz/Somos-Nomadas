@@ -6,7 +6,7 @@ import { CampoTexto } from '@/shared/ui/Campos'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITES_CUENTA, type DatosInicioSesion, type ErroresInicioSesion } from '../../domain/cuenta'
 import type { TextosAcceso } from '../../language/tipos'
-import { mensajeDeErrorCuenta } from '../ui/mensajesError'
+import { mensajeDeErrorCuenta } from '../mappers/mensajesError'
 import { AccesoGoogle } from './AccesoGoogle'
 
 type Props = {

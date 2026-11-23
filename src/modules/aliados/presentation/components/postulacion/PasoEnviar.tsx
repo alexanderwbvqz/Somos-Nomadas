@@ -3,7 +3,8 @@ import { Casilla } from '@/shared/ui/Campos'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { contactoValido, sitioParaMostrar } from '@/modules/aliados/domain/perfilPostulacion'
 import { contarPalabras, type PasoPostulacion } from '@/modules/aliados/domain/postulacion'
-import { mensajeDeError, type PropsPaso } from './tiposPaso'
+import { mensajeDeError } from '../../mappers/mensajesError'
+import type { PropsPaso } from './tiposPaso'
 
 type Props = PropsPaso & {
   hrefPolitica: string

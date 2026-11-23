@@ -6,7 +6,7 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Pie } from '@/modules/sitio/presentation/Pie'
 import { IconoRedSocial, nombresRedesSociales } from '@/shared/ui/IconoRedSocial'
 import { SelectorIdioma } from '@/shared/ui/SelectorIdioma'
-import { formatearCifra } from '@/modules/landing/presentation/formatoCifras'
+import { formatearCifra } from '@/modules/landing/presentation/mappers/formatoCifras'
 
 export function PieConectado({ idioma }: { idioma: Idioma }) {
   const t = textosSitio(idioma)

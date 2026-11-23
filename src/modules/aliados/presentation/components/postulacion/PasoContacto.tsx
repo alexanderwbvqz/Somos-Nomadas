@@ -1,6 +1,7 @@
 import { Casilla, CampoTexto } from '@/shared/ui/Campos'
 import { LIMITES } from '@/modules/aliados/domain/postulacion'
-import { mensajeDeError, type PropsPaso } from './tiposPaso'
+import { mensajeDeError } from '../../mappers/mensajesError'
+import type { PropsPaso } from './tiposPaso'
 
 // Paso 3: dónde se encuentra al aliado y cómo lo contactan directamente los emprendedores.
 export function PasoContacto({ textos, datos, errores, cambiar }: PropsPaso) {

@@ -4,7 +4,7 @@ import { EventosView } from '@/modules/eventos/presentation/EventosView'
 import { enlaceWhatsapp } from '@/modules/sitio/domain/contacto'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { crearEventoRepository } from '../fabricas/eventos'
-import { vistaEventoListado, vistaProximoEvento } from '@/modules/eventos/presentation/vistaProximoEvento'
+import { vistaEventoListado, vistaProximoEvento } from '@/modules/eventos/presentation/mappers/vistaProximoEvento'
 
 const conMensaje = (mensaje: string) => `${enlaceWhatsapp()}?text=${encodeURIComponent(mensaje)}`
 

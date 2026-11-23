@@ -25,7 +25,7 @@ modules/<modulo>/
   domain/          entidades, reglas puras, puertos, errores
   application/     casos de uso
   infrastructure/  adaptadores (http, mock, mappers con zod)
-  presentation/    hooks, ui/ (ladrillos), components/ (secciones), vistas puras
+  presentation/    hooks, ui/ (ladrillos), components/ (secciones), mappers/ (dominio → pantalla), vistas puras
   language/        textos por idioma (si el módulo tiene pantalla)
 composition/       único sitio que conoce mocks y http: fábricas y pantallas «Conectado»
 shared/            genérico, sin vocabulario de negocio
@@ -46,7 +46,7 @@ Reglas de dependencia:
 - Vigilar las reglas con ESLint (`no-restricted-imports`) y un test que corra ESLint sobre archivos imaginarios y exija la violación.
 - Datos de ejemplo solo en `infrastructure/mock/`.
 
-`ui/` vs `components/` vs `shared/ui`: `shared/ui` es genérico (Button, Badge); `presentation/ui` son ladrillos que solo usan piezas del mismo módulo; `presentation/components` son secciones que coloca `composition/` o la vista.
+`ui/` vs `components/` vs `shared/ui`: `shared/ui` es genérico (Button, Badge); `presentation/ui` son ladrillos que solo usan piezas del mismo módulo; `presentation/components` son secciones que coloca `composition/` o la vista; `presentation/mappers` son funciones puras (sin React ni efectos) que traducen datos del dominio a lo que muestra la pantalla: mensajes de error según el idioma, formatos de cifras y fechas, o las props de una vista. Son distintos de `infrastructure/mappers`, que traducen en el otro sentido (lo que llega de fuera → dominio).
 
 ## 4. Textos e idiomas **[adaptar]**
 

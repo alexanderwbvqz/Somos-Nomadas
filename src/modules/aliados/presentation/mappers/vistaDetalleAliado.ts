@@ -1,7 +1,7 @@
 import type { DetalleAliado } from '@/modules/aliados/application/obtenerDetalleAliado'
 import { contactoDe, urlSegura } from '@/modules/aliados/domain/detalle'
 import { textosAliados } from '@/modules/aliados/language'
-import type { DetalleAliadoViewProps } from './DetalleAliadoView'
+import type { DetalleAliadoViewProps } from '../DetalleAliadoView'
 import { enlaceWhatsapp } from '@/modules/sitio/domain/contacto'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { nombresRedesSociales } from '@/shared/ui/IconoRedSocial'
