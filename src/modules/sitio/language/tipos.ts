@@ -5,6 +5,18 @@ export type TextosSitio = {
     navegacionPrincipal: string
     postular: string
   }
+  /** La barra de las páginas de la cuenta (perfil, descubrir…) */
+  cuenta: {
+    /** Nombre accesible de la lista de secciones */
+    navegacion: string
+    descubrir: string
+    conversaciones: string
+    guardados: string
+    miPerfil: string
+    /** Insignia de lo que todavía no existe */
+    pronto: string
+  }
+
   pie: {
     descripcion: string
     registrados: string

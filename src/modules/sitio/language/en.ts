@@ -6,6 +6,15 @@ export const en: TextosSitio = {
     navegacionPrincipal: 'Main navigation',
     postular: 'Apply',
   },
+  cuenta: {
+    navegacion: 'Your account sections',
+    descubrir: 'Discover',
+    conversaciones: 'Conversations',
+    guardados: 'Saved',
+    miPerfil: 'My profile',
+    pronto: 'Soon',
+  },
+
   pie: {
     descripcion: 'An open community that connects entrepreneurs with complementary talent to found companies.',
     registrados: 'people registered',

@@ -6,6 +6,15 @@ export const pt: TextosSitio = {
     navegacionPrincipal: 'Navegação principal',
     postular: 'Candidatar-se',
   },
+  cuenta: {
+    navegacion: 'Seções da sua conta',
+    descubrir: 'Descobrir',
+    conversaciones: 'Conversas',
+    guardados: 'Salvos',
+    miPerfil: 'Meu perfil',
+    pronto: 'Em breve',
+  },
+
   pie: {
     descripcion: 'Comunidade aberta que conecta empreendedores com talento complementar para fundar empresas.',
     registrados: 'pessoas registradas',
