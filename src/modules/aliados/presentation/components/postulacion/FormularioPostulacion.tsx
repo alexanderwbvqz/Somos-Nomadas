@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { contarPartesListas, partesDelPerfil, TOTAL_PARTES_PERFIL } from '@/modules/aliados/domain/perfilPostulacion'
 import { hayErrores, type PasoPostulacion } from '@/modules/aliados/domain/postulacion'
 import type { TextosPostulacion } from '@/modules/aliados/language/tipos'
@@ -132,7 +132,7 @@ export function FormularioPostulacion({ textos, alEnviar, hrefAliados, hrefPolit
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-4 gap-y-4">
             {vista > 1 ? (
-              <button type="button" onClick={anterior} className={`text-etiqueta text-texto underline underline-offset-8 ${foco}`}>
+              <button type="button" onClick={anterior} className={`text-etiqueta ${areaTactil} text-texto underline underline-offset-8 ${foco}`}>
                 <span aria-hidden="true">←</span> {f.anterior}
               </button>
             ) : (

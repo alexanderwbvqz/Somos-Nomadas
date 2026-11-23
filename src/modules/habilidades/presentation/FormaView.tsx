@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useEffect, useRef, type FormEvent, type ReactNode } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { FilaAcciones } from '@/shared/ui/FilaAcciones'
 import { LayoutPaso } from '@/shared/ui/LayoutPaso'
 import type { DatosForma } from '../domain/forma'
@@ -30,7 +30,7 @@ export type FormaViewProps = {
   hrefSiguiente: string
 }
 
-const claseAnterior = `text-etiqueta cursor-pointer underline underline-offset-8 ${foco}`
+const claseAnterior = `text-etiqueta ${areaTactil} cursor-pointer underline underline-offset-8 ${foco}`
 const claseSiguiente = `text-parrafo cursor-pointer underline underline-offset-[6px] ${foco}`
 
 // «Tu forma de emprender»: seis preguntas de una en una (todas opcionales) y, al final, el perfil que busca y su socio ideal.
@@ -117,7 +117,7 @@ export function FormaView({ textos, inicial, alGuardar, barra, paso, hrefAtras, 
 
           <FilaAcciones
             izquierda={
-              <Link href={hrefAtras} className={`text-etiqueta underline underline-offset-8 ${foco}`}>
+              <Link href={hrefAtras} className={`text-etiqueta ${areaTactil} underline underline-offset-8 ${foco}`}>
                 <span aria-hidden="true">← </span>
                 {t.atras}
               </Link>

@@ -6,7 +6,7 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoArea } from '@/shared/ui/CampoArea'
 import { Casilla } from '@/shared/ui/Casilla'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { FilaAcciones } from '@/shared/ui/FilaAcciones'
 import { LayoutPaso } from '@/shared/ui/LayoutPaso'
 import { LIMITES_HISTORIAS, type DatosHistorias } from '../domain/historias'
@@ -120,7 +120,7 @@ export function HistoriasView({ textos, inicial, alGuardar, barra, paso, hrefAtr
 
           <FilaAcciones
             izquierda={
-              <Link href={hrefAtras} className={`text-etiqueta underline underline-offset-8 ${foco}`}>
+              <Link href={hrefAtras} className={`text-etiqueta ${areaTactil} underline underline-offset-8 ${foco}`}>
                 <span aria-hidden="true">← </span>
                 {t.atras}
               </Link>

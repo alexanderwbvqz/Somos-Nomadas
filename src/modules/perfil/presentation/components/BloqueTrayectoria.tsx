@@ -5,7 +5,7 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Badge } from '@/shared/ui/Badge'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoTexto } from '@/shared/ui/CampoTexto'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITES_TRAYECTORIA } from '../../domain/trayectoria'
 import type { TextosPerfil } from '../../language/tipos'
 import type { useTrayectoria } from '../hooks/useTrayectoria'
@@ -15,7 +15,7 @@ import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; trayectoria: ReturnType<typeof useTrayectoria> }
 
-const claseTextoSubrayado = `text-etiqueta-chica cursor-pointer underline underline-offset-[5px] ${foco}`
+const claseTextoSubrayado = `text-etiqueta-chica ${areaTactil} cursor-pointer underline underline-offset-[5px] ${foco}`
 
 // «Trayectoria»: dónde ha trabajado la persona, si lo ha hecho. Es opcional. Cada entrada que se suma o se quita se guarda en
 // el momento. El foco va al primer campo al abrirlo y vuelve al botón al cerrarlo.
@@ -104,7 +104,7 @@ export function BloqueTrayectoria({ textos, trayectoria }: Props) {
           <div className="mt-3 flex items-center justify-between gap-3">
             <span className="text-nota opacity-65">{rellenarPlantilla(t.contador, { n: trayectoria.entradas.length, max: LIMITES_TRAYECTORIA.entradas })}</span>
             <div className="flex items-center gap-3">
-              <button type="button" onClick={trayectoria.cerrar} className={`text-etiqueta cursor-pointer underline underline-offset-8 ${foco}`}>
+              <button type="button" onClick={trayectoria.cerrar} className={`text-etiqueta ${areaTactil} cursor-pointer underline underline-offset-8 ${foco}`}>
                 {t.listo}
               </button>
               <Boton tipo="submit" lleno deshabilitado={trayectoria.guardando} cursorDeshabilitado="espera">

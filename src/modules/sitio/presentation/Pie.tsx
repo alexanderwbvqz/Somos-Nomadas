@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { Badge } from '@/shared/ui/Badge'
+import { areaTactil } from '@/shared/ui/EnlaceBoton'
 
 export type ColumnaPie = { id: string; titulo: string; enlaces: { texto: string; href: string }[] }
 
@@ -98,7 +99,7 @@ export function Pie({
                 href={contacto.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`text-etiqueta underline underline-offset-8 ${foco}`}
+                className={`text-etiqueta ${areaTactil} underline underline-offset-8 ${foco}`}
               >
                 {contacto.texto} <span aria-hidden="true">↗</span>
               </a>

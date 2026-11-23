@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import type { TextosPerfil } from '../../language/tipos'
 import type { PasoPerfil } from '../pasos'
 
@@ -8,7 +8,7 @@ import type { PasoPerfil } from '../pasos'
 // el nombre completo dice a cuál.
 export function EnlaceEditar({ textos, paso }: { textos: TextosPerfil; paso: PasoPerfil }) {
   return (
-    <Link href={paso.href} className={`text-etiqueta-chica underline underline-offset-[5px] ${foco}`}>
+    <Link href={paso.href} className={`text-etiqueta-chica ${areaTactil} underline underline-offset-[5px] ${foco}`}>
       {textos.editar}
       {' '}
       <span className="sr-only">{rellenarPlantilla(textos.editarEn, { paso: paso.nombre })}</span>

@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoTexto } from '@/shared/ui/CampoTexto'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITES_EVIDENCIA } from '../../domain/evidencia'
 import type { TextosPerfil } from '../../language/tipos'
 import type { useEvidencia } from '../hooks/useEvidencia'
@@ -35,7 +35,7 @@ export function BloqueEvidencia({ textos, evidencia }: Props) {
       titulo={`${t.titulo} · ${contador}`}
       accion={
         !evidencia.editando && (
-          <button ref={abrir} type="button" onClick={evidencia.abrir} className={`text-etiqueta-chica cursor-pointer underline underline-offset-[5px] ${foco}`}>
+          <button ref={abrir} type="button" onClick={evidencia.abrir} className={`text-etiqueta-chica ${areaTactil} cursor-pointer underline underline-offset-[5px] ${foco}`}>
             {evidencia.enlaces.length > 0 ? textos.editar : t.sumar}
             {' '}
             <span className="sr-only">{t.titulo}</span>
@@ -99,7 +99,7 @@ export function BloqueEvidencia({ textos, evidencia }: Props) {
 
           <div className="mt-3 flex items-center justify-between gap-3">
             <span className="text-nota opacity-65">{t.ayuda}</span>
-            <button type="button" onClick={evidencia.cerrar} className={`text-etiqueta cursor-pointer underline underline-offset-8 ${foco}`}>
+            <button type="button" onClick={evidencia.cerrar} className={`text-etiqueta ${areaTactil} cursor-pointer underline underline-offset-8 ${foco}`}>
               {t.listo}
             </button>
           </div>

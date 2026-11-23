@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoArea } from '@/shared/ui/CampoArea'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { LIMITE_SOBRE_MI } from '../../domain/sobreMi'
 import type { TextosPerfil } from '../../language/tipos'
 import type { useSobreMi } from '../hooks/useSobreMi'
@@ -33,7 +33,7 @@ export function BloqueSobreMi({ textos, sobreMi }: Props) {
       titulo={t.titulo}
       accion={
         !sobreMi.editando && (
-          <button ref={abrir} type="button" onClick={sobreMi.abrir} className={`text-etiqueta-chica cursor-pointer underline underline-offset-[5px] ${foco}`}>
+          <button ref={abrir} type="button" onClick={sobreMi.abrir} className={`text-etiqueta-chica ${areaTactil} cursor-pointer underline underline-offset-[5px] ${foco}`}>
             {sobreMi.guardado ? textos.editar : t.escribir}
             {' '}
             <span className="sr-only">{t.titulo}</span>
@@ -66,7 +66,7 @@ export function BloqueSobreMi({ textos, sobreMi }: Props) {
             </p>
           )}
           <div className="mt-3 flex items-center justify-end gap-3">
-            <button type="button" onClick={sobreMi.cancelar} className={`text-etiqueta cursor-pointer underline underline-offset-8 ${foco}`}>
+            <button type="button" onClick={sobreMi.cancelar} className={`text-etiqueta ${areaTactil} cursor-pointer underline underline-offset-8 ${foco}`}>
               {t.cancelar}
             </button>
             <Boton tipo="submit" lleno deshabilitado={sobreMi.guardando} cursorDeshabilitado="espera">

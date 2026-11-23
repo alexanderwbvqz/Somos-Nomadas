@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { areaTactil } from '@/shared/ui/EnlaceBoton'
 import type { TipoAliado } from '../../domain/Aliado'
 import { colorTipoAliado } from '../ui/coloresTipoAliado'
 
@@ -18,7 +19,7 @@ export function CabeceraAliado({ tipo, etiquetaTipo, nombre, descripcion, textoV
       <div className="mx-auto w-full max-w-7xl">
         <Link
           href={hrefVolver}
-          className="text-etiqueta inline-block underline underline-offset-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario"
+          className={`text-etiqueta ${areaTactil} underline underline-offset-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario`}
         >
           <span aria-hidden="true">← </span>
           {textoVolver}

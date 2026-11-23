@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { FormEvent, ReactNode } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { FilaAcciones } from '@/shared/ui/FilaAcciones'
 import { LayoutPaso } from '@/shared/ui/LayoutPaso'
 import { habilidades } from '../domain/catalogo'
@@ -75,7 +75,7 @@ export function TareasView({ textos, marcasIniciales, alGuardar, barra, paso, hr
 
           <FilaAcciones
             izquierda={
-              <Link href={hrefAtras} className={`text-etiqueta underline underline-offset-8 ${foco}`}>
+              <Link href={hrefAtras} className={`text-etiqueta ${areaTactil} underline underline-offset-8 ${foco}`}>
                 <span aria-hidden="true">← </span>
                 {t.atras}
               </Link>

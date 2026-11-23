@@ -27,7 +27,7 @@ export function BarraSuperior({ logoSrc, logoAlt, hrefInicio, etiquetaNavegacion
               <li key={enlace.href}>
                 <Link
                   href={enlace.href}
-                  className="text-etiqueta inline-flex items-center gap-3 text-texto focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario"
+                  className="text-etiqueta inline-flex min-h-6 items-center gap-3 text-texto focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario"
                 >
                   {enlace.texto}
                   <span aria-hidden="true">+</span>

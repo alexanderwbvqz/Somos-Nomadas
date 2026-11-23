@@ -16,8 +16,10 @@ type Props = {
   children: ReactNode
 }
 
+/** Un enlace o botón de texto suelto mide al menos 24 px de alto (WCAG 2.2, 2.5.8) */
+export const areaTactil = 'inline-flex min-h-6 items-center'
 export const foco = 'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario'
-const subrayado = 'text-etiqueta inline-flex items-center gap-2 text-texto underline underline-offset-8'
+const subrayado = `text-etiqueta ${areaTactil} gap-2 text-texto underline underline-offset-8`
 
 /** Clases del botón con borde (contorno) o relleno (lleno); las comparten enlaces y botones */
 export function claseBoton(lleno: boolean): string {

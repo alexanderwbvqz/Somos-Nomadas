@@ -3,7 +3,7 @@ import { PASOS_TOTAL } from '@/modules/habilidades/domain/recorrido'
 import type { TextosHabilidades } from '@/modules/habilidades/language/tipos'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { ProgresoPaso } from '@/shared/ui/ProgresoPaso'
 import { BarraEnfocadaConectado } from '@/composition/sitio/pantallas/BarraEnfocadaConectado'
 
@@ -24,7 +24,7 @@ export function BarraDePaso({ idioma, textos, paso, nombre }: Props) {
         idioma={idioma}
         derecha={
           // provisional: todavía no existe el panel adonde llevar a quien salta; por ahora va al inicio del sitio
-          <Link href={`/${idioma}`} className={`text-etiqueta-chica underline underline-offset-8 ${foco}`}>
+          <Link href={`/${idioma}`} className={`text-etiqueta-chica ${areaTactil} underline underline-offset-8 ${foco}`}>
             {textos.comun.saltar} <span aria-hidden="true">→</span>
           </Link>
         }

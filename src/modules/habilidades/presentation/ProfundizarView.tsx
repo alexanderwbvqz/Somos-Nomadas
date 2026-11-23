@@ -5,7 +5,7 @@ import { useEffect, type FormEvent, type ReactNode } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { CampoArea } from '@/shared/ui/CampoArea'
 import { Boton } from '@/shared/ui/Boton'
-import { foco } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 import { FilaAcciones } from '@/shared/ui/FilaAcciones'
 import { LayoutPaso } from '@/shared/ui/LayoutPaso'
 import { SeccionPlegable } from '@/shared/ui/SeccionPlegable'
@@ -53,7 +53,7 @@ export function ProfundizarView({ textos, habilidades, marcas, contadasIniciales
   }
 
   const enlaceAtras = (
-    <Link href={hrefAtras} className={`text-etiqueta underline underline-offset-8 ${foco}`}>
+    <Link href={hrefAtras} className={`text-etiqueta ${areaTactil} underline underline-offset-8 ${foco}`}>
       <span aria-hidden="true">← </span>
       {secciones.length === 0 ? t.volverATareas : t.atras}
     </Link>
