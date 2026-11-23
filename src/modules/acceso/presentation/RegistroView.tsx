@@ -16,13 +16,13 @@ export type RegistroViewProps = {
   alContinuarConGoogle: AccionGoogle
   hrefInicioSesion: string
   hrefPolitica: string
-  /** Adónde lleva "Volver al inicio" una vez dentro, mientras no exista el panel */
-  hrefInicio: string
+  /** Adónde lleva "Completar mi perfil" una vez dentro */
+  hrefContinuar: string
 }
 
 // Pantalla de crear cuenta: el formulario (con Google o con correo y contraseña) y, si fue con correo, la
 // confirmación de que el enlace va en camino. Con Google entra directo: su correo ya viene verificado.
-export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGoogle, hrefInicioSesion, hrefPolitica, hrefInicio }: RegistroViewProps) {
+export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGoogle, hrefInicioSesion, hrefPolitica, hrefContinuar }: RegistroViewProps) {
   const { datos, errores, enviando, aviso, correoEnviado, enfoque, cambiar, enviar, volverAlFormulario } = useRegistro(alRegistrar)
   const google = useGoogle(alContinuarConGoogle)
 
@@ -31,7 +31,7 @@ export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGo
     if (enfoque) document.getElementById(enfoque.id)?.focus()
   }, [enfoque])
 
-  if (google.correo) return <SesionIniciada textos={textos} correo={google.correo} hrefInicio={hrefInicio} />
+  if (google.correo) return <SesionIniciada textos={textos} correo={google.correo} hrefContinuar={hrefContinuar} />
 
   if (correoEnviado) {
     const c = textos.confirmacion

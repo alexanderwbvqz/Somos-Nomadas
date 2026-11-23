@@ -13,13 +13,13 @@ export type InicioSesionViewProps = {
   alIniciar: AccionIniciarSesion
   alContinuarConGoogle: AccionGoogle
   hrefRegistro: string
-  /** Adónde lleva "Volver al inicio" una vez dentro, mientras no exista el panel */
-  hrefInicio: string
+  /** Adónde lleva "Completar mi perfil" una vez dentro */
+  hrefContinuar: string
 }
 
 // Pantalla de iniciar sesión (con Google o con correo y contraseña). Al entrar muestra un mensaje provisional:
 // el panel todavía no existe.
-export function InicioSesionView({ textos, alIniciar, alContinuarConGoogle, hrefRegistro, hrefInicio }: InicioSesionViewProps) {
+export function InicioSesionView({ textos, alIniciar, alContinuarConGoogle, hrefRegistro, hrefContinuar }: InicioSesionViewProps) {
   const { datos, errores, enviando, aviso, correoDentro, enfoque, cambiar, enviar } = useInicioSesion(alIniciar)
   const google = useGoogle(alContinuarConGoogle)
   const t = textos.inicio
@@ -29,7 +29,7 @@ export function InicioSesionView({ textos, alIniciar, alContinuarConGoogle, href
   }, [enfoque])
 
   const correo = correoDentro ?? google.correo
-  if (correo) return <SesionIniciada textos={textos} correo={correo} hrefInicio={hrefInicio} />
+  if (correo) return <SesionIniciada textos={textos} correo={correo} hrefContinuar={hrefContinuar} />
 
   return (
     <PaginaAcceso etiqueta={t.etiqueta} titulo={t.titulo} parrafo={t.parrafo}>

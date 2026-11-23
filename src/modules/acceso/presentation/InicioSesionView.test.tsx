@@ -12,7 +12,7 @@ const t = es
 function montar(resultado: ResultadoInicioSesion = { ok: true, correo: 'ana@correo.com' }, google: ResultadoGoogle = { ok: true, correo: 'cuenta.google@ejemplo.com' }) {
   const alIniciar = vi.fn<(datos: DatosInicioSesion) => Promise<ResultadoInicioSesion>>(async () => resultado)
   const alContinuarConGoogle = vi.fn<(credencial: string) => Promise<ResultadoGoogle>>(async () => google)
-  render(<InicioSesionView textos={t} alIniciar={alIniciar} alContinuarConGoogle={alContinuarConGoogle} hrefRegistro="/es/registro" hrefInicio="/es" />)
+  render(<InicioSesionView textos={t} alIniciar={alIniciar} alContinuarConGoogle={alContinuarConGoogle} hrefRegistro="/es/registro" hrefContinuar="/es/bienvenida" />)
   return { alIniciar, alContinuarConGoogle, usuario: userEvent.setup() }
 }
 
@@ -45,7 +45,7 @@ describe('InicioSesionView', () => {
     await waitFor(() => expect(alIniciar).toHaveBeenCalledWith({ correo: 'ana@correo.com', clave: 'clave-segura-9' }))
     expect(await screen.findByRole('heading', { level: 1, name: t.dentro.titulo })).toBeInTheDocument()
     expect(screen.getByText('Entraste como ana@correo.com. Tu panel estará disponible muy pronto.')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: t.dentro.volver })).toHaveAttribute('href', '/es')
+    expect(screen.getByRole('link', { name: t.dentro.continuar })).toHaveAttribute("href", "/es/bienvenida")
   })
 
   it('si los datos no corresponden avisa sin decir cuál falla, borra la contraseña y vuelve a ella', async () => {

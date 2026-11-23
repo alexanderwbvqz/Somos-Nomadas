@@ -6,16 +6,16 @@ import { PaginaAcceso } from '../ui/PaginaAcceso'
 type Props = {
   textos: TextosAcceso
   correo: string
-  hrefInicio: string
+  hrefContinuar: string
 }
 
 // Lo que se ve al entrar (con correo o con Google) mientras no exista el panel.
-export function SesionIniciada({ textos, correo, hrefInicio }: Props) {
+export function SesionIniciada({ textos, correo, hrefContinuar }: Props) {
   const t = textos.dentro
   return (
     <PaginaAcceso etiqueta={t.etiqueta} titulo={t.titulo} parrafo={rellenarPlantilla(t.texto, { correo })}>
       <div className="flex">
-        <EnlaceBoton href={hrefInicio}>{t.volver}</EnlaceBoton>
+        <EnlaceBoton href={hrefContinuar}>{t.continuar}</EnlaceBoton>
       </div>
     </PaginaAcceso>
   )

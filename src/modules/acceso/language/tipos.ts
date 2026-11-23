@@ -76,6 +76,6 @@ export type TextosAcceso = {
     titulo: string
     /** Lleva {correo} */
     texto: string
-    volver: string
+    continuar: string
   }
 }

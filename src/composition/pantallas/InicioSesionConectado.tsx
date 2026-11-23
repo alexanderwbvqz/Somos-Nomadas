@@ -10,7 +10,7 @@ export function InicioSesionConectado({ idioma }: { idioma: Idioma }) {
       alIniciar={iniciarSesionAccion}
       alContinuarConGoogle={continuarConGoogleAccion}
       hrefRegistro={`/${idioma}/registro`}
-      hrefInicio={`/${idioma}`}
+      hrefContinuar={`/${idioma}/bienvenida`}
     />
   )
 }

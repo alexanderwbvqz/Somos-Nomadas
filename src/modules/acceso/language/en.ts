@@ -82,6 +82,6 @@ export const en: TextosAcceso = {
     etiqueta: 'Founders',
     titulo: 'Logged in',
     texto: 'You are logged in as {correo}. Your dashboard will be available very soon.',
-    volver: 'Back to home',
+    continuar: 'Complete my profile',
   },
 }

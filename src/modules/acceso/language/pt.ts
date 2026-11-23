@@ -82,6 +82,6 @@ export const pt: TextosAcceso = {
     etiqueta: 'Founders',
     titulo: 'Login feito',
     texto: 'Você entrou como {correo}. Seu painel estará disponível em breve.',
-    volver: 'Voltar ao início',
+    continuar: 'Completar meu perfil',
   },
 }

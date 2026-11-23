@@ -82,6 +82,6 @@ export const es: TextosAcceso = {
     etiqueta: 'Founders',
     titulo: 'Sesión iniciada',
     texto: 'Entraste como {correo}. Tu panel estará disponible muy pronto.',
-    volver: 'Volver al inicio',
+    continuar: 'Completar mi perfil',
   },
 }

@@ -12,7 +12,7 @@ export function RegistroConectado({ idioma }: { idioma: Idioma }) {
       alContinuarConGoogle={continuarConGoogleAccion}
       hrefInicioSesion={`/${idioma}/iniciar-sesion`}
       hrefPolitica={`/${idioma}/politica-de-datos`}
-      hrefInicio={`/${idioma}`}
+      hrefContinuar={`/${idioma}/bienvenida`}
     />
   )
 }

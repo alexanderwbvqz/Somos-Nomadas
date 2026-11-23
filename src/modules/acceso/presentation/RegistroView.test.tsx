@@ -22,7 +22,7 @@ function montar(resultado: ResultadoRegistro = { ok: true, correo: 'ana@correo.c
       alContinuarConGoogle={alContinuarConGoogle}
       hrefInicioSesion="/es/iniciar-sesion"
       hrefPolitica="/es/politica-de-datos"
-      hrefInicio="/es"
+      hrefContinuar="/es/bienvenida"
     />,
   )
   return { alRegistrar, alReenviar, alContinuarConGoogle, usuario: userEvent.setup() }
