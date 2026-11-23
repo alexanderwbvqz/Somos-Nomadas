@@ -2,9 +2,12 @@
 
 import Link from 'next/link'
 import { useEffect, type FormEvent, type ReactNode } from 'react'
+import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
 import { CampoArea, Casilla } from '@/shared/ui/Campos'
 import { foco } from '@/shared/ui/EnlaceBoton'
+import { FilaAcciones } from '@/shared/ui/FilaAcciones'
+import { LayoutPaso } from '@/shared/ui/LayoutPaso'
 import { LIMITES_HISTORIAS, type DatosHistorias } from '../domain/historias'
 import type { TextosHabilidades } from '../language/tipos'
 import { OpcionesSectores } from './components/OpcionesSectores'
@@ -16,8 +19,10 @@ export type HistoriasViewProps = {
   /** Lo que ya escribió, si vuelve a este paso */
   inicial: DatosHistorias
   alGuardar: AccionGuardarHistorias
-  /** La barra de arriba (logo, progreso y «Saltar»); la pone quien arma la pantalla, y va fuera del <main> */
+  /** Lo de arriba (barra con el logo y «Saltar», y el progreso); lo pone quien arma la pantalla, y va fuera del <main> */
   barra: ReactNode
+  /** El número del paso, para rotularlo («Paso 04») */
+  paso: number
   hrefAtras: string
   /** Adónde va la persona en cuanto se guarda lo que escribió */
   hrefSiguiente: string
@@ -27,7 +32,7 @@ export type HistoriasViewProps = {
 
 // «Tus historias»: tres textos y los sectores que le mueven, todo opcional. Si escribe algo, aparece la casilla del permiso
 // para analizarlo con inteligencia artificial; sin ese permiso no se guarda.
-export function HistoriasView({ textos, inicial, alGuardar, barra, hrefAtras, hrefSiguiente, hrefInformacion }: HistoriasViewProps) {
+export function HistoriasView({ textos, inicial, alGuardar, barra, paso, hrefAtras, hrefSiguiente, hrefInformacion }: HistoriasViewProps) {
   const t = textos.historias
   const e = useHistorias(inicial, alGuardar, hrefSiguiente)
   const error = (campo: keyof typeof e.errores) => mensajeDeErrorHistorias(t, e.errores[campo])
@@ -47,13 +52,14 @@ export function HistoriasView({ textos, inicial, alGuardar, barra, hrefAtras, hr
   return (
     <>
       {barra}
-      <main className="flex-1">
-        <div className="mx-auto w-full max-w-3xl px-6 py-9 escritorio:py-[4.5rem]">
-          <h1 className="text-titulo-seccion texto-equilibrado">{t.titulo}</h1>
-          <p className="text-parrafo-grande mt-3 max-w-xl opacity-85">{t.subtitulo}</p>
-          <p className="text-cuerpo mt-3 max-w-xl opacity-75">{t.porQue}</p>
-
-          <form noValidate onSubmit={alEnviar} className="mt-8 grid gap-7">
+      <LayoutPaso
+        etiqueta={rellenarPlantilla(textos.comun.numeroPaso, { n: String(paso).padStart(2, '0') })}
+        titulo={t.titulo}
+        subtitulo={t.subtitulo}
+        porQue={{ titulo: textos.comun.porQue, texto: t.porQue }}
+      >
+        <form noValidate onSubmit={alEnviar}>
+          <div className="grid gap-7">
             <CampoArea
               clave="logro"
               etiqueta={<>{t.campos.logro.etiqueta} {opcional}</>}
@@ -109,19 +115,23 @@ export function HistoriasView({ textos, inicial, alGuardar, barra, hrefAtras, hr
                 <span>{t.avisos[e.aviso]}</span>
               </p>
             )}
+          </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-t border-borde/15 pt-6">
+          <FilaAcciones
+            izquierda={
               <Link href={hrefAtras} className={`text-etiqueta underline underline-offset-8 ${foco}`}>
                 <span aria-hidden="true">← </span>
                 {t.atras}
               </Link>
+            }
+            derecha={
               <Boton tipo="submit" lleno deshabilitado={e.enviando || e.guardado} cursorDeshabilitado="espera">
                 {e.enviando || e.guardado ? t.guardando : t.siguiente}
               </Boton>
-            </div>
-          </form>
-        </div>
-      </main>
+            }
+          />
+        </form>
+      </LayoutPaso>
     </>
   )
 }
