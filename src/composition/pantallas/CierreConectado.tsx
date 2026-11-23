@@ -15,6 +15,7 @@ export async function CierreConectado({ idioma }: { idioma: Idioma }) {
       textos={textosHabilidades(idioma)}
       iniciales={iniciales(perfil ? `${perfil.nombre} ${perfil.apellidos}` : undefined)}
       logoSrc="/logo/logo_somos_nomadas_claro.svg"
+      isotipoSrc="/logo/logo_isotipo.svg"
       hrefInicio={`/${idioma}`}
       alPreparar={prepararCierreAccion}
     />

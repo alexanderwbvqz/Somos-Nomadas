@@ -12,7 +12,7 @@ vi.mock('@/shared/ui/FondoPuntos', () => ({ FondoPuntos: () => <div data-testid=
 type Resultado = { ok: true } | { ok: false }
 
 function montar(alPreparar: () => Promise<Resultado>, esperaMinima = 0, iniciales = 'AT') {
-  render(<CierreView textos={es} iniciales={iniciales} logoSrc="/logo.svg" hrefInicio="/es" alPreparar={alPreparar} esperaMinima={esperaMinima} />)
+  render(<CierreView textos={es} iniciales={iniciales} logoSrc="/logo.svg" isotipoSrc="/isotipo.svg" hrefInicio="/es" alPreparar={alPreparar} esperaMinima={esperaMinima} />)
 }
 
 describe('CierreView', () => {
@@ -52,12 +52,16 @@ describe('CierreView', () => {
     }
   })
 
-  it('muestra las iniciales; sin nombre no hay avatar', () => {
-    const { unmount } = render(<CierreView textos={es} iniciales="AT" logoSrc="/logo.svg" hrefInicio="/es" alPreparar={() => new Promise<Resultado>(() => {})} esperaMinima={0} />)
-    expect(screen.getByRole('img', { name: t.avatar })).toHaveTextContent('AT')
+  it('muestra las iniciales como avatar; sin nombre, el isotipo en su lugar', () => {
+    const { unmount } = render(<CierreView textos={es} iniciales="AT" logoSrc="/logo.svg" isotipoSrc="/isotipo.svg" hrefInicio="/es" alPreparar={() => new Promise<Resultado>(() => {})} esperaMinima={0} />)
+    const avatar = screen.getByRole('img', { name: t.avatar })
+    expect(avatar).toHaveTextContent('AT')
+    expect(avatar.querySelector('img')).toBeNull()
     unmount()
     montar(() => new Promise<Resultado>(() => {}), 0, '')
-    expect(screen.queryByRole('img', { name: t.avatar })).not.toBeInTheDocument()
+    const sinNombre = screen.getByRole('img', { name: t.avatar })
+    expect(sinNombre).toHaveTextContent('')
+    expect(sinNombre.querySelector('img')).toHaveAttribute('src', '/isotipo.svg')
   })
 
   it('si falla, lo dice y deja reintentar; al reintentar vuelve a la espera y luego al resultado', async () => {

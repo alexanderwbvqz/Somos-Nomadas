@@ -11,6 +11,8 @@
   --color-primario: #fe412a;
   --color-tarjeta: #ffffff;
   --color-suave: #ece9df;
+  /* Fondo de las pantallas oscuras, como la de cierre del recorrido */
+  --color-fondo-oscuro: #050b0d;
 
   /* Degradado del fondo de página (ver ../fondos/fondos.css) */
   --color-degradado-crema: #f3f1e8;
