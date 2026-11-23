@@ -157,7 +157,7 @@ export const es: TextosHabilidades = {
     },
     titulo: 'Tus historias',
     subtitulo: 'Cuéntanos con tus palabras lo que has hecho y lo que te mueve. Con 2 a 4 líneas basta.',
-    porQue: 'Lo que cuentas dice más de ti que una lista. No es un currículum: nos interesa lo que hiciste, no dónde trabajaste.',
+    porQue: 'Lo que cuentas dice más de ti que una lista. No hace falta un currículum: cuéntanos lo que hiciste.',
     campos: {
       logro: {
         etiqueta: 'Algo que lograste o construiste y de lo que estás orgulloso',

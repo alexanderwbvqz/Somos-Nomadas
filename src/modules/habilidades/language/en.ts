@@ -157,7 +157,7 @@ export const en: TextosHabilidades = {
     },
     titulo: 'Your stories',
     subtitulo: 'Tell us in your own words what you have done and what moves you. 2 to 4 lines are enough.',
-    porQue: 'What you tell us says more about you than a list. This is not a résumé: we care about what you did, not where you worked.',
+    porQue: 'What you tell us says more about you than a list. You do not need a résumé: tell us what you did.',
     campos: {
       logro: {
         etiqueta: 'Something you achieved or built and are proud of',
