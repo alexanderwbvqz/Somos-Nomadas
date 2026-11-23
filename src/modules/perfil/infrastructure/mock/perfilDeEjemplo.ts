@@ -97,7 +97,7 @@ export function perfilDeEjemplo(): Perfil {
       },
       { pregunta: '¿Qué problema del mundo te gustaría resolver?', texto: 'El acceso a crédito para pequeños talleres.' },
     ],
-    sectores: ['Educación', 'Fintech', 'Impacto social'],
+    sectores: { pregunta: 'Sectores que te mueven', respuestas: ['Educación', 'Fintech', 'Impacto social'] },
     forma: [
       { pregunta: '¿Cuánto tiempo dedicarías a un proyecto propio?', respuestas: ['10 a 20 horas'] },
       { pregunta: '¿Cuándo quieres arrancar?', respuestas: ['Ya mismo'] },
@@ -106,8 +106,8 @@ export function perfilDeEjemplo(): Perfil {
       { pregunta: 'Frente al riesgo…', respuestas: ['Busco equilibrio'] },
       { pregunta: 'Tu ritmo de trabajo', respuestas: ['Constante'] },
     ],
-    buscaPerfil: ['Ventas y Marketing'],
-    socioIdeal: 'Alguien que escuche y que no le tenga miedo a vender.',
+    buscaPerfil: { pregunta: '¿Qué perfil buscas para tu equipo?', respuestas: ['Ventas y Marketing'] },
+    socioIdeal: { pregunta: '¿Cómo es tu socio ideal?', texto: 'Alguien que escuche y que no le tenga miedo a vender.' },
     sobreMi: 'Programo desde hace cuatro años y me gusta ver que lo que construyo lo use gente de verdad. Busco a alguien que venda.',
     trayectoria: [
       { desde: 2022, rol: 'Desarrolladora web', donde: 'Tienda de artesanías (proyecto propio)', que: 'Programé la tienda en línea y organicé los envíos.' },

@@ -47,11 +47,13 @@ export type Perfil = {
   /** Las tareas que marcó, por grupo, y cuántas hay en total para elegir */
   tareas: { total: number; grupos: GrupoTareasPerfil[] }
   historias: TextoPerfil[]
-  sectores: string[]
+  /** «Sectores que te mueven» con los que eligió */
+  sectores: RespuestaPerfil
   forma: RespuestaPerfil[]
-  /** Las áreas del equipo que busca */
-  buscaPerfil: string[]
-  socioIdeal: string
+  /** «¿Qué perfil buscas para tu equipo?» con las áreas que eligió */
+  buscaPerfil: RespuestaPerfil
+  /** «¿Cómo es tu socio ideal?»; el texto queda vacío si no escribió nada */
+  socioIdeal: TextoPerfil
   /** Lo que la persona escribe en el propio perfil; vacío si no escribió nada */
   sobreMi: string
   trayectoria: EntradaTrayectoria[]
