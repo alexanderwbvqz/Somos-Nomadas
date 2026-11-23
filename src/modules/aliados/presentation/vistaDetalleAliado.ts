@@ -1,11 +1,11 @@
 import type { DetalleAliado } from '@/modules/aliados/application/obtenerDetalleAliado'
 import { contactoDe, urlSegura } from '@/modules/aliados/domain/detalle'
 import { textosAliados } from '@/modules/aliados/language'
-import type { DetalleAliadoViewProps } from '@/modules/aliados/presentation/DetalleAliadoView'
+import type { DetalleAliadoViewProps } from './DetalleAliadoView'
 import { enlaceWhatsapp } from '@/modules/sitio/domain/contacto'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { nombresRedesSociales } from '@/shared/ui/IconoRedSocial'
-import { formatearMesAnio } from './formatoFechas'
+import { formatearMesAnio } from '@/shared/lib/formatoFechas'
 
 // Convierte el detalle de un aliado en lo que muestra la página: etiquetas en el idioma,
 // enlaces ya comprobados como seguros, la fecha formateada y las formas de contacto que sí tiene.

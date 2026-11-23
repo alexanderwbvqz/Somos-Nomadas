@@ -1,6 +1,6 @@
 import type { Cifra } from '@/modules/landing/domain/cifras'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { formatearMesAnio } from './formatoFechas'
+import { formatearMesAnio } from '@/shared/lib/formatoFechas'
 
 const ESPACIO_FIJO = ' '
 

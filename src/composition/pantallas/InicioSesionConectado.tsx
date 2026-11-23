@@ -1,7 +1,7 @@
 import { textosAcceso } from '@/modules/acceso/language'
 import { InicioSesionView } from '@/modules/acceso/presentation/InicioSesionView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { iniciarSesionAccion } from '../accionesAcceso'
+import { iniciarSesionAccion } from '@/composition/acciones/accionesAcceso'
 
 export function InicioSesionConectado({ idioma }: { idioma: Idioma }) {
   return (

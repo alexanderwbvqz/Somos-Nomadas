@@ -7,7 +7,7 @@ import { textosLanding } from '@/modules/landing/language'
 import type { ItemProblema } from '@/modules/landing/presentation/components/SeccionProblemas'
 import { LandingView } from '@/modules/landing/presentation/LandingView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
-import { formatearCifra, formatearFuente } from '../formatoCifras'
+import { formatearCifra, formatearFuente } from '@/modules/landing/presentation/formatoCifras'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 
 export function LandingConectado({ idioma }: { idioma: Idioma }) {
