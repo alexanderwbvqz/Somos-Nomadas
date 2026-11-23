@@ -350,8 +350,10 @@ describe('MiPerfilView', () => {
       await usuario.click(screen.getByRole('button', { name: 'Editar Evidencia' }))
       expect(screen.getByRole('textbox', { name: 'Enlace' })).toHaveFocus()
       for (const mal of ['http://inseguro.example', 'javascript:alert(1)', 'https://banco.com@otro.example', 'solo texto']) {
+        // Pegar es mucho más rápido que escribir letra por letra, y para esta prueba da igual
         await usuario.clear(screen.getByRole('textbox', { name: 'Enlace' }))
-        await usuario.type(screen.getByRole('textbox', { name: 'Enlace' }), mal)
+        await usuario.click(screen.getByRole('textbox', { name: 'Enlace' }))
+        await usuario.paste(mal)
         await usuario.click(screen.getByRole('button', { name: 'Agregar' }))
         expect(await screen.findByText('Escribe un enlace completo que empiece con https://'), mal).toBeInTheDocument()
       }
@@ -361,7 +363,8 @@ describe('MiPerfilView', () => {
     it('rechaza un enlace repetido', async () => {
       const usuario = montar()
       await usuario.click(screen.getByRole('button', { name: 'Editar Evidencia' }))
-      await usuario.type(screen.getByRole('textbox', { name: 'Enlace' }), 'https://GitHub.com/anatorres')
+      await usuario.click(screen.getByRole('textbox', { name: 'Enlace' }))
+      await usuario.paste('https://GitHub.com/anatorres')
       await usuario.click(screen.getByRole('button', { name: 'Agregar' }))
       expect(await screen.findByText('Ese enlace ya está en la lista.')).toBeInTheDocument()
       expect(acciones.evidencia).not.toHaveBeenCalled()

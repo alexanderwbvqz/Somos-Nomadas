@@ -44,7 +44,7 @@ describe('TareasView', () => {
     expect(screen.getByRole('link', { name: new RegExp(t.atras) })).toHaveAttribute('href', '/es/habilidades')
   })
 
-  it('tiene los ocho grupos, con nombres que no dicen de qué área son; solo el primero empieza abierto', () => {
+  it('tiene los diez grupos, con nombres que no dicen de qué área son; solo el primero empieza abierto', () => {
     montar()
     const botones = screen.getAllByRole('button', { expanded: false }).concat(screen.getAllByRole('button', { expanded: true }))
     const nombres = botones.map((b) => b.textContent ?? '')
@@ -53,7 +53,7 @@ describe('TareasView', () => {
     }
     expect(grupo('Definir y organizar')).toHaveAttribute('aria-expanded', 'true')
     expect(grupo('Construir con tecnología')).toHaveAttribute('aria-expanded', 'false')
-    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(8)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(10)
   })
 
   it('el botón de seguir empieza apagado y avisa de que hace falta una tarea', async () => {
@@ -62,14 +62,14 @@ describe('TareasView', () => {
     expect(screen.getByText(t.minimo)).toBeInTheDocument()
     await usuario.click(siguiente())
     expect(alGuardar).not.toHaveBeenCalled()
-    expect(screen.getByText('Tareas marcadas: 0 de 30')).toBeInTheDocument()
+    expect(screen.getByText('Tareas marcadas: 0 de 40')).toBeInTheDocument()
   })
 
   it('marcar una tarea empieza en "Una vez", sube los contadores y enciende el botón', async () => {
     const { usuario } = montar()
     await usuario.click(tarea('Definir qué construir primero y por qué'))
     expect(screen.getByRole('radio', { name: t.frecuencias.unaVez })).toBeChecked()
-    expect(screen.getByText('Tareas marcadas: 1 de 30')).toBeInTheDocument()
+    expect(screen.getByText('Tareas marcadas: 1 de 40')).toBeInTheDocument()
     expect(within(grupo('Definir y organizar')).getByText('1 de 4')).toBeInTheDocument()
     expect(siguiente()).toBeEnabled()
     expect(screen.queryByText(t.minimo)).not.toBeInTheDocument()
@@ -89,7 +89,7 @@ describe('TareasView', () => {
     await usuario.click(tarea('Entrevistar a posibles usuarios'))
     await usuario.click(tarea('Entrevistar a posibles usuarios'))
     expect(screen.queryByRole('radio')).not.toBeInTheDocument()
-    expect(screen.getByText('Tareas marcadas: 0 de 30')).toBeInTheDocument()
+    expect(screen.getByText('Tareas marcadas: 0 de 40')).toBeInTheDocument()
     expect(siguiente()).toBeDisabled()
   })
 
@@ -100,7 +100,7 @@ describe('TareasView', () => {
     await usuario.click(tarea('Programar una página web'))
     await usuario.click(grupo('Construir con tecnología'))
     expect(screen.queryByRole('checkbox', { name: 'Programar una página web' })).not.toBeInTheDocument()
-    expect(within(grupo('Construir con tecnología')).getByText('1 de 6')).toBeInTheDocument()
+    expect(within(grupo('Construir con tecnología')).getByText('1 de 4')).toBeInTheDocument()
     await usuario.click(grupo('Construir con tecnología'))
     expect(tarea('Programar una página web')).toBeChecked()
   })
@@ -111,7 +111,7 @@ describe('TareasView', () => {
     expect(grupo('Manejar el dinero')).toHaveAttribute('aria-expanded', 'true')
     expect(grupo('Vender y hacer negocios')).toHaveAttribute('aria-expanded', 'false')
     expect(tarea('Programar una página web')).toBeChecked()
-    expect(screen.getByText('Tareas marcadas: 2 de 30')).toBeInTheDocument()
+    expect(screen.getByText('Tareas marcadas: 2 de 40')).toBeInTheDocument()
     expect(screen.getAllByRole('radio', { checked: true }).map((r) => r.getAttribute('value')).sort()).toEqual(['esMiTrabajo', 'variasVeces'])
     expect(siguiente()).toBeEnabled()
   })

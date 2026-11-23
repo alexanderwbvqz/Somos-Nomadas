@@ -28,7 +28,7 @@ export type TareasViewProps = {
   hrefSiguiente: string
 }
 
-// «Qué has hecho»: las 30 tareas en grupos que se abren y se cierran. Se marcan las que ya hizo y cuántas veces.
+// «Qué has hecho»: las 40 tareas en grupos que se abren y se cierran. Se marcan las que ya hizo y cuántas veces.
 export function TareasView({ textos, marcasIniciales, alGuardar, barra, paso, hrefAtras, hrefSiguiente }: TareasViewProps) {
   const t = textos.tareas
   const e = useTareas(marcasIniciales, alGuardar, hrefSiguiente)

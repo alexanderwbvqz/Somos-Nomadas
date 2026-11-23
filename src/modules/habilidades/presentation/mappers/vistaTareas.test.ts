@@ -5,7 +5,7 @@ import { es } from '../../language/es'
 import { gruposAbiertosAlEmpezar, vistaTareas } from './vistaTareas'
 
 describe('vistaTareas', () => {
-  it('muestra los ocho grupos con sus 30 tareas, en el orden del catálogo y con los textos del idioma', () => {
+  it('muestra los diez grupos con sus 40 tareas, en el orden del catálogo y con los textos del idioma', () => {
     const vista = vistaTareas(es.tareas, {}, [])
     expect(vista.map((grupo) => grupo.grupo)).toEqual([...grupos])
     expect(vista.flatMap((grupo) => grupo.tareas.map((tarea) => tarea.habilidad))).toEqual([...habilidades])
@@ -17,7 +17,7 @@ describe('vistaTareas', () => {
     const vista = vistaTareas(es.tareas, { desarrolloWeb: 'esMiTrabajo', backendApis: 'unaVez', ventas: 'variasVeces' }, [])
     const construir = vista.find((grupo) => grupo.grupo === 'construir')
     expect(construir?.marcadas).toBe(2)
-    expect(construir?.total).toBe(6)
+    expect(construir?.total).toBe(4)
     expect(construir?.tareas.find((tarea) => tarea.habilidad === 'desarrolloWeb')?.frecuencia).toBe('esMiTrabajo')
     expect(vista.find((grupo) => grupo.grupo === 'vender')?.marcadas).toBe(1)
     expect(vista.find((grupo) => grupo.grupo === 'dinero')?.marcadas).toBe(0)

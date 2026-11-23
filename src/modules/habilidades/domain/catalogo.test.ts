@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { areaDe, areas, esArea, esHabilidad, grupos, habilidades, habilidadesPorGrupo } from './catalogo'
 
 describe('catálogo', () => {
-  it('tiene 30 habilidades, sin repetir', () => {
-    expect(habilidades).toHaveLength(30)
-    expect(new Set(habilidades).size).toBe(30)
+  it('tiene 40 habilidades, sin repetir', () => {
+    expect(habilidades).toHaveLength(40)
+    expect(new Set(habilidades).size).toBe(40)
   })
 
   it('cada habilidad está en un grupo, y en uno solo', () => {
@@ -13,13 +13,39 @@ describe('catálogo', () => {
     expect([...enGrupos].sort()).toEqual([...habilidades].sort())
   })
 
-  it('todos los grupos tienen habilidades', () => {
-    for (const grupo of grupos) expect(habilidadesPorGrupo[grupo].length).toBeGreaterThan(0)
+  it('hay diez grupos, de cuatro habilidades cada uno, para que la lista sea pareja', () => {
+    expect(grupos).toHaveLength(10)
+    for (const grupo of grupos) expect(habilidadesPorGrupo[grupo], grupo).toHaveLength(4)
   })
 
-  it('cada habilidad suma a una de las cuatro áreas, y las cuatro áreas tienen al menos una', () => {
+  it('el orden del catálogo es el de los grupos: así se muestra la lista y así se desempata', () => {
+    const enOrdenDeGrupos = grupos.flatMap((grupo) => [...habilidadesPorGrupo[grupo]])
+    expect([...habilidades]).toEqual(enOrdenDeGrupos)
+  })
+
+  it('cada habilidad suma a una de las cuatro áreas', () => {
     for (const habilidad of habilidades) expect(areas).toContain(areaDe[habilidad])
-    for (const area of areas) expect(habilidades.some((habilidad) => areaDe[habilidad] === area)).toBe(true)
+  })
+
+  it('cada área tiene exactamente diez habilidades: ninguna tiene ventaja por tener más donde acumular puntos', () => {
+    for (const area of areas) expect(habilidades.filter((habilidad) => areaDe[habilidad] === area), area).toHaveLength(10)
+  })
+
+  it('las reasignaciones acordadas están donde deben', () => {
+    expect(areaDe.analisisDatos).toBe('finanzas')
+    expect(areaDe.atencionCliente).toBe('operaciones')
+    expect(areaDe.validacionIdeas).toBe('ventasMarketing')
+    expect(areaDe.investigacionUsuarios).toBe('ventasMarketing')
+    expect(areaDe.estrategiaProducto).toBe('operaciones')
+    expect(areaDe.disenoGrafico).toBe('ventasMarketing')
+    expect(areaDe.disenoInterfaces).toBe('tecnologia')
+  })
+
+  it('las diez nuevas son seis de finanzas y cuatro de operaciones', () => {
+    const nuevasDeFinanzas = ['controlGastos', 'preciosMargenes', 'facturacionCobranza', 'impuestos', 'creditosSubvenciones', 'nomina'] as const
+    const nuevasDeOperaciones = ['comprasProveedores', 'controlCalidad', 'procesos', 'inventario'] as const
+    for (const habilidad of nuevasDeFinanzas) expect(areaDe[habilidad], habilidad).toBe('finanzas')
+    for (const habilidad of nuevasDeOperaciones) expect(areaDe[habilidad], habilidad).toBe('operaciones')
   })
 
   it('hay exactamente cuatro áreas', () => {

@@ -57,7 +57,9 @@ describe('puntuar', () => {
     expect(MAX_HABILIDADES).toBe(6)
     expect(puntuadas).toHaveLength(6)
     expect(puntuadas[0]?.habilidad).toBe('ventas')
-    expect(puntuadas.map((p) => p.habilidad)).not.toContain('devopsNube')
+    // Seis habilidades empatan en una vez: se queda fuera la que va última en el orden del catálogo (el de los grupos)
+    expect(puntuadas.map((p) => p.habilidad)).not.toContain('inteligenciaArtificial')
+    expect(puntuadas.map((p) => p.habilidad)).toEqual(expect.arrayContaining(['desarrolloWeb', 'desarrolloMovil', 'backendApis', 'devopsNube', 'ciberseguridad']))
   })
 })
 
