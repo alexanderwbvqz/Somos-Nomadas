@@ -1,7 +1,7 @@
 import type { TextosPerfil } from '../../language/tipos'
 import type { PasoPerfil } from '../pasos'
 import { EnlaceEditar } from '../ui/EnlaceEditar'
-import { Respuestas } from '../ui/ParRespuesta'
+import { Respuestas } from '../ui/Respuestas'
 import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 // «Qué estás buscando», lo que la persona marcó en la bienvenida.
