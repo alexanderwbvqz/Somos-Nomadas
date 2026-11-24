@@ -93,7 +93,18 @@ Cabecera `Authorization: Bearer <token_acceso>`. Respuesta `200`:
 ```json
 { "id": "…", "correo": "ana@correo.com", "correo_confirmado": false }
 ```
-Sin token, o con un token inválido o caducado: `401 no_autenticado`.
+Sin token, o con un token inválido o caducado: `401 no_autenticado`, con la cabecera `WWW-Authenticate: Bearer`. El esquema `Bearer` se acepta en cualquier capitalización. Nunca devuelve la clave, su hash ni la prueba del consentimiento.
+
+### `POST /acceso/renovar`
+
+Petición: `{ "token_renovacion": "…" }`. Respuesta `200`: `{ "token_acceso": "…", "expira_en": 900, "token_renovacion": "…" }` (un par nuevo; el token anterior queda revocado).
+
+- Token desconocido, caducado o revocado: `401 no_autenticado`.
+- Un token ya usado se toma por robo: se cierran **todas** las sesiones de esa cuenta.
+
+### `POST /acceso/cierre`
+
+Petición: `{ "token_renovacion": "…" }`. Respuesta `204` sin cuerpo. Tampoco falla si el token es desconocido o ya estaba cerrado.
 
 ## 6. Errores
 
@@ -110,7 +121,11 @@ Un solo formato en toda la API (lo produce `shared/http/`):
 | 401 | `no_autenticado` | Ruta privada sin token válido |
 | 403 | `correo_sin_confirmar` | Clave correcta, pero el correo aún no se confirmó |
 | 429 | `limite_excedido` | Demasiados intentos |
+| 404 | `no_encontrado` | La ruta no existe |
+| 405 | `metodo_no_permitido` | La ruta existe, pero no con ese método |
 | 500 | `fallo` | Cualquier otro error. Sin detalles internos |
+
+Además de los códigos de campo de la fila `datos_invalidos`, un campo puede llevar `obligatorio` (falta) o `invalido` (el tipo no es el esperado, o supera el tamaño máximo que se acepta por HTTP: 500 caracteres el correo, 1000 la clave). Si el cuerpo ni siquiera es JSON, `campos` va vacío. El error de validación **nunca repite lo que se envió** (podría ser una clave). Los errores inesperados se registran con el tipo de error y la ruta, sin el mensaje ni el traceback, porque podrían llevar datos personales.
 
 Los mensajes que ve la persona **no** vienen de la API: son del frontend (`language/`) y se eligen según el `codigo`.
 

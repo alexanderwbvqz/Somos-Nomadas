@@ -99,6 +99,10 @@ forbidden_modules = [
 name = "infrastructure y api no se importan entre sí"
 type = "independence"
 modules = ["modules.acceso.infrastructure", "modules.acceso.api"]
+# Los tests de api arman la app con los repositorios y dobles de infrastructure/memoria (solo en conftest)
+ignore_imports = [
+    "modules.acceso.api.conftest -> modules.acceso.infrastructure.memoria.*",
+]
 
 [[tool.importlinter.contracts]]
 name = "shared no importa de ningún módulo ni de composition"
