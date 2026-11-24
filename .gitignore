@@ -1,14 +1,28 @@
-node_modules
-.next
-.next-pruebas
-.env*.local
-next-env.d.ts
-*.tsbuildinfo
-e2e/capturas
-test-results
-playwright-report
-AGENTS.md
+# Comun a todo el repositorio. Cada carpeta (frontend/, backend/) tiene ademas el suyo.
+
+# Secretos: solo se sube el .env.example
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Sistema
+.DS_Store
+Thumbs.db
 
 # Guias para agentes: se quedan en el disco, no se suben
 CLAUDE.md
+AGENTS.md
 docs/
+
+# Restos de antes de mover el frontend a frontend/ (si siguen en la raiz)
+/node_modules
+/.next
+/.next-pruebas

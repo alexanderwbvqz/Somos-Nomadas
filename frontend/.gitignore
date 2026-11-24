@@ -1,0 +1,14 @@
+node_modules
+.next
+.next-pruebas
+.env*.local
+next-env.d.ts
+*.tsbuildinfo
+e2e/capturas
+test-results
+playwright-report
+AGENTS.md
+
+# Guias para agentes: se quedan en el disco, no se suben
+CLAUDE.md
+docs/
