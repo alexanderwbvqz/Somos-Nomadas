@@ -17,7 +17,6 @@ export const es: TextosSitio = {
 
   pie: {
     descripcion: 'Comunidad abierta que conecta emprendedores con talento complementario para fundar empresas.',
-    registrados: 'personas registradas',
     explorar: { titulo: 'Explorar', directorio: 'Directorio', match: 'Conexiones match', eventos: 'Eventos presenciales' },
     ecosistema: { titulo: 'Ecosistema', red: 'Red de aliados', postular: 'Postular como aliado' },
     privacidad: { titulo: 'Privacidad', politica: 'Política de datos', terminos: 'Términos de convivencia' },

@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { Badge } from '@/shared/ui/Badge'
 import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 
 export type ColumnaPie = { id: string; titulo: string; enlaces: { texto: string; href: string }[] }
@@ -11,7 +10,6 @@ type Props = {
   logoAlt: string
   hrefInicio: string
   descripcion: string
-  insignia: string
   columnas: ColumnaPie[]
   aviso: { antes: string; textoEnlace: string; despues: string; href: string }
   copyright: string
@@ -32,7 +30,6 @@ export function Pie({
   logoAlt,
   hrefInicio,
   descripcion,
-  insignia,
   columnas,
   aviso,
   copyright,
@@ -50,14 +47,6 @@ export function Pie({
               <Image src={logoSrc} alt={logoAlt} width={210} height={40} unoptimized className="h-10 w-auto" />
             </Link>
             <p className="text-parrafo mt-6 max-w-sm">{descripcion}</p>
-            <div className="mt-6">
-              <Badge>
-                <span className="inline-flex items-center gap-2">
-                  <span aria-hidden="true" className="size-2 rounded-full bg-primario" />
-                  {insignia}
-                </span>
-              </Badge>
-            </div>
           </div>
 
           <div className="grid gap-10 sm:col-span-2 sm:grid-cols-3 sm:gap-8 escritorio:col-span-8">

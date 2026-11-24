@@ -19,7 +19,6 @@ export type TextosSitio = {
 
   pie: {
     descripcion: string
-    registrados: string
     explorar: { titulo: string; directorio: string; match: string; eventos: string }
     ecosistema: { titulo: string; red: string; postular: string }
     privacidad: { titulo: string; politica: string; terminos: string }

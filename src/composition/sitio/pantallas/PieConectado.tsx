@@ -1,4 +1,3 @@
-import { cifras } from '@/modules/landing/domain/cifras'
 import { enlaceWhatsapp, redesSociales } from '@/modules/sitio/domain/contacto'
 import { textosSitio } from '@/modules/sitio/language'
 import { idiomas, nombresIdiomas, type Idioma } from '@/shared/idiomas/idiomas'
@@ -6,11 +5,9 @@ import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Pie } from '@/modules/sitio/presentation/Pie'
 import { IconoRedSocial, nombresRedesSociales } from '@/shared/ui/IconoRedSocial'
 import { SelectorIdioma } from '@/shared/ui/SelectorIdioma'
-import { formatearCifra } from '@/modules/landing/presentation/mappers/formatoCifras'
 
 export function PieConectado({ idioma }: { idioma: Idioma }) {
   const t = textosSitio(idioma)
-  const registrados = cifras.find((cifra) => cifra.clave === 'registrados')
   const base = `/${idioma}`
 
   return (
@@ -19,7 +16,6 @@ export function PieConectado({ idioma }: { idioma: Idioma }) {
       logoAlt={t.cabecera.logoAlt}
       hrefInicio={base}
       descripcion={t.pie.descripcion}
-      insignia={registrados ? `${formatearCifra(registrados, idioma)} ${t.pie.registrados}` : t.pie.registrados}
       columnas={[
         {
           id: 'explorar',

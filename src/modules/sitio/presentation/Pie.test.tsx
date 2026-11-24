@@ -7,7 +7,6 @@ const props = {
   logoAlt: 'Marca',
   hrefInicio: '/es',
   descripcion: 'Descripción de la comunidad.',
-  insignia: '75+ personas registradas',
   columnas: [
     { id: 'explorar', titulo: 'Explorar', enlaces: [{ texto: 'Directorio', href: '/es/directorio' }] },
     { id: 'privacidad', titulo: 'Privacidad', enlaces: [{ texto: 'Política de datos', href: '/es/politica-de-datos' }] },
@@ -21,12 +20,12 @@ const props = {
 }
 
 describe('Pie', () => {
-  it('muestra el logo como enlace al inicio, la descripción y la insignia', () => {
+  it('muestra el logo como enlace al inicio y la descripción, sin cifra de personas registradas', () => {
     render(<Pie {...props} />)
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Marca' })).toHaveAttribute('href', '/es')
     expect(screen.getByText('Descripción de la comunidad.')).toBeInTheDocument()
-    expect(screen.getByText('75+ personas registradas')).toBeInTheDocument()
+    expect(screen.queryByText(/registradas/)).not.toBeInTheDocument()
   })
 
   it('cada columna es una navegación con su título como nombre accesible', () => {
