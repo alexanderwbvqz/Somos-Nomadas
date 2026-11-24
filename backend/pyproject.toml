@@ -1,0 +1,105 @@
+[project]
+name = "nomadas-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "argon2-cffi>=25.1.0",
+    "fastapi>=0.165.0",
+    "pydantic>=2.14.4",
+    "pydantic-settings>=2.16.3",
+    "pyjwt>=2.15.1",
+    "supabase>=2.34.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "import-linter>=2.17",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.6",
+]
+
+# --- Herramientas ---
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["src", "tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+explicit_package_bases = true
+
+# --- Reglas de capas (CLAUDE.md, «Arquitectura») ---
+# Las vigila el test tests/arquitectura/test_capas.py.
+# Cuando exista un segundo módulo hay que añadir el contrato «un módulo solo importa el domain de otro».
+
+[tool.importlinter]
+root_packages = ["modules", "composition", "shared"]
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "domain no importa nada de afuera"
+type = "forbidden"
+source_modules = ["modules.acceso.domain"]
+forbidden_modules = [
+    "modules.acceso.application",
+    "modules.acceso.infrastructure",
+    "modules.acceso.api",
+    "shared",
+    "composition",
+    "fastapi",
+    "starlette",
+    "pydantic",
+    "pydantic_settings",
+    "supabase",
+    "jwt",
+    "argon2",
+]
+
+[[tool.importlinter.contracts]]
+name = "application solo importa de domain"
+type = "forbidden"
+source_modules = ["modules.acceso.application"]
+forbidden_modules = [
+    "modules.acceso.infrastructure",
+    "modules.acceso.api",
+    "shared",
+    "composition",
+    "fastapi",
+    "starlette",
+    "pydantic",
+    "pydantic_settings",
+    "supabase",
+    "jwt",
+    "argon2",
+]
+
+[[tool.importlinter.contracts]]
+name = "infrastructure y api no se importan entre sí"
+type = "independence"
+modules = ["modules.acceso.infrastructure", "modules.acceso.api"]
+
+[[tool.importlinter.contracts]]
+name = "shared no importa de ningún módulo ni de composition"
+type = "forbidden"
+source_modules = ["shared"]
+forbidden_modules = ["modules", "composition"]
+
+[[tool.importlinter.contracts]]
+name = "los módulos no importan composition"
+type = "forbidden"
+source_modules = ["modules"]
+forbidden_modules = ["composition"]
