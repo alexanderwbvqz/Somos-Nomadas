@@ -89,4 +89,15 @@ export const en: TextosPerfil = {
     capas: { recorrido: 'What you told us in the journey', sobreMi: 'Write your “About me”', evidencia: 'Add evidence links' },
   },
   tarjeta: { busca: 'Looking for:' },
+  publico: {
+    metadatos: { titulo: 'How others see you | Nómadas', descripcion: 'This is how someone else sees your profile.' },
+    volver: 'Back to My profile',
+    aviso: 'This is how someone else sees your profile. Nothing can be edited here: to change something, go back to My profile.',
+    busca: 'Looking for',
+    historias: 'Stories',
+    sectores: 'Sectors that move them',
+    forma: 'Way of starting up',
+    buscaPerfil: 'What profile are they looking for in their team?',
+    socioIdeal: 'What is their ideal partner like?',
+  },
 }

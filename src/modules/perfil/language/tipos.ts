@@ -93,4 +93,16 @@ export type TextosPerfil = {
     capas: { recorrido: string; sobreMi: string; evidencia: string }
   }
   tarjeta: { busca: string }
+  /** «Ver como me ven»: la página donde se lee el perfil como lo lee otra persona. Los títulos de Sobre mí, trayectoria, evidencia y habilidades son los de arriba */
+  publico: {
+    metadatos: { titulo: string; descripcion: string }
+    volver: string
+    aviso: string
+    busca: string
+    historias: string
+    sectores: string
+    forma: string
+    buscaPerfil: string
+    socioIdeal: string
+  }
 }

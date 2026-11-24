@@ -89,4 +89,15 @@ export const pt: TextosPerfil = {
     capas: { recorrido: 'O que você contou no percurso', sobreMi: 'Escreva seu «Sobre mim»', evidencia: 'Adicione links de evidência' },
   },
   tarjeta: { busca: 'Procura:' },
+  publico: {
+    metadatos: { titulo: 'Como os outros veem você | Nómadas', descripcion: 'É assim que outra pessoa vê o seu perfil.' },
+    volver: 'Voltar para Meu perfil',
+    aviso: 'É assim que outra pessoa vê o seu perfil. Aqui não se edita nada: para mudar algo, volte para Meu perfil.',
+    busca: 'Procura',
+    historias: 'Histórias',
+    sectores: 'Setores que movem a pessoa',
+    forma: 'Jeito de empreender',
+    buscaPerfil: 'Que perfil procura para a equipe?',
+    socioIdeal: 'Como é o sócio ideal?',
+  },
 }

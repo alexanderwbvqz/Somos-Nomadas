@@ -16,6 +16,14 @@ describe('idiomas del perfil', () => {
     expect(claves(pt)).toEqual(claves(es))
   })
 
+  it('la página «Ver como me ven» tiene todos sus textos escritos en cada idioma', () => {
+    for (const textos of [es, en, pt]) {
+      for (const texto of claves(textos.publico).map((clave) => clave.split('.').reduce<unknown>((valor, parte) => (valor as Record<string, unknown>)[parte], textos.publico))) {
+        expect((texto as string).trim()).not.toBe('')
+      }
+    }
+  })
+
   it('los textos con variables las llevan en todos los idiomas', () => {
     for (const textos of [es, en, pt]) {
       expect(textos.editarEn).toContain('{paso}')
