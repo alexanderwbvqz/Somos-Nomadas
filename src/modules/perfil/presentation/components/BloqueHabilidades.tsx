@@ -1,27 +1,18 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { Badge } from '@/shared/ui/Badge'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import type { HabilidadPerfil } from '../../domain/perfil'
 import type { TextosPerfil } from '../../language/tipos'
 import type { PasoPerfil } from '../pasos'
 import { EnlaceEditar } from '../ui/EnlaceEditar'
+import { NombreHabilidad } from '../ui/NombreHabilidad'
 import { ParRespuesta } from '../ui/ParRespuesta'
 import { Respuestas } from '../ui/Respuestas'
 import { PuntosNivel } from '../ui/PuntosNivel'
 import { TarjetaBloque } from '../ui/TarjetaBloque'
 
 type Props = { textos: TextosPerfil; paso: PasoPerfil; habilidades: HabilidadPerfil[] }
-
-function Nombre({ habilidad, textos }: { habilidad: HabilidadPerfil; textos: TextosPerfil }) {
-  return (
-    <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[1.0625rem] font-medium">
-      {habilidad.nombre}
-      {habilidad.estimado && <Badge>{textos.habilidades.estimado}</Badge>}
-    </span>
-  )
-}
 
 // Una de las habilidades más fuertes: se abre para ver lo que la persona contó de ella.
 function HabilidadFuerte({ habilidad, textos, abierta, alAlternar }: { habilidad: HabilidadPerfil; textos: TextosPerfil; abierta: boolean; alAlternar: () => void }) {
@@ -37,7 +28,7 @@ function HabilidadFuerte({ habilidad, textos, abierta, alAlternar }: { habilidad
           onClick={alAlternar}
           className={`grid w-full cursor-pointer grid-cols-[1fr_auto_auto] items-center gap-x-3.5 gap-y-1 py-3.5 text-left ${foco}`}
         >
-          <Nombre habilidad={habilidad} textos={textos} />
+          <NombreHabilidad habilidad={habilidad} textos={textos} />
           <PuntosNivel nivel={habilidad.nivel} etiqueta={textos.habilidades.nivel} />
           <span aria-hidden="true" className="flex size-[1.625rem] items-center justify-center rounded-full border-[1.5px] border-texto leading-none">
             {abierta ? '−' : '+'}
@@ -84,7 +75,7 @@ export function BloqueHabilidades({ textos, paso, habilidades }: Props) {
           <ul>
             {otras.map((habilidad) => (
               <li key={habilidad.nombre} className="grid grid-cols-[1fr_auto] items-center gap-x-3.5 gap-y-1 border-b border-borde/10 py-3.5 last:border-b-0">
-                <Nombre habilidad={habilidad} textos={textos} />
+                <NombreHabilidad habilidad={habilidad} textos={textos} />
                 <PuntosNivel nivel={habilidad.nivel} etiqueta={textos.habilidades.nivel} />
                 <span className="text-nota col-span-full opacity-70">{habilidad.resumen}</span>
               </li>
