@@ -5,10 +5,11 @@ import { CampoClave } from '@/shared/ui/CampoClave'
 import { CampoTexto } from '@/shared/ui/CampoTexto'
 import { Casilla } from '@/shared/ui/Casilla'
 import { foco } from '@/shared/ui/EnlaceBoton'
-import { LIMITES_CUENTA, fuerzaDeClave, type DatosRegistro, type ErroresRegistro } from '../../domain/cuenta'
+import { LIMITES_CUENTA, type DatosRegistro, type ErroresRegistro } from '../../domain/cuenta'
 import type { TextosAcceso } from '../../language/tipos'
 import { mensajeDeErrorCuenta } from '../mappers/mensajesError'
 import { AccesoGoogle } from '../ui/AccesoGoogle'
+import { FuerzaClave } from '../ui/FuerzaClave'
 
 type Props = {
   textos: TextosAcceso
@@ -21,21 +22,6 @@ type Props = {
   google: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
   hrefInicioSesion: string
   hrefPolitica: string
-}
-
-function FuerzaClave({ clave, textos }: { clave: string; textos: TextosAcceso['registro']['fuerza'] }) {
-  const nivel = fuerzaDeClave(clave)
-  const palabra = clave === '' ? textos.minimo : [textos.muyCorta, textos.aceptable, textos.buena, textos.fuerte][nivel]
-  return (
-    <div id="fuerza-clave" className="mt-2.5 flex items-center gap-3">
-      <span aria-hidden="true" className="grid w-28 grid-cols-3 gap-1">
-        {[1, 2, 3].map((barra) => (
-          <span key={barra} className={`h-1.5 rounded-full ${barra <= nivel && clave !== '' ? 'bg-texto' : 'bg-texto/15'}`} />
-        ))}
-      </span>
-      <span className="text-nota">{palabra}</span>
-    </div>
-  )
 }
 
 // Formulario de crear cuenta: con Google, o con correo y contraseña (con un campo trampa contra robots). La casilla de la
