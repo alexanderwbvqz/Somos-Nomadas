@@ -115,6 +115,20 @@ export const pt: TextosLanding = {
       },
     },
   },
+  // proposta: os textos desta seção são uma primeira versão, a revisar
+  historias: {
+    etiqueta: 'Histórias',
+    tituloInicio: 'Os grandes projetos começaram com',
+    tituloResaltado: 'um encontro.',
+    etiquetaLista: 'Escolha uma história',
+    etiquetaPersonas: 'Quem são',
+    leer: 'Ler a história',
+    cerrar: 'Fechar a história',
+    aportes: 'O que cada pessoa contribuiu',
+    fuente: 'Fonte',
+    fuenteNueva: 'abre em outra aba',
+    cierre: 'Sua história também pode começar assim.',
+  },
   aliados: {
     etiqueta: 'Aliados',
     tituloInicio: 'Nenhuma equipe cresce sozinha.',

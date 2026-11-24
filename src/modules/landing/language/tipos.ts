@@ -71,6 +71,24 @@ export type TextosLanding = {
     enlacePerfiles: string
     areas: Record<ClaveArea, { descripcion: string; claves: string[] }>
   }
+  /** La sección de historias: solo los textos de la interfaz. Las historias en sí llegan del adaptador (ver `Historia`). */
+  historias: {
+    etiqueta: string
+    tituloInicio: string
+    tituloResaltado: string
+    /** Nombre accesible de la lista donde se elige una historia */
+    etiquetaLista: string
+    /** Nombre accesible del grupo de círculos con las personas de la historia */
+    etiquetaPersonas: string
+    leer: string
+    cerrar: string
+    /** Nombre accesible de lo que aportó cada persona */
+    aportes: string
+    fuente: string
+    /** Se lee junto al enlace de la fuente, que se abre en otra pestaña */
+    fuenteNueva: string
+    cierre: string
+  }
   aliados: {
     etiqueta: string
     tituloInicio: string

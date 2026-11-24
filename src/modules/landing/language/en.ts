@@ -115,6 +115,20 @@ export const en: TextosLanding = {
       },
     },
   },
+  // proposal: the texts of this section are a first version, to be reviewed
+  historias: {
+    etiqueta: 'Stories',
+    tituloInicio: 'Great projects began with',
+    tituloResaltado: 'an encounter.',
+    etiquetaLista: 'Choose a story',
+    etiquetaPersonas: 'Who they are',
+    leer: 'Read the story',
+    cerrar: 'Close the story',
+    aportes: 'What each person contributed',
+    fuente: 'Source',
+    fuenteNueva: 'opens in a new tab',
+    cierre: 'Your story can start this way too.',
+  },
   aliados: {
     etiqueta: 'Allies',
     tituloInicio: 'No team grows alone.',
