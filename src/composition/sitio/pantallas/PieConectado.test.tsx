@@ -13,6 +13,12 @@ describe('PieConectado', () => {
     expect(screen.getByText(/Usamos tus datos personales solo para conectar fundadores entre sí/)).toBeInTheDocument()
   })
 
+  it('Explorar tiene solo el directorio y los eventos: los match se hacen dentro, al registrarse, no desde el pie', () => {
+    render(<PieConectado idioma="es" />)
+    const enlaces = within(screen.getByRole('navigation', { name: 'Explorar' })).getAllByRole('link')
+    expect(enlaces.map((enlace) => enlace.getAttribute('href'))).toEqual(['/es/directorio', '/es/eventos'])
+  })
+
   it('Ecosistema tiene solo la red de aliados y postular como aliado: los mentores ya están dentro de la red', () => {
     render(<PieConectado idioma="es" />)
     const ecosistema = screen.getByRole('navigation', { name: 'Ecosistema' })

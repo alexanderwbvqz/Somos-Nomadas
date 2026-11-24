@@ -17,7 +17,7 @@ export const en: TextosSitio = {
 
   pie: {
     descripcion: 'An open community that connects entrepreneurs with complementary talent to found companies.',
-    explorar: { titulo: 'Explore', directorio: 'Directory', match: 'Match connections', eventos: 'In-person events' },
+    explorar: { titulo: 'Explore', directorio: 'Directory', eventos: 'In-person events' },
     ecosistema: { titulo: 'Ecosystem', red: 'Ally network', postular: 'Apply as an ally' },
     privacidad: { titulo: 'Privacy', politica: 'Data policy', terminos: 'Community terms' },
     avisoAntes: 'We use your personal data only to connect founders with each other. More information in the',

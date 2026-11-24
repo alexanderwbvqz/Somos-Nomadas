@@ -22,7 +22,6 @@ export function PieConectado({ idioma }: { idioma: Idioma }) {
           titulo: t.pie.explorar.titulo,
           enlaces: [
             { texto: t.pie.explorar.directorio, href: `${base}/directorio` },
-            { texto: t.pie.explorar.match, href: `${base}/match` },
             { texto: t.pie.explorar.eventos, href: `${base}/eventos` },
           ],
         },
