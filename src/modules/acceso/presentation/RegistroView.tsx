@@ -55,7 +55,7 @@ export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGo
               <span className="text-etiqueta-chica">{String(indice + 1).padStart(2, '0')}</span>
               <span>
                 <b className="text-parrafo block font-medium">{paso.titulo}</b>
-                <span className="text-cuerpo mt-0.5 block opacity-75">{paso.texto}</span>
+                <span className="text-cuerpo mt-0.5 block text-texto-suave">{paso.texto}</span>
               </span>
             </li>
           ))}

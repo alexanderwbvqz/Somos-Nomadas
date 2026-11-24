@@ -46,6 +46,49 @@ describe('colores', () => {
   })
 })
 
+describe('tonos tenues', () => {
+  // Un `opacity-NN` suelto (sin variante como hover: o disabled:) sobre un texto no cuenta como token: el contraste no se comprueba.
+  // opacity-0 y opacity-100 quedan permitidos (aparecer y desaparecer).
+  const opacidadSuelta = /(?<![\w:-])opacity-(?!(?:0|100)\b)\d+/
+
+  // Lo que se queda a propósito, con su razón
+  const permitidos = new Set([
+    'modules/aliados/presentation/ui/VistaPreviaPerfil.tsx', // marcadores de ejemplo de una vista previa vacía
+    'modules/aliados/presentation/ui/FilaVistaPrevia.tsx', // ídem
+    'modules/landing/presentation/ui/DiagramaAreas.tsx', // estado: el área que no está activa se apaga
+    'modules/sitio/presentation/BarraCuenta.tsx', // estado: sección que todavía no existe
+  ])
+
+  it('ningún texto usa opacity-NN para verse tenue: usa text-texto-suave, text-texto-tenue, text-fondo-suave o text-fondo-tenue', () => {
+    const infractores = archivos(raiz)
+      .filter((ruta) => ruta.endsWith('.tsx') && !/\.test\.tsx$/.test(ruta) && !permitidos.has(nombre(ruta)))
+      .flatMap((ruta) =>
+        readFileSync(ruta, 'utf-8')
+          .split(String.fromCharCode(10))
+          .map((linea, indice) => ({ archivo: nombre(ruta), linea: indice + 1, texto: linea }))
+          .filter(({ texto }) => opacidadSuelta.test(texto)),
+      )
+      .map(({ archivo, linea }) => `${archivo}:${linea}`)
+    expect(infractores).toEqual([])
+  })
+
+  it('la regla reconoce el opacity suelto y deja pasar los estados y el aparecer o desaparecer', () => {
+    for (const suelto of ['opacity-60', 'text-nota opacity-75', "'opacity-35'", 'italic opacity-65']) {
+      expect(opacidadSuelta.test(suelto), suelto).toBe(true)
+    }
+    for (const estado of ['disabled:opacity-60', 'peer-disabled:opacity-40', 'hover:opacity-100', 'opacity-0', 'opacity-100', 'text-texto-tenue']) {
+      expect(opacidadSuelta.test(estado), estado).toBe(false)
+    }
+  })
+
+  it('los tokens de texto tenue existen, también los de sobre fondo oscuro', () => {
+    const colores = readFileSync(join(raiz, 'shared/styles/colores/colores.css'), 'utf-8')
+    for (const token of ['--color-texto-suave', '--color-texto-tenue', '--color-fondo-suave', '--color-fondo-tenue']) {
+      expect(colores, token).toContain(`${token}:`)
+    }
+  })
+})
+
 describe('animaciones', () => {
   const css = readFileSync(join(raiz, 'shared/styles/animaciones/animaciones.css'), 'utf-8')
 

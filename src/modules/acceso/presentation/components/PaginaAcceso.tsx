@@ -17,7 +17,7 @@ export function PaginaAcceso({ etiqueta, titulo, parrafo, izquierda, children }:
       <section>
         <p className="text-etiqueta-chica">{etiqueta}</p>
         <h1 className="text-titulo texto-equilibrado mt-5">{titulo}</h1>
-        <p className="text-parrafo-grande mt-5 max-w-md opacity-85">{parrafo}</p>
+        <p className="text-parrafo-grande mt-5 max-w-md text-texto-suave">{parrafo}</p>
         {izquierda}
       </section>
       <div className="rounded-3xl bg-tarjeta p-6 escritorio:p-10">{children}</div>

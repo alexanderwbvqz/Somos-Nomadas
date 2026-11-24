@@ -20,7 +20,7 @@ type Props = {
 
 // Lo que queda al terminar las preguntas: el resumen (cada respuesta se puede cambiar), el perfil que busca y su socio ideal.
 export function FinalForma({ textos, preguntas, respondidas, busca, socioIdeal, errorSocio, alIrA, alternarArea, escribirSocio }: Props) {
-  const opcional = <span className="font-normal opacity-65">{textos.opcional}</span>
+  const opcional = <span className="font-normal text-texto-tenue">{textos.opcional}</span>
 
   return (
     <div className="grid gap-8">
@@ -38,7 +38,7 @@ export function FinalForma({ textos, preguntas, respondidas, busca, socioIdeal, 
         <legend className="text-parrafo mb-1 font-medium">
           {textos.busca.titulo} {opcional}
         </legend>
-        <p className="text-nota mb-2.5 opacity-70">{textos.busca.ayuda}</p>
+        <p className="text-nota mb-2.5 text-texto-tenue">{textos.busca.ayuda}</p>
         <div className="flex flex-wrap gap-2.5">
           {areas.map((area) => (
             <label key={area} className="relative">

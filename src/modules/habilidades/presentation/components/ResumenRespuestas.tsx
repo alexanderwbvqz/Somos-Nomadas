@@ -16,7 +16,7 @@ export function ResumenRespuestas({ textos, preguntas, respondidas, alIrA }: Pro
 
   return (
     <div>
-      <p className="text-etiqueta-chica opacity-70">{rellenarPlantilla(textos.resumen, { n: respondidas, total: preguntas.length })}</p>
+      <p className="text-etiqueta-chica text-texto-tenue">{rellenarPlantilla(textos.resumen, { n: respondidas, total: preguntas.length })}</p>
       <ul className="mt-2 flex flex-wrap gap-2.5">
         {preguntas.map((pregunta, indice) =>
           pregunta.respuesta ? (

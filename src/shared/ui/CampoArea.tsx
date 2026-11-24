@@ -34,7 +34,7 @@ export function CampoArea({ clave, etiqueta, extraEtiqueta, ayuda, error, valor,
       />
       <div className="mt-1.5 flex items-start justify-between gap-4">
         {ayuda ? (
-          <p id={`ayuda-${clave}`} className="text-nota opacity-70">
+          <p id={`ayuda-${clave}`} className="text-nota text-texto-tenue">
             {ayuda}
           </p>
         ) : (

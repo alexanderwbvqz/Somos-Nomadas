@@ -60,7 +60,7 @@ export function BloqueEvidencia({ textos, evidencia }: Props) {
           ))}
         </ul>
       ) : (
-        !evidencia.editando && <p className="text-parrafo italic opacity-65">{t.vacio}</p>
+        !evidencia.editando && <p className="text-parrafo italic text-texto-tenue">{t.vacio}</p>
       )}
 
       {evidencia.editando && (
@@ -98,7 +98,7 @@ export function BloqueEvidencia({ textos, evidencia }: Props) {
           )}
 
           <div className="mt-3 flex items-center justify-between gap-3">
-            <span className="text-nota opacity-65">{t.ayuda}</span>
+            <span className="text-nota text-texto-tenue">{t.ayuda}</span>
             <button type="button" onClick={evidencia.cerrar} className={`text-etiqueta ${areaTactil} cursor-pointer underline underline-offset-8 ${foco}`}>
               {t.listo}
             </button>

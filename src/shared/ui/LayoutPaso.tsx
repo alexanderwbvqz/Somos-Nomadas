@@ -20,10 +20,10 @@ export function LayoutPaso({ etiqueta, titulo, subtitulo, porQue, children }: Pr
         <div className="escritorio:sticky escritorio:top-8">
           <p className="text-etiqueta-chica">{etiqueta}</p>
           <h1 className="text-titulo texto-equilibrado mt-4">{titulo}</h1>
-          <p className="text-parrafo mt-4 max-w-md opacity-85">{subtitulo}</p>
+          <p className="text-parrafo mt-4 max-w-md text-texto-suave">{subtitulo}</p>
           <div className="mt-6 max-w-md border-t-[1.5px] border-texto pt-3.5 escritorio:mt-8">
-            <p className="text-etiqueta-chica opacity-70">{porQue.titulo}</p>
-            <p className="text-cuerpo mt-2 opacity-80">{porQue.texto}</p>
+            <p className="text-etiqueta-chica text-texto-tenue">{porQue.titulo}</p>
+            <p className="text-cuerpo mt-2 text-texto-suave">{porQue.texto}</p>
           </div>
         </div>
         <div className="min-w-0 rounded-3xl bg-tarjeta p-6 escritorio:p-10">{children}</div>

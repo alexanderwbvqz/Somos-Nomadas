@@ -52,7 +52,7 @@ export function Pie({
           <div className="grid gap-10 sm:col-span-2 sm:grid-cols-3 sm:gap-8 escritorio:col-span-8">
             {columnas.map((columna) => (
               <nav key={columna.id} aria-labelledby={`pie-${columna.id}`}>
-                <p id={`pie-${columna.id}`} className="text-etiqueta-chica opacity-60">
+                <p id={`pie-${columna.id}`} className="text-etiqueta-chica text-fondo-tenue">
                   {columna.titulo}
                 </p>
                 <ul className="mt-5 flex flex-col gap-4">
@@ -73,7 +73,7 @@ export function Pie({
         </div>
 
         <div className="mt-14 border-t border-fondo/35 pt-7">
-          <p className="text-cuerpo max-w-2xl opacity-85">
+          <p className="text-cuerpo max-w-2xl text-fondo-suave">
             {aviso.antes}{' '}
             <Link href={aviso.href} className={`underline underline-offset-4 ${foco}`}>
               {aviso.textoEnlace}

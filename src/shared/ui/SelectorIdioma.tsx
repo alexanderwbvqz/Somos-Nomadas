@@ -18,7 +18,7 @@ export function SelectorIdioma({ idiomaActual, opciones, etiqueta }: Props) {
   return (
     <nav aria-label={etiqueta}>
       <ul className="text-etiqueta-chica flex flex-wrap items-center gap-x-5 gap-y-2">
-        <li aria-hidden="true" className="opacity-60">
+        <li aria-hidden="true" className="text-fondo-tenue">
           {etiqueta}
         </li>
         {opciones.map((opcion) => (
@@ -32,7 +32,7 @@ export function SelectorIdioma({ idiomaActual, opciones, etiqueta }: Props) {
                 href={`/${opcion.codigo}${resto ? `/${resto}` : ''}`}
                 lang={opcion.codigo}
                 hrefLang={opcion.codigo}
-                className="opacity-60 hover:underline hover:opacity-100 hover:underline-offset-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario"
+                className="text-fondo-tenue hover:text-fondo hover:underline hover:underline-offset-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario"
               >
                 {opcion.nombre}
               </Link>

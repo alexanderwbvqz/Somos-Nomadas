@@ -24,10 +24,10 @@ export function BloqueForma({ textos, paso, forma, buscaPerfil, socioIdeal }: Pr
       <hr className="my-5 border-borde/15" />
       <div className="grid gap-[1.125rem]">
         <ParRespuesta pregunta={buscaPerfil.pregunta}>
-          {buscaPerfil.respuestas.length > 0 ? <Respuestas respuestas={buscaPerfil.respuestas} /> : <p className="text-parrafo italic opacity-65">{textos.sinEscribir}</p>}
+          {buscaPerfil.respuestas.length > 0 ? <Respuestas respuestas={buscaPerfil.respuestas} /> : <p className="text-parrafo italic text-texto-tenue">{textos.sinEscribir}</p>}
         </ParRespuesta>
         <ParRespuesta pregunta={socioIdeal.pregunta}>
-          {socioIdeal.texto.trim() !== '' ? <p className="text-parrafo whitespace-pre-line">{socioIdeal.texto}</p> : <p className="text-parrafo italic opacity-65">{textos.sinEscribir}</p>}
+          {socioIdeal.texto.trim() !== '' ? <p className="text-parrafo whitespace-pre-line">{socioIdeal.texto}</p> : <p className="text-parrafo italic text-texto-tenue">{textos.sinEscribir}</p>}
         </ParRespuesta>
       </div>
     </TarjetaBloque>

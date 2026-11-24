@@ -30,9 +30,9 @@ export function SeccionPlegable({ id, titulo, detalle, abierta, alAlternar, resu
         >
           <span className="min-w-0 flex-1">
             <span className="block">{titulo}</span>
-            {!abierta && resumen && <span className="text-nota mt-1 block opacity-75">{resumen}</span>}
+            {!abierta && resumen && <span className="text-nota mt-1 block text-texto-suave">{resumen}</span>}
           </span>
-          {detalle && <span className="text-nota flex-none opacity-70">{detalle}</span>}
+          {detalle && <span className="text-nota flex-none text-texto-tenue">{detalle}</span>}
           <span aria-hidden="true" className="flex size-7 flex-none items-center justify-center rounded-full border-[1.5px] border-texto leading-none">
             {abierta ? '−' : '+'}
           </span>

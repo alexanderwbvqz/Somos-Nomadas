@@ -30,7 +30,7 @@ export function BienvenidaView({ textos, alGuardar, hrefSiguiente, barra }: Bien
       <main className="flex-1">
         <TarjetaBienvenida>
           <h1 className="text-titulo-seccion">{t.titulo}</h1>
-          <p className="text-parrafo mt-2 opacity-80">{t.intro}</p>
+          <p className="text-parrafo mt-2 text-texto-suave">{t.intro}</p>
           <FormularioBienvenida
             textos={t}
             datos={datos}

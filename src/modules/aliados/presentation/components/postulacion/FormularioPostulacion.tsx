@@ -110,7 +110,7 @@ export function FormularioPostulacion({ textos, alEnviar, hrefAliados, hrefPolit
           <h2 id="titulo-paso" tabIndex={-1} className="text-titulo-seccion outline-none">
             {cabecera.titulo}
           </h2>
-          <p className="text-parrafo mt-2 opacity-80">{cabecera.subtitulo}</p>
+          <p className="text-parrafo mt-2 text-texto-suave">{cabecera.subtitulo}</p>
 
           <div className="mt-7">
             {vista === 1 && <PasoQuien {...propsPaso} />}
@@ -150,7 +150,7 @@ export function FormularioPostulacion({ textos, alEnviar, hrefAliados, hrefPolit
         aria-hidden="true"
         onClick={cerrarHoja}
         className={`fixed inset-0 z-30 bg-texto/45 transition-opacity duration-300 motion-reduce:transition-none escritorio:hidden ${
-          hojaAbierta ? 'opacity-100' : 'pointer-events-none opacity-0'
+          hojaAbierta ? 'text-texto-suave' : 'pointer-events-none text-texto-tenue'
         }`}
       />
 
@@ -185,7 +185,7 @@ export function FormularioPostulacion({ textos, alEnviar, hrefAliados, hrefPolit
         className="fixed inset-x-0 bottom-0 z-20 flex w-full items-center gap-4 bg-texto px-5 py-3.5 text-left text-fondo focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-primario escritorio:hidden"
       >
         <span className="flex-1">
-          <span className="text-etiqueta-chica block opacity-75">{textos.vista.barraTitulo}</span>
+          <span className="text-etiqueta-chica block text-fondo-suave">{textos.vista.barraTitulo}</span>
           <span className="text-parrafo font-medium">
             {rellenarPlantilla(textos.vista.barraAvance, { listos: listas, total: TOTAL_PARTES_PERFIL })}
           </span>

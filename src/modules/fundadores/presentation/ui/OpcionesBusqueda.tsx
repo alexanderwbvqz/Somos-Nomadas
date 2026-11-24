@@ -44,7 +44,7 @@ export function OpcionesBusqueda({ textos, marcadas, alAlternar, error }: Props)
           )
         })}
       </div>
-      <p id="ayuda-busca" className="text-nota mt-2 opacity-70">
+      <p id="ayuda-busca" className="text-nota mt-2 text-texto-tenue">
         {rellenarPlantilla(t.ayuda, { max: LIMITES_BIENVENIDA.busquedasMax })}
       </p>
       {error && <MensajeError id="error-busca">{error}</MensajeError>}

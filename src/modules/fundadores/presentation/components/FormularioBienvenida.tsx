@@ -71,7 +71,7 @@ export function FormularioBienvenida({ textos, datos, errores, enviando, guardad
           clave="ciudad"
           etiqueta={
             <>
-              {c.ciudad} <span className="font-normal opacity-65">{c.ciudadOpcional}</span>
+              {c.ciudad} <span className="font-normal text-texto-tenue">{c.ciudadOpcional}</span>
             </>
           }
           autoComplete="address-level2"

@@ -38,8 +38,8 @@ export function PreguntaForma({ textos, pregunta, alElegir, alPulsar, puntos }: 
             />
             <span className="flex h-full cursor-pointer flex-col rounded-[1.25rem] border-[1.5px] border-texto/30 bg-tarjeta p-[1.125rem] peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario escritorio:min-h-[10.625rem]">
               <span className="text-titulo-tarjeta">{opcion.titulo}</span>
-              <span className="text-cuerpo mt-2 opacity-75">{opcion.texto}</span>
-              <span className="text-nota mt-auto pt-3.5 opacity-70">{opcion.elegida ? textos.elegido : textos.elegir}</span>
+              <span className="text-cuerpo mt-2 text-texto-suave">{opcion.texto}</span>
+              <span className="text-nota mt-auto pt-3.5 text-texto-tenue">{opcion.elegida ? textos.elegido : textos.elegir}</span>
             </span>
           </label>
         ))}

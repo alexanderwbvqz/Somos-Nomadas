@@ -15,7 +15,7 @@ export function TarjetaDirectorio({ perfil, textos }: { perfil: Perfil; textos: 
       <h3 className="mx-3.5 mt-2.5 font-serif text-xl">
         {ficha.nombre} {ficha.apellidos}
       </h3>
-      <p className="text-nota mx-3.5 mt-1 opacity-75">
+      <p className="text-nota mx-3.5 mt-1 text-texto-suave">
         {ficha.ciudad}, {ficha.pais}
         {ficha.modalidad ? ` · ${ficha.modalidad}` : ''}
       </p>
@@ -39,7 +39,7 @@ export function TarjetaDirectorio({ perfil, textos }: { perfil: Perfil; textos: 
       </ul>
       {perfil.buscando.length > 0 && (
         <p className="text-nota mx-3.5 mb-2 mt-3.5">
-          <span className="opacity-65">{textos.tarjeta.busca}</span> {perfil.buscando.join(' · ')}
+          <span className="text-texto-tenue">{textos.tarjeta.busca}</span> {perfil.buscando.join(' · ')}
         </p>
       )}
     </article>

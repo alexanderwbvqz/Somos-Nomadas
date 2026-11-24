@@ -35,7 +35,7 @@ export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso
   return (
     <>
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
-      <p className="text-parrafo mt-2 opacity-80">{t.tarjeta.intro}</p>
+      <p className="text-parrafo mt-2 text-texto-suave">{t.tarjeta.intro}</p>
 
       <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />
 

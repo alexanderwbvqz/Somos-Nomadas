@@ -92,7 +92,7 @@ export function CampoLista({ clave, etiqueta, valor, alCambiar, opciones, placeh
             error ? 'border-2 border-primario' : 'border-[1.5px] border-borde-campo'
           }`}
         >
-          <span className={elegida ? '' : 'opacity-60'}>{elegida ? elegida.texto : placeholder}</span>
+          <span className={elegida ? '' : 'text-texto-tenue'}>{elegida ? elegida.texto : placeholder}</span>
           <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" className={`size-4 flex-none ${abierta ? 'rotate-180' : ''}`}>
             <path d="M3 6l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

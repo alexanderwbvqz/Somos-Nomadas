@@ -46,7 +46,7 @@ export function MiPerfilView({ textos, perfil, pasos, hrefVistaPublica, acciones
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <h1 className="text-titulo-medio">{textos.titulo}</h1>
-          <p className="mt-2.5 max-w-[34rem] opacity-80">{textos.subtitulo}</p>
+          <p className="mt-2.5 max-w-[34rem] text-texto-suave">{textos.subtitulo}</p>
         </div>
         <EnlaceBoton href={hrefVistaPublica} variante="lleno">
           {textos.verComoMeVen}
@@ -72,7 +72,7 @@ export function MiPerfilView({ textos, perfil, pasos, hrefVistaPublica, acciones
         <aside className="grid gap-4">
           <AvancePerfil textos={textos} capas={capasDelPerfil(actual)} />
           <div>
-            <h2 className="mb-2 ml-1 mt-1.5 text-[0.8125rem] font-normal opacity-65">{textos.vistaPrevia.titulo}</h2>
+            <h2 className="mb-2 ml-1 mt-1.5 text-[0.8125rem] font-normal text-texto-tenue">{textos.vistaPrevia.titulo}</h2>
             <TarjetaDirectorio perfil={actual} textos={textos} />
           </div>
         </aside>

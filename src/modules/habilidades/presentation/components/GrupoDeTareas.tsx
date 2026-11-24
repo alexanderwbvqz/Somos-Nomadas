@@ -38,7 +38,7 @@ export function GrupoDeTareas({ textos, grupo, indice, alAlternarGrupo, alAltern
             <span aria-hidden="true" className={`block h-2.5 w-[1.375rem] flex-none rounded ${coloresPastilla[indice % coloresPastilla.length]}`} />
             {grupo.titulo}
           </span>
-          <span className="text-etiqueta-chica opacity-70">{rellenarPlantilla(textos.contadorGrupo, { n: grupo.marcadas, total: grupo.total })}</span>
+          <span className="text-etiqueta-chica text-texto-tenue">{rellenarPlantilla(textos.contadorGrupo, { n: grupo.marcadas, total: grupo.total })}</span>
           <span aria-hidden="true" className="flex size-[1.625rem] items-center justify-center rounded-full border-[1.5px] border-texto leading-none">
             {grupo.abierto ? '−' : '+'}
           </span>

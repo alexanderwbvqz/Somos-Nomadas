@@ -52,12 +52,12 @@ export function BloqueTrayectoria({ textos, trayectoria }: Props) {
         <ul className="grid gap-2.5">
           {trayectoria.entradas.map((entrada, lugar) => (
             <li key={`${entrada.desde}-${entrada.rol}-${entrada.donde}`} className="grid grid-cols-1 items-start gap-x-[1.125rem] gap-y-1 rounded-2xl border-[1.5px] border-texto/20 px-4 py-3 escritorio:grid-cols-[9.5rem_1fr_auto]">
-              <span className="text-etiqueta-chica pt-0.5 opacity-70">{rangoAnios(entrada, t.hoy)}</span>
+              <span className="text-etiqueta-chica pt-0.5 text-texto-tenue">{rangoAnios(entrada, t.hoy)}</span>
               <div>
                 <p className="font-medium">
-                  {entrada.rol} <span className="font-normal opacity-75">· {entrada.donde}</span>
+                  {entrada.rol} <span className="font-normal text-texto-suave">· {entrada.donde}</span>
                 </p>
-                {entrada.que && <p className="text-nota mt-1 opacity-75">{entrada.que}</p>}
+                {entrada.que && <p className="text-nota mt-1 text-texto-suave">{entrada.que}</p>}
               </div>
               {trayectoria.editando ? (
                 <button type="button" onClick={() => void trayectoria.quitar(lugar)} disabled={trayectoria.guardando} className={`text-nota cursor-pointer underline underline-offset-4 disabled:cursor-wait ${foco}`}>
@@ -73,7 +73,7 @@ export function BloqueTrayectoria({ textos, trayectoria }: Props) {
           ))}
         </ul>
       ) : (
-        !trayectoria.editando && <p className="text-parrafo italic opacity-65">{t.vacio}</p>
+        !trayectoria.editando && <p className="text-parrafo italic text-texto-tenue">{t.vacio}</p>
       )}
 
       {trayectoria.editando && (
@@ -102,7 +102,7 @@ export function BloqueTrayectoria({ textos, trayectoria }: Props) {
           )}
 
           <div className="mt-3 flex items-center justify-between gap-3">
-            <span className="text-nota opacity-65">{rellenarPlantilla(t.contador, { n: trayectoria.entradas.length, max: LIMITES_TRAYECTORIA.entradas })}</span>
+            <span className="text-nota text-texto-tenue">{rellenarPlantilla(t.contador, { n: trayectoria.entradas.length, max: LIMITES_TRAYECTORIA.entradas })}</span>
             <div className="flex items-center gap-3">
               <button type="button" onClick={trayectoria.cerrar} className={`text-etiqueta ${areaTactil} cursor-pointer underline underline-offset-8 ${foco}`}>
                 {t.listo}

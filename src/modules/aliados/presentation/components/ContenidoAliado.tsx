@@ -60,7 +60,7 @@ export function ContenidoAliado({ textos, descripcionLarga, datosClave, areas, p
             {datosClave.map((dato) => (
               <div key={dato.etiqueta} className="mt-7 border-t-[1.5px] border-texto pt-4">
                 <dd className="text-dato-clave">{dato.valor}</dd>
-                <dt className="text-cuerpo mt-2 opacity-85">{dato.etiqueta}</dt>
+                <dt className="text-cuerpo mt-2 text-texto-suave">{dato.etiqueta}</dt>
               </div>
             ))}
           </dl>

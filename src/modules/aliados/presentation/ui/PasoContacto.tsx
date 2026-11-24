@@ -51,7 +51,7 @@ export function PasoContacto({ textos, datos, errores, cambiar }: PropsPaso) {
 
       <div className="mt-2">
         <h3 className="text-titulo-tarjeta">{t.directo}</h3>
-        <p className="text-cuerpo mt-1.5 opacity-80">{t.directoNota}</p>
+        <p className="text-cuerpo mt-1.5 text-texto-suave">{t.directoNota}</p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">

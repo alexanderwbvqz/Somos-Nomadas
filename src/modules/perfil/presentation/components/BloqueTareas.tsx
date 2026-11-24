@@ -20,7 +20,7 @@ export function BloqueTareas({ textos, tareas }: { textos: TextosPerfil; tareas:
     <section className="rounded-3xl bg-tarjeta px-6 py-7 escritorio:px-8">
       <h2>
         <button type="button" aria-expanded={abierto} aria-controls={id} onClick={() => setAbierto(!abierto)} className={`flex w-full cursor-pointer items-center justify-between gap-3.5 text-left ${foco}`}>
-          <span className="text-etiqueta-chica opacity-70">{rellenarPlantilla(textos.tareas.titulo, { n: hechas, total: tareas.total })}</span>
+          <span className="text-etiqueta-chica text-texto-tenue">{rellenarPlantilla(textos.tareas.titulo, { n: hechas, total: tareas.total })}</span>
           <span aria-hidden="true" className="flex size-[1.625rem] flex-none items-center justify-center rounded-full border-[1.5px] border-texto leading-none">
             {abierto ? '−' : '+'}
           </span>

@@ -39,7 +39,7 @@ export function FormularioRegistro({ textos, datos, errores, enviando, aviso, ca
   return (
     <>
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
-      <p className="text-parrafo mt-2 opacity-80">{t.tarjeta.intro}</p>
+      <p className="text-parrafo mt-2 text-texto-suave">{t.tarjeta.intro}</p>
 
       <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />
 
@@ -111,7 +111,7 @@ export function FormularioRegistro({ textos, datos, errores, enviando, aviso, ca
           >
             {enviando ? t.enviando : t.enviar}
           </Boton>
-          <p className="text-nota mt-3 opacity-75">{t.nota}</p>
+          <p className="text-nota mt-3 text-texto-suave">{t.nota}</p>
         </div>
       </form>
 

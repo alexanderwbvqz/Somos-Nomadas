@@ -74,7 +74,7 @@ export function CierreView({ textos, iniciales, logoSrc, isotipoSrc, hrefInicio,
           <h1 ref={titulo} tabIndex={-1} className="text-titulo-medio texto-equilibrado outline-none">
             {contenido.titulo}
           </h1>
-          <p className="text-parrafo-grande mt-4 opacity-85">{contenido.texto}</p>
+          <p className="text-parrafo-grande mt-4 text-fondo-suave">{contenido.texto}</p>
         </div>
 
         {estado === 'listo' && (

@@ -18,7 +18,7 @@ export function PostulacionView({ hero, como, formulario }: PostulacionViewProps
             <li key={paso.titulo} className="border-t-[1.5px] border-texto pt-4">
               <span className="text-etiqueta-chica">{String(indice + 1).padStart(2, '0')}</span>
               <h2 className="text-titulo-tarjeta-grande mt-2.5">{paso.titulo}</h2>
-              <p className="text-parrafo mt-1.5 max-w-sm opacity-80">{paso.texto}</p>
+              <p className="text-parrafo mt-1.5 max-w-sm text-texto-suave">{paso.texto}</p>
             </li>
           ))}
         </ol>

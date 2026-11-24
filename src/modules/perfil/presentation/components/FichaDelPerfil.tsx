@@ -17,7 +17,7 @@ export function FichaDelPerfil({ ficha, textos, paraOtros = false }: { ficha: Fi
         <Nombre className="text-titulo-tarjeta-grande mt-3.5">
           {ficha.nombre} {ficha.apellidos}
         </Nombre>
-        <p className="mt-2 opacity-75">
+        <p className="mt-2 text-texto-suave">
           {ficha.ciudad}, {ficha.pais}
           {ficha.modalidad ? ` · ${ficha.modalidad}` : ''}
         </p>

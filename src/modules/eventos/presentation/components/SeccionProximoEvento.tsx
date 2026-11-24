@@ -43,11 +43,11 @@ export function SeccionProximoEvento({ textos, proximo, hrefAvisar }: SeccionPro
             <h3 className="text-titulo-medio mt-4">{proximo.nombre}</h3>
             <dl className="mt-6 flex flex-wrap gap-x-9 gap-y-4">
               <div>
-                <dt className="text-etiqueta-chica opacity-60">{textos.lugar}</dt>
+                <dt className="text-etiqueta-chica text-texto-tenue">{textos.lugar}</dt>
                 <dd className="text-parrafo mt-1 font-medium">{proximo.lugar}</dd>
               </div>
               <div>
-                <dt className="text-etiqueta-chica opacity-60">{textos.hora}</dt>
+                <dt className="text-etiqueta-chica text-texto-tenue">{textos.hora}</dt>
                 <dd className="text-parrafo mt-1 font-medium">{proximo.hora}</dd>
               </div>
             </dl>
@@ -57,7 +57,7 @@ export function SeccionProximoEvento({ textos, proximo, hrefAvisar }: SeccionPro
                 {textos.confirmar}
               </EnlaceBoton>
             </div>
-            <p className="text-cuerpo mt-5 max-w-lg opacity-80">{textos.notaConfirmar}</p>
+            <p className="text-cuerpo mt-5 max-w-lg text-texto-suave">{textos.notaConfirmar}</p>
           </div>
         </article>
       ) : (

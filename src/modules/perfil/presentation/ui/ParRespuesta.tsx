@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 export function ParRespuesta({ pregunta, children }: { pregunta: string; children: ReactNode }) {
   return (
     <div>
-      <p className="text-nota mb-1.5 opacity-65">{pregunta}</p>
+      <p className="text-nota mb-1.5 text-texto-tenue">{pregunta}</p>
       {children}
     </div>
   )

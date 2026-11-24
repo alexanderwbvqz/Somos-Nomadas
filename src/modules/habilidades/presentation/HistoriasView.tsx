@@ -48,7 +48,7 @@ export function HistoriasView({ textos, inicial, alGuardar, barra, paso, hrefAtr
     void e.enviar()
   }
 
-  const opcional = <span className="font-normal opacity-65">{t.opcional}</span>
+  const opcional = <span className="font-normal text-texto-tenue">{t.opcional}</span>
 
   return (
     <>

@@ -33,7 +33,7 @@ export function BloqueHistorias({ textos, paso, historias, sectores }: Props) {
           )}
         </div>
       ) : (
-        <p className="text-parrafo italic opacity-65">{textos.sinEscribirPaso}</p>
+        <p className="text-parrafo italic text-texto-tenue">{textos.sinEscribirPaso}</p>
       )}
     </TarjetaBloque>
   )

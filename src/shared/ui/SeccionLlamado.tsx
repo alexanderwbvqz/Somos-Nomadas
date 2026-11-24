@@ -26,7 +26,7 @@ export function SeccionLlamado({ idTitulo, textos, href }: SeccionLlamadoProps) 
         <EnlaceBoton href={href} variante="lleno">
           {textos.boton}
         </EnlaceBoton>
-        <p className="text-cuerpo max-w-sm opacity-85">{textos.nota}</p>
+        <p className="text-cuerpo max-w-sm text-texto-suave">{textos.nota}</p>
       </div>
     </section>
   )

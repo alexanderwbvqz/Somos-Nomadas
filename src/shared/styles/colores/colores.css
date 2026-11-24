@@ -9,9 +9,14 @@
   --color-texto-suave: #3f5254;
   --color-borde: #082023;
   /* Tonos tenues, ya mezclados con el fondo (no se usa opacity ni /NN para esto). Contraste comprobado:
+     texto-suave (texto de apoyo que casi no se atenúa): 8,2 sobre tarjeta, 7,5 sobre fondo y 4,7 sobre el azul del degradado;
      texto-tenue: 5,7 sobre tarjeta y 4,7 sobre suave (texto de apoyo y placeholders, mínimo 4,5);
      borde-campo: 4,4 sobre fondo (bordes de campos y opciones, mínimo 3) */
   --color-texto-tenue: #5b6a69;
+  /* Lo mismo para el texto claro sobre fondo oscuro (pie, pantalla de cierre, barra de la vista previa): el color de fondo
+     mezclado con el oscuro. Contraste sobre texto #082023 y sobre fondo-oscuro: suave 11,3 y 13,3; tenue 7,1 y 8,4 */
+  --color-fondo-suave: color-mix(in srgb, var(--color-fondo) 85%, var(--color-texto));
+  --color-fondo-tenue: color-mix(in srgb, var(--color-fondo) 65%, var(--color-texto));
   --color-borde-campo: #677573;
   --color-primario: #fe412a;
   --color-tarjeta: #ffffff;

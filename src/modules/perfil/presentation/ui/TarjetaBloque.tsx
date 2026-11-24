@@ -16,7 +16,7 @@ export function TarjetaBloque({ titulo, detalle, accion, children }: Props) {
     <section aria-labelledby={id} className="rounded-3xl bg-tarjeta px-6 py-7 escritorio:px-8">
       <div className="mb-3.5 flex items-center justify-between gap-3">
         <h2 id={id} className="text-etiqueta-chica flex items-center gap-2.5">
-          <span className="opacity-70">{titulo}</span>
+          <span className="text-texto-tenue">{titulo}</span>
           {detalle}
         </h2>
         {accion}

@@ -35,7 +35,7 @@ export function CampoTexto({ clave, etiqueta, extraEtiqueta, ayuda, error, valor
         className={`${claseControl} ${error ? bordeError : bordeNormal}`}
       />
       {ayuda && (
-        <p id={`ayuda-${clave}`} className="text-nota mt-1.5 opacity-70">
+        <p id={`ayuda-${clave}`} className="text-nota mt-1.5 text-texto-tenue">
           {ayuda}
         </p>
       )}

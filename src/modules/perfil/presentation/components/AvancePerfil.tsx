@@ -8,7 +8,7 @@ export function AvancePerfil({ textos, capas }: { textos: TextosPerfil; capas: C
   return (
     <section className="rounded-3xl bg-tarjeta px-6 py-[1.375rem]">
       <h2 className="font-serif text-[1.375rem]">{rellenarPlantilla(textos.avance.titulo, { n: hechas, total: capas.length })}</h2>
-      <p className="text-nota mt-1 opacity-75">{textos.avance.ayuda}</p>
+      <p className="text-nota mt-1 text-texto-suave">{textos.avance.ayuda}</p>
       <ul className="mt-3.5 grid gap-2.5">
         {capas.map((capa) => (
           <li key={capa.id} data-hecha={capa.hecha} className="flex items-center gap-2.5">

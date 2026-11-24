@@ -18,9 +18,9 @@ export function OpcionesSectores({ textos, marcados, alElegir, error }: Props) {
   return (
     <fieldset aria-describedby={error ? 'error-sectores' : undefined}>
       <legend className="text-parrafo mb-1 font-medium">
-        {t.titulo} <span className="font-normal opacity-65">{textos.opcional}</span>
+        {t.titulo} <span className="font-normal text-texto-tenue">{textos.opcional}</span>
       </legend>
-      <p className="text-nota mb-2.5 opacity-70">{rellenarPlantilla(t.ayuda, { max: LIMITES_HISTORIAS.sectoresMax })}</p>
+      <p className="text-nota mb-2.5 text-texto-tenue">{rellenarPlantilla(t.ayuda, { max: LIMITES_HISTORIAS.sectoresMax })}</p>
       <div className="flex flex-wrap gap-2.5">
         {sectores.map((sector, indice) => {
           const marcado = marcados.includes(sector)
@@ -47,7 +47,7 @@ export function OpcionesSectores({ textos, marcados, alElegir, error }: Props) {
           )
         })}
       </div>
-      <p className="text-etiqueta-chica mt-3 opacity-70">{rellenarPlantilla(t.contador, { n: marcados.length, max: LIMITES_HISTORIAS.sectoresMax })}</p>
+      <p className="text-etiqueta-chica mt-3 text-texto-tenue">{rellenarPlantilla(t.contador, { n: marcados.length, max: LIMITES_HISTORIAS.sectoresMax })}</p>
       {error && <MensajeError id="error-sectores">{error}</MensajeError>}
     </fieldset>
   )

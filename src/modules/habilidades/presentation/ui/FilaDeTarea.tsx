@@ -30,7 +30,7 @@ export function FilaDeTarea({ textos, fila, alAlternar, alCambiarFrecuencia }: P
       {marcada && (
         <fieldset className="mt-3 flex flex-wrap items-center gap-2">
           <legend className="sr-only">{rellenarPlantilla(textos.vecesDe, { tarea: fila.texto })}</legend>
-          <span aria-hidden="true" className="text-nota mr-1 w-full opacity-70 sm:w-auto">
+          <span aria-hidden="true" className="text-nota mr-1 w-full text-texto-tenue sm:w-auto">
             {textos.cuantasVeces}
           </span>
           {frecuencias.map((frecuencia) => (

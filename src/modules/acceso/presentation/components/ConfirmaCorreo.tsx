@@ -63,9 +63,9 @@ export function ConfirmaCorreo({ textos, correo, alReenviar, alCambiarCorreo }: 
       <h2 ref={titulo} tabIndex={-1} className="text-titulo-seccion outline-none">
         {t.tarjetaTitulo}
       </h2>
-      <p className="text-parrafo mt-2 opacity-80">{t.loEnviamosA}</p>
+      <p className="text-parrafo mt-2 text-texto-suave">{t.loEnviamosA}</p>
       <p className="mt-3 inline-block break-all rounded-full bg-suave px-4 py-2 font-medium">{correo}</p>
-      <p className="text-parrafo mt-4 opacity-80">{t.nota}</p>
+      <p className="text-parrafo mt-4 text-texto-suave">{t.nota}</p>
 
       <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-4">
         <Boton alPulsar={reenviar} deshabilitado={restantes > 0 || enviando}>
@@ -76,7 +76,7 @@ export function ConfirmaCorreo({ textos, correo, alReenviar, alCambiarCorreo }: 
         </button>
       </div>
 
-      <p className="text-nota mt-3 opacity-75">
+      <p className="text-nota mt-3 text-texto-suave">
         {restantes > 0 ? rellenarPlantilla(t.espera, { tiempo: formatoTiempo(restantes) }) : t.yaPuedes}
       </p>
       <p role="status" className="text-cuerpo mt-2 min-h-5 font-medium">

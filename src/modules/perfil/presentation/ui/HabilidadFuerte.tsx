@@ -26,7 +26,7 @@ export function HabilidadFuerte({ habilidad, textos, abierta, alAlternar }: { ha
           <span aria-hidden="true" className="flex size-[1.625rem] items-center justify-center rounded-full border-[1.5px] border-texto leading-none">
             {abierta ? '−' : '+'}
           </span>
-          <span className="text-nota col-span-full opacity-70">{habilidad.resumen}</span>
+          <span className="text-nota col-span-full text-texto-tenue">{habilidad.resumen}</span>
         </button>
       </h3>
       {abierta && (
@@ -38,7 +38,7 @@ export function HabilidadFuerte({ habilidad, textos, abierta, alAlternar }: { ha
               </ParRespuesta>
             ))
           ) : (
-            !detalle?.texto && <p className="text-parrafo italic opacity-65">{textos.habilidades.sinDetalle}</p>
+            !detalle?.texto && <p className="text-parrafo italic text-texto-tenue">{textos.habilidades.sinDetalle}</p>
           )}
           {detalle?.texto && (
             <ParRespuesta pregunta={detalle.texto.pregunta}>

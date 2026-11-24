@@ -82,7 +82,7 @@ export function ProfundizarView({ textos, habilidades, marcas, contadasIniciales
                   id={seccion.habilidad}
                   titulo={
                     <span className="block">
-                      <span className="text-etiqueta-chica block opacity-65">
+                      <span className="text-etiqueta-chica block text-texto-tenue">
                         {rellenarPlantilla(t.habilidadN, { n: seccion.numero, total: seccion.total })} · {rellenarPlantilla(t.loHasHecho, { veces: seccion.veces })}
                       </span>
                       <span className="text-titulo-tarjeta mt-1 block">{seccion.nombre}</span>
@@ -100,7 +100,7 @@ export function ProfundizarView({ textos, habilidades, marcas, contadasIniciales
                           clave={`${seccion.habilidad}-${pregunta.id}`}
                           etiqueta={
                             <>
-                              {pregunta.titulo} <span className="font-normal opacity-65">{t.opcional}</span>
+                              {pregunta.titulo} <span className="font-normal text-texto-tenue">{t.opcional}</span>
                             </>
                           }
                           filas={3}

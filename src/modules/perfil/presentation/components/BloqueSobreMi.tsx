@@ -77,7 +77,7 @@ export function BloqueSobreMi({ textos, sobreMi }: Props) {
       ) : sobreMi.guardado ? (
         <p className="text-parrafo whitespace-pre-line">{sobreMi.guardado}</p>
       ) : (
-        <p className="text-parrafo italic opacity-65">{t.vacio}</p>
+        <p className="text-parrafo italic text-texto-tenue">{t.vacio}</p>
       )}
     </TarjetaBloque>
   )

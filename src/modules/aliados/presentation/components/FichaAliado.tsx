@@ -79,7 +79,7 @@ export function FichaAliado({ textos, etiquetaTipo, ciudad, sitioWeb, enLaRedDes
               {textos.whatsapp}
             </EnlaceBoton>
           )}
-          <p className="text-cuerpo mt-2 opacity-80">{textos.notaContacto}</p>
+          <p className="text-cuerpo mt-2 text-texto-suave">{textos.notaContacto}</p>
         </div>
       )}
     </aside>

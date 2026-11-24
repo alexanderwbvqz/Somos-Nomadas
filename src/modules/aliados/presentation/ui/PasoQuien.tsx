@@ -35,7 +35,7 @@ export function PasoQuien({ textos, datos, errores, cambiar }: PropsPaso) {
               >
                 <span aria-hidden="true" className={`mb-3 block h-2.5 rounded ${colorTipoAliado[tipo]}`} />
                 <span className="text-titulo-tarjeta block">{t.tipos[tipo].titulo}</span>
-                <span className="text-nota mt-1.5 block opacity-80">{t.tipos[tipo].texto}</span>
+                <span className="text-nota mt-1.5 block text-texto-suave">{t.tipos[tipo].texto}</span>
               </span>
             </label>
           ))}

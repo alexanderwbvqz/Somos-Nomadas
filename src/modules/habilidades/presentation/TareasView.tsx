@@ -62,7 +62,7 @@ export function TareasView({ textos, marcasIniciales, alGuardar, barra, paso, hr
             ))}
           </div>
 
-          <p className="text-cuerpo mt-4 opacity-80">{rellenarPlantilla(t.contadorTotal, { n: e.cantidad, total: habilidades.length })}</p>
+          <p className="text-cuerpo mt-4 text-texto-suave">{rellenarPlantilla(t.contadorTotal, { n: e.cantidad, total: habilidades.length })}</p>
 
           {e.aviso && (
             <p role="alert" className="text-cuerpo mt-5 flex items-start gap-2.5 rounded-xl border-2 border-primario px-4 py-3 font-medium">
@@ -85,7 +85,7 @@ export function TareasView({ textos, marcasIniciales, alGuardar, barra, paso, hr
                 <Boton tipo="submit" lleno deshabilitado={!e.completo || e.enviando || e.guardado} cursorDeshabilitado={e.enviando || e.guardado ? 'espera' : 'bloqueado'}>
                   {e.enviando || e.guardado ? t.guardando : t.siguiente}
                 </Boton>
-                {!e.completo && <p className="text-nota opacity-75">{t.minimo}</p>}
+                {!e.completo && <p className="text-nota text-texto-suave">{t.minimo}</p>}
               </div>
             }
           />
