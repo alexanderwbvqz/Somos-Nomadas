@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { Badge } from '@/shared/ui/Badge'
-import { areaTactil } from '@/shared/ui/EnlaceBoton'
+import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
 
 export type ColumnaPie = { id: string; titulo: string; enlaces: { texto: string; href: string }[] }
 
@@ -25,7 +25,6 @@ type Props = {
   selectorIdioma: ReactNode
 }
 
-const foco = 'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primario'
 
 // Pie oscuro de la web: marca, columnas de enlaces, aviso de privacidad, copyright e idioma.
 export function Pie({
