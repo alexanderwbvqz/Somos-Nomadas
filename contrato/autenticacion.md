@@ -138,7 +138,7 @@ Los mensajes que ve la persona **no** vienen de la API: son del frontend (`langu
 
 - **Hash:** `argon2id` con los parámetros por defecto recomendados de la librería elegida, ajustados al servidor de Render. Nunca SHA ni MD5.
 - **Enumeración de cuentas:** el registro responde igual exista o no el correo; el inicio de sesión responde igual si falla el correo o la clave, y tarda lo mismo.
-- **Límite de intentos (decidido):** por IP y por correo, en registro e inicio de sesión. El contador se guarda **en la base** (tabla `intentos_acceso`), así sobrevive a los reinicios de Render y funciona con varias instancias. Se guarda un hash de la IP y del correo, no el valor en claro. Los umbrales (cuántos intentos, en qué ventana) se fijan al implementar y se anotan aquí.
+- **Límite de intentos (decidido):** por IP y por correo, en registro e inicio de sesión. El contador se guarda **en la base** (tabla `intentos_acceso`), así sobrevive a los reinicios de Render y funciona con varias instancias. Se guarda un hash de la IP y del correo, no el valor en claro. Umbrales (primera propuesta, en `domain/intentos.py`): registro, 5 por hora y por origen; inicio de sesión, 5 por cada 15 minutos por correo y 20 por cada 15 minutos por origen. Cuenta todos los intentos, también los que aciertan. Se ajustan con el uso real.
 - **CORS:** restringido a los orígenes propios. Recordatorio: protege al navegador, no sustituye la autenticación.
 - **HTTPS** siempre (Render y Vercel lo dan).
 - **Logs:** sin correo ni clave. Se loguea el id de la cuenta, no el correo.

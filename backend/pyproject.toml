@@ -73,6 +73,14 @@ forbidden_modules = [
 name = "application solo importa de domain"
 type = "forbidden"
 source_modules = ["modules.acceso.application"]
+# Los tests de application ejercitan los casos de uso con los repositorios y dobles de infrastructure/memoria:
+# pueden importar eso, y nada más de infrastructure (igual que en el frontend con infrastructure/mock)
+# Solo estos dos archivos de pruebas importan memoria directamente; los demás lo hacen a través de conftest.
+# Si otro archivo lo necesita se añade aquí (el comodín solo puede sustituir un módulo completo).
+ignore_imports = [
+    "modules.acceso.application.conftest -> modules.acceso.infrastructure.memoria.*",
+    "modules.acceso.application.test_renovar_sesion -> modules.acceso.infrastructure.memoria.*",
+]
 forbidden_modules = [
     "modules.acceso.infrastructure",
     "modules.acceso.api",
