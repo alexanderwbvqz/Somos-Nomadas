@@ -79,3 +79,48 @@
     animation: none;
   }
 }
+
+/* Cambio suave del color de fondo de una sección */
+@utility transicion-color {
+  transition: background-color 700ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* Un panel que se despliega y se pliega sin saltos: el contenedor lleva `despliegue` y `data-abierto`, y dentro va un único
+   hijo con `despliegue-interior`. Cerrado mide cero de alto. */
+@utility despliegue {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 500ms ease;
+
+  &[data-abierto='true'] {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+@utility despliegue-interior {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Línea que se rellena de izquierda a derecha cuando su elemento lleva `data-activo`: marca cuál es el actual de una serie */
+@utility relleno-progreso {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms ease;
+
+  &[data-activo='true'] {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

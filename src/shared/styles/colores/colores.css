@@ -18,6 +18,9 @@
   --color-suave: #ece9df;
   /* Fondo de las pantallas oscuras, como la de cierre del recorrido */
   --color-fondo-oscuro: #050b0d;
+  /* Letras enormes de adorno al fondo de una sección (siempre aria-hidden): casi se funden con el color de la sección.
+     Son decoración, por eso no se les mide el contraste. */
+  --color-fantasma: color-mix(in srgb, var(--color-texto) 9%, transparent);
 
   /* Degradado del fondo de página (ver ../fondos/fondos.css) */
   --color-degradado-crema: #f3f1e8;

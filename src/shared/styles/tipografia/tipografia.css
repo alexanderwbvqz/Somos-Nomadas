@@ -38,6 +38,15 @@
   letter-spacing: -0.02em;
 }
 
+/* Nombre enorme de adorno al fondo de una sección, en serif (va con aria-hidden y el color `text-fantasma`) */
+@utility text-marca-gigante {
+  font-family: var(--font-serif);
+  font-size: clamp(6rem, 15vw, 14rem);
+  line-height: 0.9;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+}
+
 /* Número grande de una fecha, en serif */
 @utility text-numero-fecha {
   font-family: var(--font-serif);
