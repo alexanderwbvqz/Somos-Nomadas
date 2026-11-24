@@ -6,7 +6,7 @@ export const en: TextosPerfil = {
   subtitulo: 'This is what other nomads will read when they discover you. Review it and fix what is needed.',
   errorCarga: 'We could not load your profile. Please try again in a moment.',
   verComoMeVen: 'See how others see me',
-  vistaPrevia: { titulo: 'How you appear in Discover', nota: 'This is how your card would look in the directory.', cerrar: 'Close' },
+  vistaPrevia: { titulo: 'How you appear in Discover' },
   ficha: { etiqueta: 'Main details', avatar: 'Your initials' },
   completaTuPerfil: 'Complete your profile',
   editar: 'Edit',

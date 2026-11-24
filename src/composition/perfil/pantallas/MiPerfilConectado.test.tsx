@@ -27,7 +27,7 @@ describe('MiPerfilConectado', () => {
     await dibujar(idioma)
     const textos = textosPerfil(idioma)
     expect(screen.getByRole('heading', { level: 1, name: textos.titulo })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: textos.verComoMeVen })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: textos.verComoMeVen })).toHaveAttribute('href', `/${idioma}/perfil/vista`)
     expect(screen.getByRole('heading', { level: 2, name: textos.completaTuPerfil })).toBeInTheDocument()
   })
 

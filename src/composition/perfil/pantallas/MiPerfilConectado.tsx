@@ -35,6 +35,7 @@ export async function MiPerfilConectado({ idioma }: { idioma: Idioma }) {
       textos={textos}
       perfil={resultado.perfil}
       pasos={pasos}
+      hrefVistaPublica={`/${idioma}/perfil/vista`}
       acciones={{ sobreMi: guardarSobreMiAccion, trayectoria: guardarTrayectoriaAccion, evidencia: guardarEvidenciaAccion }}
     />
   )

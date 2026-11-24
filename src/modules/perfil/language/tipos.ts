@@ -4,7 +4,8 @@ export type TextosPerfil = {
   subtitulo: string
   errorCarga: string
   verComoMeVen: string
-  vistaPrevia: { titulo: string; nota: string; cerrar: string }
+  /** El título de la tarjeta del directorio que va a la derecha de Mi perfil */
+  vistaPrevia: { titulo: string }
   ficha: { etiqueta: string; avatar: string }
   completaTuPerfil: string
   editar: string

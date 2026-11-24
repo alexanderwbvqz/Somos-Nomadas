@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ResultadoGuardar } from '../application/resultado'
 import type { Perfil } from '../domain/perfil'
 import { es } from '../language/es'
@@ -61,19 +61,10 @@ const bien = async (): Promise<ResultadoGuardar<never>> => ({ ok: true })
 let acciones: { sobreMi: ReturnType<typeof vi.fn>; trayectoria: ReturnType<typeof vi.fn>; evidencia: ReturnType<typeof vi.fn> }
 
 function montar(perfil: Perfil = perfilDePrueba()) {
-  render(<MiPerfilView textos={es} perfil={perfil} pasos={pasos} acciones={acciones as unknown as MiPerfilViewProps['acciones']} anioActual={2026} />)
+  render(<MiPerfilView textos={es} perfil={perfil} pasos={pasos} hrefVistaPublica="/es/perfil/vista" acciones={acciones as unknown as MiPerfilViewProps['acciones']} anioActual={2026} />)
   return userEvent.setup()
 }
 
-// jsdom no trae las ventanas modales nativas: se simulan abriendo y cerrando el atributo
-beforeAll(() => {
-  HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
-    this.setAttribute('open', '')
-  }
-  HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
-    this.removeAttribute('open')
-  }
-})
 beforeEach(() => {
   acciones = { sobreMi: vi.fn(bien), trayectoria: vi.fn(bien), evidencia: vi.fn(bien) }
 })
@@ -453,17 +444,17 @@ describe('MiPerfilView', () => {
       await waitFor(() => expect(screen.getByRole('article')).toHaveTextContent('Busco socio de ventas'))
     })
 
-    it('«Ver como me ven» abre una ventana con la tarjeta y se puede cerrar', async () => {
-      const usuario = montar()
-      const ventana = document.querySelector('dialog') as HTMLDialogElement
-      expect(ventana).not.toHaveAttribute('open')
-      await usuario.click(screen.getByRole('button', { name: 'Ver como me ven' }))
-      expect(ventana).toHaveAttribute('open')
-      expect(within(ventana).getByRole('heading', { name: 'Así te ven en Descubrir' })).toBeInTheDocument()
-      expect(within(ventana).getByRole('article')).toHaveTextContent('Ana Torres')
-      expect(within(ventana).getByText('Así se vería tu tarjeta en el directorio.')).toBeInTheDocument()
-      await usuario.click(within(ventana).getByRole('button', { name: 'Cerrar' }))
-      expect(ventana).not.toHaveAttribute('open')
+    it('«Ver como me ven» es un enlace a la página donde se lee el perfil, no una ventana', () => {
+      montar()
+      expect(screen.getByRole('link', { name: 'Ver como me ven' })).toHaveAttribute('href', '/es/perfil/vista')
+      expect(screen.queryByRole('button', { name: 'Ver como me ven' })).not.toBeInTheDocument()
+      expect(document.querySelector('dialog')).not.toBeInTheDocument()
+    })
+
+    it('a la derecha sigue la tarjeta del directorio, con su título', () => {
+      montar()
+      expect(screen.getByRole('heading', { level: 2, name: 'Así te ven en Descubrir' })).toBeInTheDocument()
+      expect(screen.getByRole('article')).toHaveTextContent('Ana Torres')
     })
   })
 

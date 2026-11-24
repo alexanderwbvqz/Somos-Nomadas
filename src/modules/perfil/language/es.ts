@@ -6,7 +6,7 @@ export const es: TextosPerfil = {
   subtitulo: 'Esto es lo que leerán otros nómadas cuando te descubran. Revísalo y corrige lo que haga falta.',
   errorCarga: 'No pudimos cargar tu perfil. Inténtalo de nuevo en un momento.',
   verComoMeVen: 'Ver como me ven',
-  vistaPrevia: { titulo: 'Así te ven en Descubrir', nota: 'Así se vería tu tarjeta en el directorio.', cerrar: 'Cerrar' },
+  vistaPrevia: { titulo: 'Así te ven en Descubrir' },
   ficha: { etiqueta: 'Datos principales', avatar: 'Tus iniciales' },
   completaTuPerfil: 'Completa tu perfil',
   editar: 'Editar',

@@ -1,6 +1,7 @@
 'use client'
 
 import { capasDelPerfil, type Perfil } from '../domain/perfil'
+import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
 import type { TextosPerfil } from '../language/tipos'
 import { AvancePerfil } from './components/AvancePerfil'
 import { BloqueBuscando } from './components/BloqueBuscando'
@@ -13,7 +14,6 @@ import { BloqueTareas } from './components/BloqueTareas'
 import { BloqueTrayectoria } from './components/BloqueTrayectoria'
 import { FichaDelPerfil } from './components/FichaDelPerfil'
 import { TarjetaDirectorio } from './components/TarjetaDirectorio'
-import { VistaPrevia } from './components/VistaPrevia'
 import { useEvidencia, type AccionGuardarEvidencia } from './hooks/useEvidencia'
 import { useSobreMi, type AccionGuardarSobreMi } from './hooks/useSobreMi'
 import { useTrayectoria, type AccionGuardarTrayectoria } from './hooks/useTrayectoria'
@@ -24,6 +24,8 @@ export type MiPerfilViewProps = {
   perfil: Perfil
   /** Los pasos del recorrido donde se corrige lo que muestra el perfil; los pone quien arma la pantalla */
   pasos: PasosPerfil
+  /** A la página donde se lee el perfil como lo lee otra persona; lo pone quien arma la pantalla */
+  hrefVistaPublica: string
   acciones: { sobreMi: AccionGuardarSobreMi; trayectoria: AccionGuardarTrayectoria; evidencia: AccionGuardarEvidencia }
   /** Para las pruebas; por defecto, el año de hoy */
   anioActual?: number
@@ -31,7 +33,7 @@ export type MiPerfilViewProps = {
 
 // «Mi perfil»: lo que la persona contó en el recorrido, para revisarlo y corregirlo, y lo que completa aquí mismo (Sobre mí,
 // trayectoria, evidencia). A la derecha, qué tan completo está y cómo se vería en el directorio. Va dentro del <main> de la cuenta.
-export function MiPerfilView({ textos, perfil, pasos, acciones, anioActual }: MiPerfilViewProps) {
+export function MiPerfilView({ textos, perfil, pasos, hrefVistaPublica, acciones, anioActual }: MiPerfilViewProps) {
   const sobreMi = useSobreMi(perfil.sobreMi, acciones.sobreMi)
   const trayectoria = useTrayectoria(perfil.trayectoria, acciones.trayectoria, anioActual)
   const evidencia = useEvidencia(perfil.evidencia, acciones.evidencia)
@@ -46,7 +48,9 @@ export function MiPerfilView({ textos, perfil, pasos, acciones, anioActual }: Mi
           <h1 className="text-titulo-medio">{textos.titulo}</h1>
           <p className="mt-2.5 max-w-[34rem] opacity-80">{textos.subtitulo}</p>
         </div>
-        <VistaPrevia textos={textos} perfil={actual} />
+        <EnlaceBoton href={hrefVistaPublica} variante="lleno">
+          {textos.verComoMeVen}
+        </EnlaceBoton>
       </div>
 
       <div className="mt-8 grid items-start gap-7 escritorio:grid-cols-[8fr_4fr]">

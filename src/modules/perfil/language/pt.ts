@@ -6,7 +6,7 @@ export const pt: TextosPerfil = {
   subtitulo: 'Isto é o que outros nômades vão ler quando descobrirem você. Revise e corrija o que for preciso.',
   errorCarga: 'Não conseguimos carregar seu perfil. Tente de novo em instantes.',
   verComoMeVen: 'Ver como me veem',
-  vistaPrevia: { titulo: 'Como você aparece em Descobrir', nota: 'Assim seria seu cartão no diretório.', cerrar: 'Fechar' },
+  vistaPrevia: { titulo: 'Como você aparece em Descobrir' },
   ficha: { etiqueta: 'Dados principais', avatar: 'Suas iniciais' },
   completaTuPerfil: 'Complete seu perfil',
   editar: 'Editar',
