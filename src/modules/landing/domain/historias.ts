@@ -8,6 +8,17 @@ export const LIMITES_HISTORIAS = { personas: { min: 2, max: 3 }, fuentes: { min:
 
 const hayTexto = (texto: string) => texto.trim() !== ''
 
+// Regla editorial: una fuente es una universidad, un museo, una revista o la propia empresa. Wikipedia sirve para orientarse, no para
+// respaldar lo que se publica.
+const SITIOS_NO_ADMITIDOS = ['wikipedia.org']
+
+function esFuenteAdmitida(href: string): boolean {
+  const seguro = normalizarEnlace(href)
+  if (seguro === undefined) return false
+  const sitio = new URL(seguro).hostname
+  return !SITIOS_NO_ADMITIDOS.some((no) => sitio === no || sitio.endsWith(`.${no}`))
+}
+
 /** `anioActual` lo pone quien llama: el dominio no mira el reloj */
 export function historiaPublicable(historia: Historia, anioActual: number): boolean {
   const { personas, fuentes, iniciales } = LIMITES_HISTORIAS
@@ -25,7 +36,7 @@ export function historiaPublicable(historia: Historia, anioActual: number): bool
     historia.personas.every((persona) => hayTexto(persona.iniciales) && persona.iniciales.trim().length <= iniciales && hayTexto(persona.nombre) && hayTexto(persona.aporte)) &&
     historia.fuentes.length >= fuentes.min &&
     historia.fuentes.length <= fuentes.max &&
-    historia.fuentes.every((fuente) => hayTexto(fuente.texto) && normalizarEnlace(fuente.href) !== undefined)
+    historia.fuentes.every((fuente) => hayTexto(fuente.texto) && esFuenteAdmitida(fuente.href))
   )
 }
 

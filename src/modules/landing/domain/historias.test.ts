@@ -18,7 +18,7 @@ function historia(cambios: Partial<Historia> = {}): Historia {
       { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia', aporte: 'Ingeniería' },
     ],
     parrafos: ['Se conocieron en 1971.'],
-    fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
+    fuentes: [{ texto: 'Computer History Museum', href: 'https://computerhistory.org/blog/steve-jobs/' }],
     ...cambios,
   }
 }
@@ -33,7 +33,7 @@ describe('historiaPublicable', () => {
   })
 
   it('cada fuente lleva su texto y su enlace', () => {
-    expect(historiaPublicable(historia({ fuentes: [{ texto: '', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }] }), ANIO)).toBe(false)
+    expect(historiaPublicable(historia({ fuentes: [{ texto: '', href: 'https://computerhistory.org/blog/steve-jobs/' }] }), ANIO)).toBe(false)
     expect(historiaPublicable(historia({ fuentes: [{ texto: 'Wikipedia', href: '' }] }), ANIO)).toBe(false)
   })
 
@@ -44,6 +44,15 @@ describe('historiaPublicable', () => {
       // basta una mala entre varias
       expect(historiaPublicable(historia({ fuentes: [buena, { texto: 'Mala', href }] }), ANIO)).toBe(false)
     }
+  })
+
+  it('Wikipedia no cuenta como fuente: hace falta una universidad, un museo, una revista o la propia empresa', () => {
+    for (const href of ['https://en.wikipedia.org/wiki/Apple_Inc.', 'https://es.wikipedia.org/wiki/Nike', 'https://pt.m.wikipedia.org/wiki/Airbnb', 'https://wikipedia.org/wiki/Rappi']) {
+      expect(historiaPublicable(historia({ fuentes: [{ texto: 'Wikipedia', href }] }), ANIO), href).toBe(false)
+      // basta una de Wikipedia entre varias buenas
+      expect(historiaPublicable(historia({ fuentes: [{ texto: 'Buena', href: 'https://example.com/a' }, { texto: 'Wikipedia', href }] }), ANIO), href).toBe(false)
+    }
+    expect(historiaPublicable(historia({ fuentes: [{ texto: 'Un sitio que solo se parece', href: 'https://wikipedia.example.com/a' }] }), ANIO)).toBe(true)
   })
 
   it('puede tener hasta tres fuentes, no más', () => {

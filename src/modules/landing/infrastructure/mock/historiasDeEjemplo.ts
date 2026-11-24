@@ -1,11 +1,11 @@
 import type { Historia, PersonaHistoria } from '../../domain/Historia'
 
-// inventado / por verificar: historias de ejemplo para armar la sección. Los datos de cada una (cómo se conocieron, el año, qué
-// hizo cada persona) y las fuentes son una propuesta: hay que comprobar en la fuente que respalda cada dato antes de publicar.
-// Mercado Libre está redactada solo con lo que dicen sus dos fuentes (Stanford y la SEC); el área de cada persona es una decisión
-// editorial, porque las fuentes dan cargos y no áreas. Las traducciones a en y pt son propuestas. Rappi está por escribir: las
-// fuentes que se encontraron no dicen cómo se conocieron sus fundadores ni qué aportó cada uno, y por eso no tiene texto ni
-// fuentes y la regla del dominio no la deja salir.
+// inventado / por verificar: historias de ejemplo para armar la sección. Cada una está redactada solo con lo que dicen sus fuentes
+// (universidades, museos, revistas o la propia empresa; nunca Wikipedia) y las citas se comprobaron en esas páginas, pero hay que
+// volver a leerlas antes de publicar. El área de cada persona es una decisión editorial, porque las fuentes dan cargos y formación y
+// no áreas. Las traducciones a en y pt son propuestas. Rappi está por escribir: las fuentes que se encontraron se contradicen en la
+// ciudad y en los años, y la amistad de sus fundadores solo la cuenta un informe de análisis; por eso no tiene texto ni fuentes y la
+// regla del dominio no la deja salir.
 
 type Textos = Pick<Historia, 'combinacion' | 'frase' | 'parrafos' | 'fuentes'> & { aportes: string[] }
 
@@ -24,7 +24,7 @@ const base: HistoriaBase[] = [
   {
     clave: 'apple',
     nombre: 'Apple',
-    anio: 1976,
+    anio: 1977,
     areaFondo: 'marketing',
     personas: [
       { iniciales: 'SJ', nombre: 'Steve Jobs', area: 'marketing' },
@@ -33,33 +33,36 @@ const base: HistoriaBase[] = [
     textos: {
       es: {
         combinacion: 'Ingeniería + Ventas',
-        frase: { inicio: 'Uno construía los computadores. El otro vio cómo', resaltado: 'llevarlos a la gente', fin: '.' },
-        aportes: ['Producto y ventas', 'Ingeniería'],
+        frase: { inicio: 'Uno construía los computadores. El otro', resaltado: 'los vendía', fin: '.' },
+        aportes: ['Ventas y marketing', 'Diseño de los computadores'],
         parrafos: [
-          'Steve Jobs y Steve Wozniak se conocieron en 1971, en California, a través de un amigo en común.',
-          'Wozniak diseñaba los computadores; Jobs entendió que podían venderse. En 1976 fundaron Apple junto con Ronald Wayne.',
+          'Steve Jobs y Steve Wozniak se conocieron en 1971, cuando un amigo en común, Bill Fernandez, presentó a Wozniak, de 21 años, con Jobs, de 16.',
+          'Wozniak, sin formación formal en ingeniería, diseñó el computador Apple-1. Jobs vio que podía haber demanda más allá de los aficionados y consiguió un pedido de 50 máquinas de una tienda local, la Byte Shop.',
+          'En enero de 1977 fundaron Apple Computer junto con Mike Markkula, un ingeniero retirado de Intel que invirtió 250.000 dólares.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
+        fuentes: [{ texto: 'Computer History Museum: Steve Jobs, From Garage to World’s Most Valuable Company', href: 'https://computerhistory.org/blog/steve-jobs/' }],
       },
       en: {
         combinacion: 'Engineering + Sales',
-        frase: { inicio: 'One built the computers. The other saw how to', resaltado: 'bring them to people', fin: '.' },
-        aportes: ['Product and sales', 'Engineering'],
+        frase: { inicio: 'One built the computers. The other', resaltado: 'sold them', fin: '.' },
+        aportes: ['Sales and marketing', 'Computer design'],
         parrafos: [
-          'Steve Jobs and Steve Wozniak met in 1971, in California, through a mutual friend.',
-          'Wozniak designed the computers; Jobs realised they could be sold. In 1976 they founded Apple together with Ronald Wayne.',
+          'Steve Jobs and Steve Wozniak met in 1971, when a mutual friend, Bill Fernandez, introduced 21-year-old Wozniak to 16-year-old Jobs.',
+          'Wozniak, who had no formal engineering training, designed the Apple-1 computer. Jobs saw there could be demand beyond hobbyists and won an order for 50 machines from a local store, the Byte Shop.',
+          'In January 1977 they founded Apple Computer together with Mike Markkula, an engineer retired from Intel who invested $250,000.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
+        fuentes: [{ texto: 'Computer History Museum: Steve Jobs, From Garage to World’s Most Valuable Company', href: 'https://computerhistory.org/blog/steve-jobs/' }],
       },
       pt: {
         combinacion: 'Engenharia + Vendas',
-        frase: { inicio: 'Um construía os computadores. O outro viu como', resaltado: 'levá-los às pessoas', fin: '.' },
-        aportes: ['Produto e vendas', 'Engenharia'],
+        frase: { inicio: 'Um construía os computadores. O outro', resaltado: 'os vendia', fin: '.' },
+        aportes: ['Vendas e marketing', 'Projeto dos computadores'],
         parrafos: [
-          'Steve Jobs e Steve Wozniak se conheceram em 1971, na Califórnia, por meio de um amigo em comum.',
-          'Wozniak projetava os computadores; Jobs percebeu que eles podiam ser vendidos. Em 1976 fundaram a Apple junto com Ronald Wayne.',
+          'Steve Jobs e Steve Wozniak se conheceram em 1971, quando um amigo em comum, Bill Fernandez, apresentou Wozniak, de 21 anos, a Jobs, de 16.',
+          'Wozniak, sem formação formal em engenharia, projetou o computador Apple-1. Jobs viu que poderia haver demanda além dos aficionados e conseguiu um pedido de 50 máquinas de uma loja local, a Byte Shop.',
+          'Em janeiro de 1977 fundaram a Apple Computer junto com Mike Markkula, um engenheiro aposentado da Intel que investiu 250 mil dólares.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
+        fuentes: [{ texto: 'Computer History Museum: Steve Jobs, From Garage to World’s Most Valuable Company', href: 'https://computerhistory.org/blog/steve-jobs/' }],
       },
     },
   },
@@ -75,34 +78,49 @@ const base: HistoriaBase[] = [
     ],
     textos: {
       es: {
-        combinacion: 'Diseño + Ingeniería',
-        frase: { inicio: 'Brian y Joe se conocieron', resaltado: 'estudiando diseño', fin: ' en Rhode Island.' },
-        aportes: ['Diseño', 'Diseño', 'Ingeniería'],
+        combinacion: 'Diseño + Computación',
+        frase: { inicio: 'Dos diseñadores de RISD empezaron juntos en California. En 2008 se sumó', resaltado: 'un tercer socio', fin: '.' },
+        aportes: ['Diseño industrial', 'Diseño gráfico e industrial', 'Ciencias de la computación'],
         parrafos: [
-          'Brian Chesky y Joe Gebbia estudiaron diseño en la Rhode Island School of Design.',
-          'Años después se sumó Nathan Blecharczyk, ingeniero, para construir la plataforma. Fundaron Airbnb en 2008.',
+          'Brian Chesky se graduó en diseño industrial de la Rhode Island School of Design (RISD) en 2004, y Joe Gebbia, en diseño gráfico y diseño industrial, en 2005.',
+          'Poco después de graduarse, Gebbia se fue a California con otro egresado de RISD, Chesky. Cuando les subieron el alquiler, pusieron un colchón inflable en el salón; ese fin de semana había en San Francisco una conferencia de diseño con todos los hoteles agotados.',
+          'En agosto de 2008 relanzaron la idea, con Nathan Blecharczyk, licenciado en Ciencias de la Computación por Harvard, como tercer miembro del equipo. La empresa acabó llamándose Airbnb.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' }],
+        fuentes: [
+          { texto: 'RISD: comunicado de prensa sobre Brian Chesky (2017)', href: 'https://www.risd.edu/news/for-press/press-releases/airbnb-co-founder-ceo-and-head-community-brian-chesky-deliver-keynote' },
+          { texto: 'Core77: RISD Entrepreneur Mindshare, Joe Gebbia (2012)', href: 'https://core77.com/posts/23715/risd-entrepreneur-mindshare-joe-gebbia-says-to-take-the-next-step-23715' },
+          { texto: 'Airbnb Newsroom: Nathan Blecharczyk', href: 'https://news.airbnb.com/about-us/leadership/nathan-blecharczyk/' },
+        ],
       },
       en: {
-        combinacion: 'Design + Engineering',
-        frase: { inicio: 'Brian and Joe met', resaltado: 'studying design', fin: ' in Rhode Island.' },
-        aportes: ['Design', 'Design', 'Engineering'],
+        combinacion: 'Design + Computing',
+        frase: { inicio: 'Two RISD designers started out together in California. In 2008', resaltado: 'a third partner', fin: ' joined.' },
+        aportes: ['Industrial design', 'Graphic and industrial design', 'Computer science'],
         parrafos: [
-          'Brian Chesky and Joe Gebbia studied design at the Rhode Island School of Design.',
-          'Years later Nathan Blecharczyk, an engineer, joined to build the platform. They founded Airbnb in 2008.',
+          'Brian Chesky graduated in industrial design from the Rhode Island School of Design (RISD) in 2004, and Joe Gebbia, in graphic and industrial design, in 2005.',
+          'Shortly after graduating, Gebbia headed to California with fellow RISD alumnus Chesky. When their rent went up, they put an air mattress in the living room; that weekend a design conference in San Francisco had every hotel sold out.',
+          'In August 2008 they relaunched the idea, with Nathan Blecharczyk, who holds a bachelor’s degree in computer science from Harvard, as a third team member. The company came to be called Airbnb.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' }],
+        fuentes: [
+          { texto: 'RISD: press release on Brian Chesky (2017)', href: 'https://www.risd.edu/news/for-press/press-releases/airbnb-co-founder-ceo-and-head-community-brian-chesky-deliver-keynote' },
+          { texto: 'Core77: RISD Entrepreneur Mindshare, Joe Gebbia (2012)', href: 'https://core77.com/posts/23715/risd-entrepreneur-mindshare-joe-gebbia-says-to-take-the-next-step-23715' },
+          { texto: 'Airbnb Newsroom: Nathan Blecharczyk', href: 'https://news.airbnb.com/about-us/leadership/nathan-blecharczyk/' },
+        ],
       },
       pt: {
-        combinacion: 'Design + Engenharia',
-        frase: { inicio: 'Brian e Joe se conheceram', resaltado: 'estudando design', fin: ' em Rhode Island.' },
-        aportes: ['Design', 'Design', 'Engenharia'],
+        combinacion: 'Design + Computação',
+        frase: { inicio: 'Dois designers da RISD começaram juntos na Califórnia. Em 2008 entrou', resaltado: 'um terceiro sócio', fin: '.' },
+        aportes: ['Design industrial', 'Design gráfico e industrial', 'Ciência da computação'],
         parrafos: [
-          'Brian Chesky e Joe Gebbia estudaram design na Rhode Island School of Design.',
-          'Anos depois, Nathan Blecharczyk, engenheiro, se juntou para construir a plataforma. Fundaram o Airbnb em 2008.',
+          'Brian Chesky se formou em design industrial na Rhode Island School of Design (RISD) em 2004, e Joe Gebbia, em design gráfico e design industrial, em 2005.',
+          'Pouco depois de se formar, Gebbia foi para a Califórnia com outro ex-aluno da RISD, Chesky. Quando o aluguel subiu, colocaram um colchão inflável na sala; naquele fim de semana, uma conferência de design em São Francisco deixou todos os hotéis lotados.',
+          'Em agosto de 2008 relançaram a ideia, com Nathan Blecharczyk, bacharel em Ciência da Computação por Harvard, como terceiro membro da equipe. A empresa passou a se chamar Airbnb.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' }],
+        fuentes: [
+          { texto: 'RISD: comunicado de imprensa sobre Brian Chesky (2017)', href: 'https://www.risd.edu/news/for-press/press-releases/airbnb-co-founder-ceo-and-head-community-brian-chesky-deliver-keynote' },
+          { texto: 'Core77: RISD Entrepreneur Mindshare, Joe Gebbia (2012)', href: 'https://core77.com/posts/23715/risd-entrepreneur-mindshare-joe-gebbia-says-to-take-the-next-step-23715' },
+          { texto: 'Airbnb Newsroom: Nathan Blecharczyk', href: 'https://news.airbnb.com/about-us/leadership/nathan-blecharczyk/' },
+        ],
       },
     },
   },
@@ -112,39 +130,54 @@ const base: HistoriaBase[] = [
     anio: 1964,
     areaFondo: 'operaciones',
     personas: [
-      { iniciales: 'PK', nombre: 'Phil Knight', area: 'finanzas' },
-      { iniciales: 'BB', nombre: 'Bill Bowerman', area: 'operaciones' },
+      { iniciales: 'PK', nombre: 'Phil Knight', area: 'marketing' },
+      { iniciales: 'BB', nombre: 'Bill Bowerman', area: 'tecnologia' },
     ],
     textos: {
       es: {
-        combinacion: 'Finanzas + Producto',
-        frase: { inicio: 'Un corredor y su entrenador empezaron', resaltado: 'vendiendo zapatillas', fin: '.' },
-        aportes: ['Finanzas y ventas', 'Producto'],
+        combinacion: 'Ventas + Producto',
+        frase: { inicio: 'Un corredor y su entrenador sellaron con un apretón de manos', resaltado: 'un negocio de zapatillas', fin: '.' },
+        aportes: ['Importación y ventas', 'Diseño del calzado'],
         parrafos: [
-          'Phil Knight corría en la Universidad de Oregon, entrenado por Bill Bowerman.',
-          'En 1964 fundaron Blue Ribbon Sports: Knight llevaba las cuentas y las ventas; Bowerman diseñaba el calzado.',
+          'Phil Knight corría en el equipo de atletismo de la Universidad de Oregón, entrenado por Bill Bowerman, que fue para él mentor, entrenador y amigo.',
+          'El 25 de enero de 1964 almorzaron en un hotel de Portland para hablar de una posible sociedad y se dieron la mano sobre la mesa. Nacía Blue Ribbon Sports, el antecesor de Nike.',
+          'Knight se encargó de importar zapatillas japonesas y de venderlas, al principio desde su auto; Bowerman, de mejorar el calzado: sus innovaciones llegaron a sumar ocho patentes.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' }],
+        fuentes: [
+          { texto: 'Nike: The Handshake That Started It All', href: 'https://about.nike.com/en/magazine/the-handshake-that-started-it-all' },
+          { texto: 'Nike: Bill Bowerman, Nike’s Original Innovator', href: 'https://about.nike.com/en/magazine/bill-bowerman-nike-s-original-innovator' },
+          { texto: 'Stanford GSB: Phil Knight on the Controversial Kaepernick Ad and Nike’s Never-Give-Up Attitude (2019)', href: 'https://www.gsb.stanford.edu/index%2ephp/node/474621' },
+        ],
       },
       en: {
-        combinacion: 'Finance + Product',
-        frase: { inicio: 'A runner and his coach started', resaltado: 'selling shoes', fin: '.' },
-        aportes: ['Finance and sales', 'Product'],
+        combinacion: 'Sales + Product',
+        frase: { inicio: 'A runner and his coach sealed with a handshake', resaltado: 'a shoe business', fin: '.' },
+        aportes: ['Importing and sales', 'Footwear design'],
         parrafos: [
-          'Phil Knight ran at the University of Oregon, coached by Bill Bowerman.',
-          'In 1964 they founded Blue Ribbon Sports: Knight handled the accounts and sales; Bowerman designed the footwear.',
+          'Phil Knight ran on the University of Oregon track team, coached by Bill Bowerman, who was a mentor, coach and friend to him.',
+          'On January 25, 1964, they had lunch at a Portland hotel to discuss a possible partnership and shook hands across the table. Blue Ribbon Sports, the precursor to Nike, was born.',
+          'Knight took charge of importing Japanese shoes and selling them, at first from his car; Bowerman, of improving the footwear: his innovations came to comprise eight patents.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' }],
+        fuentes: [
+          { texto: 'Nike: The Handshake That Started It All', href: 'https://about.nike.com/en/magazine/the-handshake-that-started-it-all' },
+          { texto: 'Nike: Bill Bowerman, Nike’s Original Innovator', href: 'https://about.nike.com/en/magazine/bill-bowerman-nike-s-original-innovator' },
+          { texto: 'Stanford GSB: Phil Knight on the Controversial Kaepernick Ad and Nike’s Never-Give-Up Attitude (2019)', href: 'https://www.gsb.stanford.edu/index%2ephp/node/474621' },
+        ],
       },
       pt: {
-        combinacion: 'Finanças + Produto',
-        frase: { inicio: 'Um corredor e seu treinador começaram', resaltado: 'vendendo tênis', fin: '.' },
-        aportes: ['Finanças e vendas', 'Produto'],
+        combinacion: 'Vendas + Produto',
+        frase: { inicio: 'Um corredor e seu treinador selaram com um aperto de mão', resaltado: 'um negócio de tênis', fin: '.' },
+        aportes: ['Importação e vendas', 'Design do calçado'],
         parrafos: [
-          'Phil Knight corria na Universidade de Oregon, treinado por Bill Bowerman.',
-          'Em 1964 fundaram a Blue Ribbon Sports: Knight cuidava das contas e das vendas; Bowerman projetava o calçado.',
+          'Phil Knight corria na equipe de atletismo da Universidade de Oregon, treinado por Bill Bowerman, que foi para ele mentor, treinador e amigo.',
+          'Em 25 de janeiro de 1964 almoçaram em um hotel de Portland para falar de uma possível sociedade e apertaram as mãos sobre a mesa. Nascia a Blue Ribbon Sports, antecessora da Nike.',
+          'Knight cuidou de importar tênis japoneses e vendê-los, no começo do porta-malas do carro; Bowerman, de melhorar o calçado: suas inovações chegaram a somar oito patentes.',
         ],
-        fuentes: [{ texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' }],
+        fuentes: [
+          { texto: 'Nike: The Handshake That Started It All', href: 'https://about.nike.com/en/magazine/the-handshake-that-started-it-all' },
+          { texto: 'Nike: Bill Bowerman, Nike’s Original Innovator', href: 'https://about.nike.com/en/magazine/bill-bowerman-nike-s-original-innovator' },
+          { texto: 'Stanford GSB: Phil Knight on the Controversial Kaepernick Ad and Nike’s Never-Give-Up Attitude (2019)', href: 'https://www.gsb.stanford.edu/index%2ephp/node/474621' },
+        ],
       },
     },
   },

@@ -28,6 +28,66 @@ describe('MockHistoriasRepository', () => {
     expect(incompletas.map((h) => h.clave)).toEqual(['rappi'])
   })
 
+  it.each(idiomas)('en %s ninguna fuente es Wikipedia', async (idioma) => {
+    const historias = await new MockHistoriasRepository().obtener(idioma)
+    const hosts = historias.flatMap((h) => h.fuentes.map((f) => new URL(f.href).hostname))
+    expect(hosts.length).toBeGreaterThan(0)
+    expect(hosts.filter((host) => host.endsWith('wikipedia.org'))).toEqual([])
+  })
+
+  describe('Apple', () => {
+    const apple = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'apple')!
+
+    it('es de 1977, el año que dice su fuente, y no menciona a Ronald Wayne, que la fuente no nombra', async () => {
+      expect((await apple('es')).anio).toBe(1977)
+    })
+
+    it.each(idiomas)('en %s cuenta la presentación de 1971 por un amigo en común y la fundación con Markkula, con el Computer History Museum como fuente', async (idioma) => {
+      const historia = await apple(idioma)
+      const texto = historia.parrafos.join(' ')
+      expect(texto).toContain('Bill Fernandez')
+      expect(texto).toContain('1971')
+      expect(texto).toContain('1977')
+      expect(texto).toContain('Markkula')
+      expect(texto).not.toContain('Wayne')
+      expect(texto).not.toContain('1976')
+      expect(historia.fuentes.map((f) => new URL(f.href).hostname)).toEqual(['computerhistory.org'])
+    })
+  })
+
+  describe('Airbnb', () => {
+    const airbnb = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'airbnb')!
+
+    it.each(idiomas)('en %s se apoya en RISD, Core77 y Airbnb, y no afirma cómo se conocieron Chesky y Gebbia porque ninguna fuente lo dice', async (idioma) => {
+      const historia = await airbnb(idioma)
+      expect(historia.fuentes.map((f) => new URL(f.href).hostname)).toEqual(['www.risd.edu', 'core77.com', 'news.airbnb.com'])
+      const texto = [historia.frase.inicio, historia.frase.resaltado, historia.frase.fin, ...historia.parrafos].join(' ')
+      expect(texto).toContain('RISD')
+      expect(texto).not.toMatch(/se conocieron|se conheceram|met studying|met as|compañeros de clase|classmates|colegas de turma/i)
+    })
+
+    it('Blecharczyk aparece con su formación, que sí consta, y no como ingeniero fundador, que no consta', async () => {
+      const personas = (await airbnb('es')).personas
+      expect(personas.map((p) => [p.nombre, p.aporte])).toEqual([
+        ['Brian Chesky', 'Diseño industrial'],
+        ['Joe Gebbia', 'Diseño gráfico e industrial'],
+        ['Nathan Blecharczyk', 'Ciencias de la computación'],
+      ])
+    })
+  })
+
+  describe('Nike', () => {
+    const nike = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'nike')!
+
+    it.each(idiomas)('en %s se apoya en Nike y Stanford, cuenta el 25 de enero de 1964 y no dice que Knight llevara las cuentas, porque ninguna fuente lo dice', async (idioma) => {
+      const historia = await nike(idioma)
+      expect(historia.fuentes.map((f) => new URL(f.href).hostname)).toEqual(['about.nike.com', 'about.nike.com', 'www.gsb.stanford.edu'])
+      const texto = [...historia.parrafos, ...historia.personas.map((p) => p.aporte)].join(' ')
+      expect(texto).toContain('1964')
+      expect(texto).not.toMatch(/cuentas|accounts|contas|contabilidad|accounting|contabilidade/i)
+    })
+  })
+
   describe('Mercado Libre', () => {
     const mercadoLibre = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'mercadolibre')!
 
