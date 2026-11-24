@@ -3,9 +3,9 @@ import { Casilla } from '@/shared/ui/Casilla'
 import { foco } from '@/shared/ui/EnlaceBoton'
 import { contactoValido, sitioParaMostrar } from '@/modules/aliados/domain/perfilPostulacion'
 import { contarPalabras, type PasoPostulacion } from '@/modules/aliados/domain/postulacion'
-import { mensajeDeError } from '../../mappers/mensajesError'
+import { mensajeDeError } from '../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
-import { FilaResumen } from '../../ui/FilaResumen'
+import { FilaResumen } from './FilaResumen'
 
 type Props = PropsPaso & {
   hrefPolitica: string

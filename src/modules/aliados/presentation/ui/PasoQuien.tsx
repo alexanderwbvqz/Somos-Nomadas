@@ -2,10 +2,10 @@ import { CampoTexto } from '@/shared/ui/CampoTexto'
 import { MensajeError } from '@/shared/ui/MensajeError'
 import { tiposAliado } from '@/modules/aliados/domain/Aliado'
 import { LIMITES } from '@/modules/aliados/domain/postulacion'
-import { colorTipoAliado } from '../../ui/coloresTipoAliado'
-import { mensajeDeError } from '../../mappers/mensajesError'
+import { colorTipoAliado } from './coloresTipoAliado'
+import { mensajeDeError } from '../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
-import { InsigniaPrivado } from '../../ui/InsigniaPrivado'
+import { InsigniaPrivado } from './InsigniaPrivado'
 
 // Paso 1: cómo quiere sumarse la persona, el nombre que se mostrará y su contacto privado.
 export function PasoQuien({ textos, datos, errores, cambiar }: PropsPaso) {

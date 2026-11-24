@@ -1,7 +1,7 @@
 import { CampoTexto } from '@/shared/ui/CampoTexto'
 import { Casilla } from '@/shared/ui/Casilla'
 import { LIMITES } from '@/modules/aliados/domain/postulacion'
-import { mensajeDeError } from '../../mappers/mensajesError'
+import { mensajeDeError } from '../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
 
 // Paso 3: dónde se encuentra al aliado y cómo lo contactan directamente los emprendedores.

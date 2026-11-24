@@ -8,12 +8,12 @@ import { contarPartesListas, partesDelPerfil, TOTAL_PARTES_PERFIL } from '@/modu
 import { hayErrores, type PasoPostulacion } from '@/modules/aliados/domain/postulacion'
 import type { TextosPostulacion } from '@/modules/aliados/language/tipos'
 import { usePostulacion, type AccionEnviarPostulacion } from '../../hooks/usePostulacion'
-import { ConfirmacionPostulacion } from './ConfirmacionPostulacion'
-import { PasoAporte } from './PasoAporte'
-import { PasoContacto } from './PasoContacto'
-import { PasoEnviar } from './PasoEnviar'
-import { PasoQuien } from './PasoQuien'
-import { VistaPreviaPerfil } from './VistaPreviaPerfil'
+import { ConfirmacionPostulacion } from '../../ui/ConfirmacionPostulacion'
+import { PasoAporte } from '../../ui/PasoAporte'
+import { PasoContacto } from '../../ui/PasoContacto'
+import { PasoEnviar } from '../../ui/PasoEnviar'
+import { PasoQuien } from '../../ui/PasoQuien'
+import { VistaPreviaPerfil } from '../../ui/VistaPreviaPerfil'
 
 export type FormularioPostulacionProps = {
   textos: TextosPostulacion

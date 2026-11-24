@@ -7,11 +7,11 @@ import {
 } from '@/modules/aliados/domain/perfilPostulacion'
 import type { DatosPostulacion, PasoPostulacion } from '@/modules/aliados/domain/postulacion'
 import type { TextosPostulacion } from '@/modules/aliados/language/tipos'
-import { colorTipoAliado } from '../../ui/coloresTipoAliado'
-import { Rotulo } from '../../ui/Rotulo'
-import { FilaVistaPrevia } from '../../ui/FilaVistaPrevia'
-import { BotonEstatico } from '../../ui/BotonEstatico'
-import { Candado } from '../../ui/Candado'
+import { colorTipoAliado } from './coloresTipoAliado'
+import { Rotulo } from './Rotulo'
+import { FilaVistaPrevia } from './FilaVistaPrevia'
+import { BotonEstatico } from './BotonEstatico'
+import { Candado } from './Candado'
 
 type Props = {
   textos: TextosPostulacion
