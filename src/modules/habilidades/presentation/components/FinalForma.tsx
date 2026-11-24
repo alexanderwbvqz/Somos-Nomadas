@@ -4,7 +4,7 @@ import { areas, type AreaId } from '../../domain/catalogo'
 import { LIMITE_SOCIO_IDEAL } from '../../domain/forma'
 import type { TextosHabilidades } from '../../language/tipos'
 import type { PreguntaVista } from '../mappers/vistaForma'
-import { ResumenRespuestas } from '../ui/ResumenRespuestas'
+import { ResumenRespuestas } from './ResumenRespuestas'
 
 type Props = {
   textos: TextosHabilidades['forma']

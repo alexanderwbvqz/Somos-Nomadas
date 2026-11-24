@@ -6,7 +6,7 @@ import { FormularioInicioSesion } from './components/FormularioInicioSesion'
 import { SesionIniciada } from './components/SesionIniciada'
 import { useGoogle, type AccionGoogle } from './hooks/useGoogle'
 import { useInicioSesion, type AccionIniciarSesion } from './hooks/useInicioSesion'
-import { PaginaAcceso } from './ui/PaginaAcceso'
+import { PaginaAcceso } from './components/PaginaAcceso'
 
 export type InicioSesionViewProps = {
   textos: TextosAcceso

@@ -4,7 +4,7 @@ import { useEffect, type ReactNode } from 'react'
 import type { TextosFundadores } from '../language/tipos'
 import { FormularioBienvenida } from './components/FormularioBienvenida'
 import { useBienvenida, type AccionGuardarBienvenida } from './hooks/useBienvenida'
-import { TarjetaBienvenida } from './ui/TarjetaBienvenida'
+import { TarjetaBienvenida } from './components/TarjetaBienvenida'
 
 export type BienvenidaViewProps = {
   textos: TextosFundadores

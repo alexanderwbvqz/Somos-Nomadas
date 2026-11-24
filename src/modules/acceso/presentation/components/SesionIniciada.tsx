@@ -1,7 +1,7 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
 import type { TextosAcceso } from '../../language/tipos'
-import { PaginaAcceso } from '../ui/PaginaAcceso'
+import { PaginaAcceso } from './PaginaAcceso'
 
 type Props = {
   textos: TextosAcceso

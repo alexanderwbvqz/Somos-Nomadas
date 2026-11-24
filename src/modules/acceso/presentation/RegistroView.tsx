@@ -7,7 +7,7 @@ import { FormularioRegistro } from './components/FormularioRegistro'
 import { SesionIniciada } from './components/SesionIniciada'
 import { useGoogle, type AccionGoogle } from './hooks/useGoogle'
 import { useRegistro, type AccionRegistrar } from './hooks/useRegistro'
-import { PaginaAcceso } from './ui/PaginaAcceso'
+import { PaginaAcceso } from './components/PaginaAcceso'
 
 export type RegistroViewProps = {
   textos: TextosAcceso

@@ -12,7 +12,7 @@ import type { TextosHabilidades } from '../language/tipos'
 import { FinalForma } from './components/FinalForma'
 import { PreguntaForma } from './components/PreguntaForma'
 import { PuntosPregunta } from './components/PuntosPregunta'
-import { ResumenRespuestas } from './ui/ResumenRespuestas'
+import { ResumenRespuestas } from './components/ResumenRespuestas'
 import { useForma, type AccionGuardarForma } from './hooks/useForma'
 import { mensajeDeErrorSocio, vistaForma } from './mappers/vistaForma'
 
