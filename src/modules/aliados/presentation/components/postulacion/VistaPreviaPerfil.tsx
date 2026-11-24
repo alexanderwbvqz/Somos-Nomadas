@@ -1,5 +1,4 @@
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
-import { CirculoFlecha } from '@/shared/ui/CirculoFlecha'
 import {
   contactoValido,
   partesDelPerfil,
@@ -9,6 +8,10 @@ import {
 import type { DatosPostulacion, PasoPostulacion } from '@/modules/aliados/domain/postulacion'
 import type { TextosPostulacion } from '@/modules/aliados/language/tipos'
 import { colorTipoAliado } from '../../ui/coloresTipoAliado'
+import { Rotulo } from '../../ui/Rotulo'
+import { FilaVistaPrevia } from '../../ui/FilaVistaPrevia'
+import { BotonEstatico } from '../../ui/BotonEstatico'
+import { Candado } from '../../ui/Candado'
 
 type Props = {
   textos: TextosPostulacion
@@ -23,46 +26,6 @@ const partes: { clave: keyof PartesPerfil; paso: PasoPostulacion }[] = [
   { clave: 'presencia', paso: 3 },
   { clave: 'contacto', paso: 3 },
 ]
-
-function Rotulo({ izquierda, derecha }: { izquierda: string; derecha: string }) {
-  return (
-    <p className="text-etiqueta-chica mb-2.5 flex justify-between gap-4 opacity-70">
-      <span>{izquierda}</span>
-      <span>{derecha}</span>
-    </p>
-  )
-}
-
-function Fila({ etiqueta, valor }: { etiqueta: string; valor?: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 border-b border-borde/15 py-3">
-      <dt className="text-parrafo opacity-60">{etiqueta}</dt>
-      <dd className={`text-parrafo text-right font-medium ${valor ? '' : 'opacity-30'}`}>{valor || '—'}</dd>
-    </div>
-  )
-}
-
-function BotonEstatico({ lleno, children }: { lleno: boolean; children: string }) {
-  return (
-    <span
-      className={`text-etiqueta-chica inline-flex items-center gap-3 rounded-full border-2 border-texto py-1.5 pl-5 pr-1.5 ${
-        lleno ? 'bg-texto text-fondo' : 'text-texto'
-      }`}
-    >
-      {children}
-      <CirculoFlecha lleno={lleno} />
-    </span>
-  )
-}
-
-function Candado() {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="5" y="11" width="14" height="9" rx="2" />
-      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-    </svg>
-  )
-}
 
 // Vista previa del perfil que se va armando: la tarjeta de la red (pasos 1 y 2), la ficha de su página (paso 3),
 // las dos al enviar, y la lista de qué parte aparece en qué sitio. Empieza vacía y se llena al escribir.
@@ -117,10 +80,10 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
           <Rotulo izquierda={t.ficha} derecha={t.paso3} />
           <div className="rounded-3xl bg-tarjeta px-6 py-4">
             <dl>
-              <Fila etiqueta={t.fichaFilas.tipo} valor={tipo} />
-              <Fila etiqueta={t.fichaFilas.ciudad} valor={datos.ciudad.trim()} />
-              <Fila etiqueta={t.fichaFilas.sitioWeb} valor={sitioParaMostrar(datos.sitioWeb)} />
-              <Fila etiqueta={t.fichaFilas.redes} valor={redes.join(' · ')} />
+              <FilaVistaPrevia etiqueta={t.fichaFilas.tipo} valor={tipo} />
+              <FilaVistaPrevia etiqueta={t.fichaFilas.ciudad} valor={datos.ciudad.trim()} />
+              <FilaVistaPrevia etiqueta={t.fichaFilas.sitioWeb} valor={sitioParaMostrar(datos.sitioWeb)} />
+              <FilaVistaPrevia etiqueta={t.fichaFilas.redes} valor={redes.join(' · ')} />
             </dl>
             <div className="mt-4 flex flex-col items-start gap-2.5">
               {contacto.agenda && <BotonEstatico lleno>{t.agendar}</BotonEstatico>}

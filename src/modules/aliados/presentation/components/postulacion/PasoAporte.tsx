@@ -8,39 +8,12 @@ import { foco } from '@/shared/ui/EnlaceBoton'
 import { contarPalabras, LIMITES } from '@/modules/aliados/domain/postulacion'
 import { mensajeDeError } from '../../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
+import { BotonAnadir } from '../../ui/BotonAnadir'
+import { Opcional } from '../../ui/Opcional'
+import { ContadorPalabras } from '../../ui/ContadorPalabras'
 
 const claseControl =
   'w-full rounded-xl border-[1.5px] border-borde-campo bg-tarjeta px-4 py-3 text-base text-texto placeholder:text-texto-tenue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario'
-
-function BotonAnadir({ alPulsar, children }: { alPulsar: () => void; children: string }) {
-  return (
-    <button type="button" onClick={alPulsar} className={`text-nota mt-3 underline underline-offset-4 ${foco}`}>
-      + {children}
-    </button>
-  )
-}
-
-function Opcional({ texto }: { texto: string }) {
-  return <span className="text-etiqueta-chica ml-2 text-texto-tenue">{texto}</span>
-}
-
-function ContadorPalabras({ textos, palabras }: Pick<PropsPaso, 'textos'> & { palabras: number }) {
-  const t = textos.aporte
-  const dentro = palabras >= LIMITES.palabrasMin && palabras <= LIMITES.palabrasMax
-  const desvio =
-    palabras < LIMITES.palabrasMin
-      ? rellenarPlantilla(t.faltan, { n: LIMITES.palabrasMin - palabras })
-      : palabras > LIMITES.palabrasMax
-        ? rellenarPlantilla(t.sobran, { n: palabras - LIMITES.palabrasMax })
-        : ''
-  return (
-    <span className="text-nota flex-none font-medium">
-      {dentro && <span aria-hidden="true">✓ </span>}
-      {rellenarPlantilla(t.palabras, { n: palabras })}
-      {desvio && ` · ${desvio}`}
-    </span>
-  )
-}
 
 // Paso 2: lo que verán los emprendedores en la tarjeta y en la página del aliado.
 export function PasoAporte({ textos, datos, errores, cambiar }: PropsPaso) {
@@ -84,7 +57,7 @@ export function PasoAporte({ textos, datos, errores, cambiar }: PropsPaso) {
         valor={datos.descripcionCorta}
         alCambiar={(valor) => cambiar('descripcionCorta', valor)}
         error={mensajeDeError(textos, errores.descripcionCorta)}
-        contador={<ContadorPalabras textos={textos} palabras={contarPalabras(datos.descripcionCorta)} />}
+        contador={<ContadorPalabras textos={t} palabras={contarPalabras(datos.descripcionCorta)} />}
       />
 
       <CampoArea

@@ -5,10 +5,7 @@ import { LIMITES } from '@/modules/aliados/domain/postulacion'
 import { colorTipoAliado } from '../../ui/coloresTipoAliado'
 import { mensajeDeError } from '../../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
-
-function InsigniaPrivado({ texto }: { texto: string }) {
-  return <span className="text-etiqueta-chica ml-2 rounded-md bg-texto px-2 py-0.5 align-middle text-fondo">{texto}</span>
-}
+import { InsigniaPrivado } from '../../ui/InsigniaPrivado'
 
 // Paso 1: cómo quiere sumarse la persona, el nombre que se mostrará y su contacto privado.
 export function PasoQuien({ textos, datos, errores, cambiar }: PropsPaso) {

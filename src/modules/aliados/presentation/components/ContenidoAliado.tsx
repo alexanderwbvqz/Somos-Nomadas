@@ -1,4 +1,5 @@
 import type { DatoClave } from '../../domain/Aliado'
+import { Bloque } from '../ui/Bloque'
 
 export type ContenidoAliadoProps = {
   textos: {
@@ -26,17 +27,6 @@ export function tieneContenidoAliado(props: Pick<ContenidoAliadoProps, 'descripc
     Boolean(props.paraQuien) ||
     props.apoyos.length > 0 ||
     Boolean(props.pasos?.length)
-  )
-}
-
-function Bloque({ id, titulo, primero, children }: { id: string; titulo: string; primero: boolean; children: React.ReactNode }) {
-  return (
-    <section aria-labelledby={id} className={primero ? '' : 'mt-14'}>
-      <h2 id={id} className="text-etiqueta border-b-[1.5px] border-texto pb-4">
-        {titulo}
-      </h2>
-      {children}
-    </section>
   )
 }
 

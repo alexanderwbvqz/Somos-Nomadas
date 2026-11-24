@@ -1,5 +1,6 @@
 import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
 import { IconoRedSocial, type TipoRedSocial } from '@/shared/ui/IconoRedSocial'
+import { FilaFicha } from '../ui/FilaFicha'
 
 export type FichaAliadoProps = {
   textos: {
@@ -23,15 +24,6 @@ export type FichaAliadoProps = {
   hrefWhatsapp?: string
 }
 
-function Fila({ etiqueta, children }: { etiqueta: string; children: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-4 border-b border-borde/15 py-3.5">
-      <dt className="text-parrafo opacity-60">{etiqueta}</dt>
-      <dd className="text-parrafo text-right font-medium">{children}</dd>
-    </div>
-  )
-}
-
 // Ficha lateral de un aliado: datos rápidos y las formas de contacto directo que él mismo ha dado.
 export function FichaAliado({ textos, etiquetaTipo, ciudad, sitioWeb, enLaRedDesde, redes, hrefAgenda, hrefWhatsapp }: FichaAliadoProps) {
   const hayContacto = Boolean(hrefAgenda || hrefWhatsapp)
@@ -39,10 +31,10 @@ export function FichaAliado({ textos, etiquetaTipo, ciudad, sitioWeb, enLaRedDes
   return (
     <aside className="rounded-3xl bg-tarjeta p-8 escritorio:sticky escritorio:top-8">
       <dl>
-        <Fila etiqueta={textos.tipo}>{etiquetaTipo}</Fila>
-        {ciudad && <Fila etiqueta={textos.ciudad}>{ciudad}</Fila>}
+        <FilaFicha etiqueta={textos.tipo}>{etiquetaTipo}</FilaFicha>
+        {ciudad && <FilaFicha etiqueta={textos.ciudad}>{ciudad}</FilaFicha>}
         {sitioWeb && (
-          <Fila etiqueta={textos.sitioWeb}>
+          <FilaFicha etiqueta={textos.sitioWeb}>
             <a
               href={sitioWeb.href}
               target="_blank"
@@ -51,11 +43,11 @@ export function FichaAliado({ textos, etiquetaTipo, ciudad, sitioWeb, enLaRedDes
             >
               {sitioWeb.texto} <span aria-hidden="true">↗</span>
             </a>
-          </Fila>
+          </FilaFicha>
         )}
-        {enLaRedDesde && <Fila etiqueta={textos.enLaRed}>{enLaRedDesde}</Fila>}
+        {enLaRedDesde && <FilaFicha etiqueta={textos.enLaRed}>{enLaRedDesde}</FilaFicha>}
         {redes.length > 0 && (
-          <Fila etiqueta={textos.redes}>
+          <FilaFicha etiqueta={textos.redes}>
             <ul className="flex justify-end gap-2">
               {redes.map((red) => (
                 <li key={red.nombre}>
@@ -71,7 +63,7 @@ export function FichaAliado({ textos, etiquetaTipo, ciudad, sitioWeb, enLaRedDes
                 </li>
               ))}
             </ul>
-          </Fila>
+          </FilaFicha>
         )}
       </dl>
 
