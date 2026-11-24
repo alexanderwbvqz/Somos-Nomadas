@@ -19,7 +19,6 @@ export type SeccionHistoriasProps = {
     etiquetaPersonas: string
     leer: string
     cerrar: string
-    aportes: string
     fuente: string
     fuentes: string
     fuenteNueva: string
@@ -39,6 +38,7 @@ export function SeccionHistorias({ textos, historias, textoBoton, hrefBoton }: S
   const id = useId()
   const idPanel = `${id}-panel`
   const idDetalle = `${id}-detalle`
+  const idFuentes = `${id}-fuentes`
   const historia = historias[activa]
   if (historia === undefined) return null
 
@@ -95,26 +95,21 @@ export function SeccionHistorias({ textos, historias, textoBoton, hrefBoton }: S
                   </p>
                 ))}
               </div>
-              <ul aria-label={textos.aportes} className="grid content-start gap-3.5">
-                {historia.personas.map((persona) => (
-                  <li key={persona.nombre} className="rounded-2xl bg-tarjeta px-[1.125rem] py-3.5">
-                    <p className="font-medium">{persona.nombre}</p>
-                    <p className="text-cuerpo">{persona.aporte}</p>
-                  </li>
-                ))}
-              </ul>
-              <p className="text-nota escritorio:col-span-2">
-                {historia.fuentes.length > 1 ? textos.fuentes : textos.fuente}:{' '}
-                {historia.fuentes.map((fuente, lugar) => (
-                  <span key={fuente.href}>
-                    {lugar > 0 && ', '}
-                    <a href={fuente.href} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${areaTactil} ${foco}`}>
-                      {fuente.texto}{' '}
-                      <span className="sr-only">({textos.fuenteNueva})</span>
-                    </a>
-                  </span>
-                ))}
-              </p>
+              <div className="content-start">
+                <p id={idFuentes} className="text-etiqueta-chica">
+                  {historia.fuentes.length > 1 ? textos.fuentes : textos.fuente}
+                </p>
+                <ul aria-labelledby={idFuentes} className="text-nota mt-3 grid gap-2.5">
+                  {historia.fuentes.map((fuente) => (
+                    <li key={fuente.href}>
+                      <a href={fuente.href} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${areaTactil} ${foco}`}>
+                        {fuente.texto}{' '}
+                        <span className="sr-only">({textos.fuenteNueva})</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

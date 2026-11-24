@@ -121,7 +121,6 @@ const props: LandingViewProps = {
       etiquetaPersonas: 'Quiénes son',
       leer: 'Leer la historia',
       cerrar: 'Cerrar la historia',
-      aportes: 'Lo que aportó cada persona',
       fuente: 'Fuente',
       fuentes: 'Fuentes',
       fuenteNueva: 'se abre en otra pestaña',

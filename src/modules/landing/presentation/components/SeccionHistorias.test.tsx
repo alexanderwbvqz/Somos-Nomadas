@@ -31,7 +31,6 @@ const props: SeccionHistoriasProps = {
     etiquetaPersonas: 'Quiénes son',
     leer: 'Leer la historia',
     cerrar: 'Cerrar la historia',
-    aportes: 'Lo que aportó cada persona',
     fuente: 'Fuente',
     fuentes: 'Fuentes',
     fuenteNueva: 'se abre en otra pestaña',
@@ -149,15 +148,15 @@ describe('SeccionHistorias', () => {
     const usuario = userEvent.setup()
     render(<SeccionHistorias {...props} />)
     await usuario.click(screen.getByRole('button', { name: 'Leer la historia' }))
-    const enlace = screen.getByRole('link', { name: /Fuente de Apple/ })
-    expect(enlace.closest('p')).toHaveTextContent(/^Fuente: Fuente de Apple/)
+    const lista = screen.getByRole('list', { name: 'Fuente' })
+    const enlace = within(lista).getByRole('link', { name: /Fuente de Apple/ })
     expect(enlace).toHaveAttribute('href', 'https://example.com/apple')
     expect(enlace).toHaveAttribute('target', '_blank')
     expect(enlace.getAttribute('rel')).toContain('noopener')
     expect(enlace).toHaveAccessibleName(/se abre en otra pestaña/)
   })
 
-  it('con varias fuentes el rótulo va en plural y cada una es un enlace seguro que se abre en otra pestaña', async () => {
+  it('con varias fuentes el rótulo va en plural, cada una en su línea, y es un enlace seguro que se abre en otra pestaña', async () => {
     const usuario = userEvent.setup()
     const dos = historia('apple', 'Apple', {
       fuentes: [
@@ -167,11 +166,11 @@ describe('SeccionHistorias', () => {
     })
     render(<SeccionHistorias {...props} historias={[dos]} />)
     await usuario.click(screen.getByRole('button', { name: 'Leer la historia' }))
-    const primera = screen.getByRole('link', { name: /Primera fuente/ })
-    const segunda = screen.getByRole('link', { name: /Segunda fuente/ })
-    expect(primera.closest('p')).toHaveTextContent(/^Fuentes: Primera fuente/)
-    expect(primera.closest('p')).toBe(segunda.closest('p'))
-    expect(primera.closest('p')).toHaveTextContent(/Primera fuente.*\), Segunda fuente/)
+    const lista = screen.getByRole('list', { name: 'Fuentes' })
+    const primera = within(lista).getByRole('link', { name: /Primera fuente/ })
+    const segunda = within(lista).getByRole('link', { name: /Segunda fuente/ })
+    expect(within(lista).getAllByRole('listitem')).toHaveLength(2)
+    expect(primera.closest('li')).not.toBe(segunda.closest('li'))
     for (const [enlace, href] of [[primera, 'https://example.com/uno'], [segunda, 'https://example.com/dos']] as const) {
       expect(enlace).toHaveAttribute('href', href)
       expect(enlace).toHaveAttribute('target', '_blank')
@@ -179,14 +178,13 @@ describe('SeccionHistorias', () => {
     }
   })
 
-  it('lo que aportó cada persona va en una lista con nombre', async () => {
+  it('al abrir la historia no se repiten las personas: su nombre y su aporte salen una sola vez, en los círculos', async () => {
     const usuario = userEvent.setup()
     render(<SeccionHistorias {...props} />)
     await usuario.click(screen.getByRole('button', { name: 'Leer la historia' }))
-    const lista = screen.getByRole('list', { name: 'Lo que aportó cada persona' })
-    expect(within(lista).getAllByRole('listitem')).toHaveLength(2)
-    expect(lista).toHaveTextContent('Ana de Apple')
-    expect(lista).toHaveTextContent('Ventas')
+    expect(screen.getAllByText('Ana de Apple')).toHaveLength(1)
+    expect(screen.getAllByText('Ventas')).toHaveLength(1)
+    expect(within(screen.getByRole('list', { name: 'Quiénes son' })).getByText('Ana de Apple')).toBeInTheDocument()
   })
 
   it('cierra con la llamada a la acción, que lleva donde se le diga', () => {

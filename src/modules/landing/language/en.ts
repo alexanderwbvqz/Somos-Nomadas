@@ -124,7 +124,6 @@ export const en: TextosLanding = {
     etiquetaPersonas: 'Who they are',
     leer: 'Read the story',
     cerrar: 'Close the story',
-    aportes: 'What each person contributed',
     fuente: 'Source',
     fuentes: 'Sources',
     fuenteNueva: 'opens in a new tab',

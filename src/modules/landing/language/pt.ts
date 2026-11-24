@@ -124,7 +124,6 @@ export const pt: TextosLanding = {
     etiquetaPersonas: 'Quem são',
     leer: 'Ler a história',
     cerrar: 'Fechar a história',
-    aportes: 'O que cada pessoa contribuiu',
     fuente: 'Fonte',
     fuentes: 'Fontes',
     fuenteNueva: 'abre em outra aba',
