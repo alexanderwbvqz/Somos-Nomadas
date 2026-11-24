@@ -66,7 +66,7 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
               <div className="h-3 rounded-md bg-suave" />
               <div className="mt-2.5 h-3 w-[85%] rounded-md bg-suave" />
               <div className="mt-2.5 h-3 w-3/5 rounded-md bg-suave" />
-              <p className="text-nota mt-3 italic opacity-65">{t.sinDescripcion}</p>
+              <p className="text-nota mt-3 italic text-texto-tenue">{t.sinDescripcion}</p>
             </div>
           )}
           <span aria-hidden="true" className="text-etiqueta mt-4 inline-block underline underline-offset-8 opacity-50">
@@ -88,14 +88,14 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
             <div className="mt-4 flex flex-col items-start gap-2.5">
               {contacto.agenda && <BotonEstatico lleno>{t.agendar}</BotonEstatico>}
               {contacto.whatsapp && <BotonEstatico lleno={false}>{t.whatsapp}</BotonEstatico>}
-              {!contacto.agenda && !contacto.whatsapp && <p className="text-nota italic opacity-65">{t.sinBotones}</p>}
+              {!contacto.agenda && !contacto.whatsapp && <p className="text-nota italic text-texto-tenue">{t.sinBotones}</p>}
             </div>
           </div>
         </section>
       )}
 
       <section aria-label={t.donde} className="mt-8 border-t-[1.5px] border-texto">
-        <h4 className="text-etiqueta-chica pb-1.5 pt-3 opacity-70">{t.donde}</h4>
+        <h4 className="text-etiqueta-chica pb-1.5 pt-3 text-texto-tenue">{t.donde}</h4>
         <ul>
           {partes.map(({ clave, paso: pasoParte }) => (
             <li key={clave} className="grid grid-cols-[1.5rem_1fr_auto] items-baseline gap-2.5 border-b border-borde/15 py-2.5">
@@ -110,7 +110,7 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
               <span className="text-cuerpo">
                 {t.partes[clave].texto}
                 <span className="sr-only">{`: ${listas[clave] ? t.listo : t.pendiente}`}</span>
-                <small className="text-nota mt-0.5 block opacity-65">{t.partes[clave].lugar}</small>
+                <small className="text-nota mt-0.5 block text-texto-tenue">{t.partes[clave].lugar}</small>
               </span>
               <span className="text-etiqueta-chica whitespace-nowrap text-texto-tenue">{rellenarPlantilla(t.paso, { n: pasoParte })}</span>
             </li>
@@ -121,7 +121,7 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
             </span>
             <span className="text-cuerpo">
               <b className="font-medium">{t.privadas.texto}</b>
-              <small className="text-nota mt-0.5 block opacity-65">{t.privadas.lugar}</small>
+              <small className="text-nota mt-0.5 block text-texto-tenue">{t.privadas.lugar}</small>
             </span>
             <span className="text-etiqueta-chica whitespace-nowrap text-texto-tenue">{rellenarPlantilla(t.paso, { n: 1 })}</span>
           </li>
