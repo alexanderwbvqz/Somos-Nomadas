@@ -15,17 +15,47 @@ describe('MockHistoriasRepository', () => {
 
   it.each(idiomas)('en %s las completas se pueden publicar: tienen fuente, texto y personas', async (idioma) => {
     const historias = await new MockHistoriasRepository().obtener(idioma)
-    for (const clave of ['apple', 'airbnb', 'nike']) {
+    for (const clave of ['apple', 'airbnb', 'nike', 'mercadolibre']) {
       const historia = historias.find((h) => h.clave === clave)
       expect(historia, clave).toBeDefined()
       expect(historiaPublicable(historia!, ANIO), `${clave} en ${idioma}`).toBe(true)
     }
   })
 
-  it('las que faltan por escribir llegan, pero no se pueden publicar', async () => {
+  it('la que falta por escribir llega, pero no se puede publicar', async () => {
     const historias = await new MockHistoriasRepository().obtener('es')
     const incompletas = historias.filter((historia) => !historiaPublicable(historia, ANIO))
-    expect(incompletas.map((h) => h.clave)).toEqual(['mercadolibre', 'rappi'])
+    expect(incompletas.map((h) => h.clave)).toEqual(['rappi'])
+  })
+
+  describe('Mercado Libre', () => {
+    const mercadoLibre = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'mercadolibre')!
+
+    it('son dos personas, con su área y lo que aportó cada una según su cargo', async () => {
+      const historia = await mercadoLibre('es')
+      expect(historia.anio).toBe(1999)
+      expect(historia.personas.map((p) => [p.nombre, p.area, p.aporte])).toEqual([
+        ['Marcos Galperin', 'marketing', 'Plan de negocio y dirección'],
+        ['Hernán Kazah', 'operaciones', 'Operaciones'],
+      ])
+    })
+
+    it.each(idiomas)('en %s se apoya en dos fuentes: Stanford y el formulario de la SEC, con enlaces seguros', async (idioma) => {
+      const { fuentes } = await mercadoLibre(idioma)
+      expect(fuentes.map((f) => new URL(f.href).hostname)).toEqual(['www.gsb.stanford.edu', 'www.sec.gov'])
+      expect(fuentes.map((f) => f.texto)).toEqual([expect.stringContaining('Stanford'), expect.stringContaining('SEC')])
+    })
+
+    it.each(idiomas)('en %s cuenta de dónde se conocían, el plan de 1999 y quién era cada uno, sin afirmar más de lo que dicen las fuentes', async (idioma) => {
+      const { parrafos } = await mercadoLibre(idioma)
+      const texto = parrafos.join(' ')
+      expect(parrafos).toHaveLength(3)
+      expect(texto).toContain('Stanford')
+      expect(texto).toContain('1999')
+      expect(texto).toContain('Argentina')
+      // Dato que no consta en las fuentes: no se afirma cómo ni cuándo empezó su amistad
+      expect(texto).not.toMatch(/amig|friend/i)
+    })
   })
 
   it('cada idioma trae sus textos, no los del español', async () => {
