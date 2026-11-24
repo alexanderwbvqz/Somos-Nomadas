@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { historiaPublicable } from '../../domain/historias'
@@ -45,6 +45,22 @@ describe('MockHistoriasRepository', () => {
       expect(existsSync(join(process.cwd(), 'public', foto!)), foto).toBe(true)
     }
     expect(new Set(fotos).size).toBe(13)
+  })
+
+  it('las carpetas y los archivos de las fotos van en minúsculas y con guiones, y las fotos son jpg, png o avif', () => {
+    const raiz = join(process.cwd(), 'public', 'founders-legends')
+    const nombreValido = /^[a-z0-9]+(-[a-z0-9]+)*$/
+    const carpetas = readdirSync(raiz, { withFileTypes: true })
+    expect(carpetas.length).toBeGreaterThan(0)
+    for (const carpeta of carpetas) {
+      expect(carpeta.isDirectory(), carpeta.name).toBe(true)
+      expect(carpeta.name, carpeta.name).toMatch(nombreValido)
+      for (const archivo of readdirSync(join(raiz, carpeta.name))) {
+        const [nombre, extension] = [archivo.replace(/\.[^.]+$/, ''), archivo.split('.').pop()]
+        expect(nombre, `${carpeta.name}/${archivo}`).toMatch(nombreValido)
+        expect(['jpg', 'png', 'avif'], `${carpeta.name}/${archivo}`).toContain(extension)
+      }
+    }
   })
 
   it.each(idiomas)('en %s las fotos son las mismas que en español: no cambian con el idioma', async (idioma) => {

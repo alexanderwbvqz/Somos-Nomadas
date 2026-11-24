@@ -88,7 +88,7 @@ describe('historiaPublicable', () => {
     })
 
     it('si hay fotos, son del propio sitio (una ruta que empieza por /), no de otro sitio', () => {
-      expect(historiaPublicable(conFoto('/founders-legends/apple/steve_jobs.jfif', '/founders-legends/apple/steve_wosniak.jpg'), ANIO)).toBe(true)
+      expect(historiaPublicable(conFoto('/founders-legends/apple/steve-jobs.jpg', '/founders-legends/apple/steve-wozniak.jpg'), ANIO)).toBe(true)
       for (const mala of ['https://example.com/a.jpg', '//example.com/a.jpg', 'founders-legends/a.jpg', 'javascript:alert(1)', '/../secreto.jpg', '/a/../../b.jpg', '/con espacios.jpg', '/a.jpg?x=1', '']) {
         expect(historiaPublicable(conFoto(mala, '/founders-legends/b.jpg'), ANIO), mala).toBe(false)
         expect(historiaPublicable(conFoto('/founders-legends/a.jpg', mala), ANIO), mala).toBe(false)

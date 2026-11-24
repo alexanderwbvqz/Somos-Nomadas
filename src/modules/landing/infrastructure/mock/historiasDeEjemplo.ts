@@ -30,8 +30,8 @@ const base: HistoriaBase[] = [
     anio: 1977,
     areaFondo: 'marketing',
     personas: [
-      { iniciales: 'SJ', nombre: 'Steve Jobs', area: 'marketing', foto: '/founders-legends/apple/steve_jobs.jfif' },
-      { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia', foto: '/founders-legends/apple/steve_wosniak.jfif' },
+      { iniciales: 'SJ', nombre: 'Steve Jobs', area: 'marketing', foto: '/founders-legends/apple/steve-jobs.jpg' },
+      { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia', foto: '/founders-legends/apple/steve-wozniak.jpg' },
     ],
     textos: {
       es: {
@@ -75,9 +75,9 @@ const base: HistoriaBase[] = [
     anio: 2008,
     areaFondo: 'tecnologia',
     personas: [
-      { iniciales: 'BC', nombre: 'Brian Chesky', area: 'tecnologia', foto: '/founders-legends/airbnb/brian_chesky.jfif' },
-      { iniciales: 'JG', nombre: 'Joe Gebbia', area: 'tecnologia', foto: '/founders-legends/airbnb/joe_gebbia.jfif' },
-      { iniciales: 'NB', nombre: 'Nathan Blecharczyk', area: 'tecnologia', foto: '/founders-legends/airbnb/nathan_blecharczyk.jpg' },
+      { iniciales: 'BC', nombre: 'Brian Chesky', area: 'tecnologia', foto: '/founders-legends/airbnb/brian-chesky.jpg' },
+      { iniciales: 'JG', nombre: 'Joe Gebbia', area: 'tecnologia', foto: '/founders-legends/airbnb/joe-gebbia.jpg' },
+      { iniciales: 'NB', nombre: 'Nathan Blecharczyk', area: 'tecnologia', foto: '/founders-legends/airbnb/nathan-blecharczyk.jpg' },
     ],
     textos: {
       es: {
@@ -133,8 +133,8 @@ const base: HistoriaBase[] = [
     anio: 1964,
     areaFondo: 'operaciones',
     personas: [
-      { iniciales: 'PK', nombre: 'Phil Knight', area: 'marketing', foto: '/founders-legends/nike/phil_knight.png' },
-      { iniciales: 'BB', nombre: 'Bill Bowerman', area: 'tecnologia', foto: '/founders-legends/nike/bill_bowerman.avif' },
+      { iniciales: 'PK', nombre: 'Phil Knight', area: 'marketing', foto: '/founders-legends/nike/phil-knight.png' },
+      { iniciales: 'BB', nombre: 'Bill Bowerman', area: 'tecnologia', foto: '/founders-legends/nike/bill-bowerman.avif' },
     ],
     textos: {
       es: {
@@ -190,9 +190,9 @@ const base: HistoriaBase[] = [
     anio: 1999,
     areaFondo: 'marketing',
     personas: [
-      { iniciales: 'MG', nombre: 'Marcos Galperin', area: 'marketing', foto: '/founders-legends/mercado_libre/marcos_galperin.jpg' },
-      { iniciales: 'HK', nombre: 'Hernán Kazah', area: 'operaciones', foto: '/founders-legends/mercado_libre/hernan_kazah.jfif' },
-      { iniciales: 'ST', nombre: 'Stelleo Tolda', area: 'operaciones', foto: '/founders-legends/mercado_libre/stelleo_tolda.jpeg' },
+      { iniciales: 'MG', nombre: 'Marcos Galperin', area: 'marketing', foto: '/founders-legends/mercado-libre/marcos-galperin.jpg' },
+      { iniciales: 'HK', nombre: 'Hernán Kazah', area: 'operaciones', foto: '/founders-legends/mercado-libre/hernan-kazah.jpg' },
+      { iniciales: 'ST', nombre: 'Stelleo Tolda', area: 'operaciones', foto: '/founders-legends/mercado-libre/stelleo-tolda.jpg' },
     ],
     textos: {
       es: {
@@ -245,9 +245,9 @@ const base: HistoriaBase[] = [
     anio: 2015,
     areaFondo: 'operaciones',
     personas: [
-      { iniciales: 'SB', nombre: 'Simón Borrero', area: 'tecnologia', foto: '/founders-legends/rappi/simon_borrero.jfif' },
-      { iniciales: 'SM', nombre: 'Sebastián Mejía', area: 'marketing', foto: '/founders-legends/rappi/sebastian_mejia.jpg' },
-      { iniciales: 'FV', nombre: 'Felipe Villamarín', area: 'finanzas', foto: '/founders-legends/rappi/felipe_villamarin.jpg' },
+      { iniciales: 'SB', nombre: 'Simón Borrero', area: 'tecnologia', foto: '/founders-legends/rappi/simon-borrero.jpg' },
+      { iniciales: 'SM', nombre: 'Sebastián Mejía', area: 'marketing', foto: '/founders-legends/rappi/sebastian-mejia.jpg' },
+      { iniciales: 'FV', nombre: 'Felipe Villamarín', area: 'finanzas', foto: '/founders-legends/rappi/felipe-villamarin.jpg' },
     ],
     textos: {
       es: {
