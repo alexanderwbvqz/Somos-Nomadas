@@ -7,6 +7,8 @@ import type { Historia, PersonaHistoria } from '../../domain/Historia'
 // Rappi se cuenta con lo que coinciden Semana, Y Combinator y LAVCA. Las fuentes se contradicen en la ciudad de origen y en los
 // años de las empresas anteriores, y la amistad de colegio de Borrero y Mejía solo la cuenta un informe de análisis: por eso el
 // texto no dice nada de eso ni de cómo se conocieron.
+// Las fotos están en public/founders-legends/. Por verificar: de dónde salen, con qué licencia y con qué permiso se publican; la regla
+// del dominio exige que sean archivos del propio sitio y que todas las personas de una historia lleven foto.
 
 type Textos = Pick<Historia, 'combinacion' | 'frase' | 'parrafos' | 'fuentes'> & { aportes: string[] }
 
@@ -28,8 +30,8 @@ const base: HistoriaBase[] = [
     anio: 1977,
     areaFondo: 'marketing',
     personas: [
-      { iniciales: 'SJ', nombre: 'Steve Jobs', area: 'marketing' },
-      { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia' },
+      { iniciales: 'SJ', nombre: 'Steve Jobs', area: 'marketing', foto: '/founders-legends/apple/steve_jobs.jfif' },
+      { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia', foto: '/founders-legends/apple/steve_wosniak.jfif' },
     ],
     textos: {
       es: {
@@ -73,9 +75,9 @@ const base: HistoriaBase[] = [
     anio: 2008,
     areaFondo: 'tecnologia',
     personas: [
-      { iniciales: 'BC', nombre: 'Brian Chesky', area: 'tecnologia' },
-      { iniciales: 'JG', nombre: 'Joe Gebbia', area: 'tecnologia' },
-      { iniciales: 'NB', nombre: 'Nathan Blecharczyk', area: 'tecnologia' },
+      { iniciales: 'BC', nombre: 'Brian Chesky', area: 'tecnologia', foto: '/founders-legends/airbnb/brian_chesky.jfif' },
+      { iniciales: 'JG', nombre: 'Joe Gebbia', area: 'tecnologia', foto: '/founders-legends/airbnb/joe_gebbia.jfif' },
+      { iniciales: 'NB', nombre: 'Nathan Blecharczyk', area: 'tecnologia', foto: '/founders-legends/airbnb/nathan_blecharczyk.jpg' },
     ],
     textos: {
       es: {
@@ -131,8 +133,8 @@ const base: HistoriaBase[] = [
     anio: 1964,
     areaFondo: 'operaciones',
     personas: [
-      { iniciales: 'PK', nombre: 'Phil Knight', area: 'marketing' },
-      { iniciales: 'BB', nombre: 'Bill Bowerman', area: 'tecnologia' },
+      { iniciales: 'PK', nombre: 'Phil Knight', area: 'marketing', foto: '/founders-legends/nike/phil_knight.png' },
+      { iniciales: 'BB', nombre: 'Bill Bowerman', area: 'tecnologia', foto: '/founders-legends/nike/bill_bowerman.avif' },
     ],
     textos: {
       es: {
@@ -188,9 +190,9 @@ const base: HistoriaBase[] = [
     anio: 1999,
     areaFondo: 'marketing',
     personas: [
-      { iniciales: 'MG', nombre: 'Marcos Galperin', area: 'marketing' },
-      { iniciales: 'HK', nombre: 'Hernán Kazah', area: 'operaciones' },
-      { iniciales: 'ST', nombre: 'Stelleo Tolda', area: 'operaciones' },
+      { iniciales: 'MG', nombre: 'Marcos Galperin', area: 'marketing', foto: '/founders-legends/mercado_libre/marcos_galperin.jpg' },
+      { iniciales: 'HK', nombre: 'Hernán Kazah', area: 'operaciones', foto: '/founders-legends/mercado_libre/hernan_kazah.jfif' },
+      { iniciales: 'ST', nombre: 'Stelleo Tolda', area: 'operaciones', foto: '/founders-legends/mercado_libre/stelleo_tolda.jpeg' },
     ],
     textos: {
       es: {
@@ -243,9 +245,9 @@ const base: HistoriaBase[] = [
     anio: 2015,
     areaFondo: 'operaciones',
     personas: [
-      { iniciales: 'SB', nombre: 'Simón Borrero', area: 'tecnologia' },
-      { iniciales: 'SM', nombre: 'Sebastián Mejía', area: 'marketing' },
-      { iniciales: 'FV', nombre: 'Felipe Villamarín', area: 'finanzas' },
+      { iniciales: 'SB', nombre: 'Simón Borrero', area: 'tecnologia', foto: '/founders-legends/rappi/simon_borrero.jfif' },
+      { iniciales: 'SM', nombre: 'Sebastián Mejía', area: 'marketing', foto: '/founders-legends/rappi/sebastian_mejia.jpg' },
+      { iniciales: 'FV', nombre: 'Felipe Villamarín', area: 'finanzas', foto: '/founders-legends/rappi/felipe_villamarin.jpg' },
     ],
     textos: {
       es: {

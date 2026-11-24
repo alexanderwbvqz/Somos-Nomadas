@@ -79,6 +79,28 @@ describe('historiaPublicable', () => {
     expect(historiaPublicable(historia({ personas: [{ ...a!, aporte: '' }, b!] }), ANIO)).toBe(false)
   })
 
+  describe('fotos', () => {
+    const [a, b] = historia().personas
+    const conFoto = (fotoA: string | undefined, fotoB: string | undefined) => historia({ personas: [{ ...a!, foto: fotoA }, { ...b!, foto: fotoB }] })
+
+    it('las fotos son opcionales: una historia sin ninguna se publica', () => {
+      expect(historiaPublicable(conFoto(undefined, undefined), ANIO)).toBe(true)
+    })
+
+    it('si hay fotos, son del propio sitio (una ruta que empieza por /), no de otro sitio', () => {
+      expect(historiaPublicable(conFoto('/founders-legends/apple/steve_jobs.jfif', '/founders-legends/apple/steve_wosniak.jpg'), ANIO)).toBe(true)
+      for (const mala of ['https://example.com/a.jpg', '//example.com/a.jpg', 'founders-legends/a.jpg', 'javascript:alert(1)', '/../secreto.jpg', '/a/../../b.jpg', '/con espacios.jpg', '/a.jpg?x=1', '']) {
+        expect(historiaPublicable(conFoto(mala, '/founders-legends/b.jpg'), ANIO), mala).toBe(false)
+        expect(historiaPublicable(conFoto('/founders-legends/a.jpg', mala), ANIO), mala).toBe(false)
+      }
+    })
+
+    it('o todas las personas llevan foto o ninguna: mezclar fotos con iniciales se ve desparejo', () => {
+      expect(historiaPublicable(conFoto('/founders-legends/a.jpg', undefined), ANIO)).toBe(false)
+      expect(historiaPublicable(conFoto(undefined, '/founders-legends/b.jpg'), ANIO)).toBe(false)
+    })
+  })
+
   it('el año es un entero razonable y no es del futuro', () => {
     expect(historiaPublicable(historia({ anio: 1799 }), ANIO)).toBe(false)
     expect(historiaPublicable(historia({ anio: ANIO + 1 }), ANIO)).toBe(false)

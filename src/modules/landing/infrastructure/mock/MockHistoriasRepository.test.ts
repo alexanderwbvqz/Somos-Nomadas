@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { historiaPublicable } from '../../domain/historias'
 import { MockHistoriasRepository } from './MockHistoriasRepository'
@@ -32,6 +34,22 @@ describe('MockHistoriasRepository', () => {
     const hosts = historias.flatMap((h) => h.fuentes.map((f) => new URL(f.href).hostname))
     expect(hosts.length).toBeGreaterThan(0)
     expect(hosts.filter((host) => host.endsWith('wikipedia.org'))).toEqual([])
+  })
+
+  it('todas las personas llevan su foto, y cada foto existe en public: ni una ruta mal escrita ni un archivo que falte', async () => {
+    const fotos = (await new MockHistoriasRepository().obtener('es')).flatMap((h) => h.personas.map((p) => p.foto))
+    expect(fotos.length).toBe(13)
+    for (const foto of fotos) {
+      expect(foto, 'falta una foto').toBeDefined()
+      expect(foto!.startsWith('/founders-legends/'), foto).toBe(true)
+      expect(existsSync(join(process.cwd(), 'public', foto!)), foto).toBe(true)
+    }
+    expect(new Set(fotos).size).toBe(13)
+  })
+
+  it.each(idiomas)('en %s las fotos son las mismas que en español: no cambian con el idioma', async (idioma) => {
+    const fotos = async (i: string) => (await new MockHistoriasRepository().obtener(i)).flatMap((h) => h.personas.map((p) => p.foto))
+    expect(await fotos(idioma)).toEqual(await fotos('es'))
   })
 
   describe('Apple', () => {

@@ -11,6 +11,8 @@ export type PersonaHistoria = {
   area: ClaveArea
   /** Lo que aportó, en pocas palabras. Por ejemplo «Producto y ventas» */
   aporte: string
+  /** Ruta de su foto dentro del propio sitio, por ejemplo `/founders-legends/apple/steve_jobs.jfif`. Si falta, el círculo lleva las iniciales */
+  foto?: string
 }
 
 /** La frase destacada, con una parte en cursiva: `inicio` + `resaltado` + `fin` */

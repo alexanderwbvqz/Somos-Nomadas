@@ -12,6 +12,20 @@ const hayTexto = (texto: string) => texto.trim() !== ''
 // respaldar lo que se publica.
 const SITIOS_NO_ADMITIDOS = ['wikipedia.org']
 
+// Una foto es un archivo del propio sitio: una ruta que empieza por una sola barra, sin espacios, parámetros ni «..». Así no se
+// carga nada de otro servidor ni se sale de la carpeta pública.
+function esFotoLocal(ruta: string): boolean {
+  return /^\/[\w\-./]+$/.test(ruta) && !ruta.startsWith('//') && !ruta.includes('..')
+}
+
+// Todas las personas de una historia llevan foto o ninguna: mezclar fotos con iniciales se ve desparejo
+function fotosValidas(personas: Historia['personas']): boolean {
+  const fotos = personas.map((persona) => persona.foto)
+  const todas = fotos.every((foto) => foto !== undefined)
+  const ninguna = fotos.every((foto) => foto === undefined)
+  return (todas || ninguna) && fotos.every((foto) => foto === undefined || esFotoLocal(foto))
+}
+
 function esFuenteAdmitida(href: string): boolean {
   const seguro = normalizarEnlace(href)
   if (seguro === undefined) return false
@@ -33,6 +47,7 @@ export function historiaPublicable(historia: Historia, anioActual: number): bool
     historia.parrafos.some(hayTexto) &&
     historia.personas.length >= personas.min &&
     historia.personas.length <= personas.max &&
+    fotosValidas(historia.personas) &&
     historia.personas.every((persona) => hayTexto(persona.iniciales) && persona.iniciales.trim().length <= iniciales && hayTexto(persona.nombre) && hayTexto(persona.aporte)) &&
     historia.fuentes.length >= fuentes.min &&
     historia.fuentes.length <= fuentes.max &&
