@@ -89,7 +89,7 @@ export function CampoLista({ clave, etiqueta, valor, alCambiar, opciones, placeh
           onBlur={() => setAbierta(false)}
           onKeyDown={alPulsarTecla}
           className={`flex w-full items-center justify-between gap-3 rounded-xl bg-tarjeta px-4 py-3 text-left text-base text-texto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario ${
-            error ? 'border-2 border-primario' : 'border-[1.5px] border-texto/45'
+            error ? 'border-2 border-primario' : 'border-[1.5px] border-borde-campo'
           }`}
         >
           <span className={elegida ? '' : 'opacity-60'}>{elegida ? elegida.texto : placeholder}</span>

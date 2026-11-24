@@ -10,7 +10,7 @@ import { mensajeDeError } from '../../mappers/mensajesError'
 import type { PropsPaso } from './tiposPaso'
 
 const claseControl =
-  'w-full rounded-xl border-[1.5px] border-texto/45 bg-tarjeta px-4 py-3 text-base text-texto placeholder:text-texto/45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario'
+  'w-full rounded-xl border-[1.5px] border-borde-campo bg-tarjeta px-4 py-3 text-base text-texto placeholder:text-texto-tenue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario'
 
 function BotonAnadir({ alPulsar, children }: { alPulsar: () => void; children: string }) {
   return (

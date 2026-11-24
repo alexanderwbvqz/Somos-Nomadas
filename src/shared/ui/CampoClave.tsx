@@ -42,7 +42,7 @@ export function CampoClave({ clave, etiqueta, valor, alCambiar, autoComplete, te
           aria-invalid={error ? true : undefined}
           aria-describedby={descrito}
           className={`w-full rounded-xl bg-tarjeta py-3 pl-4 pr-24 text-base text-texto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primario ${
-            error ? 'border-2 border-primario' : 'border-[1.5px] border-texto/45'
+            error ? 'border-2 border-primario' : 'border-[1.5px] border-borde-campo'
           }`}
         />
         <button

@@ -43,7 +43,7 @@ export function FinalForma({ textos, preguntas, respondidas, busca, socioIdeal, 
           {areas.map((area) => (
             <label key={area} className="relative">
               <input type="checkbox" name="busca" value={area} checked={busca.includes(area)} onChange={() => alternarArea(area)} className="peer sr-only" />
-              <span className="text-cuerpo block cursor-pointer rounded-full border-[1.5px] border-texto/45 bg-tarjeta px-4 py-2.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario">
+              <span className="text-cuerpo block cursor-pointer rounded-full border-[1.5px] border-borde-campo bg-tarjeta px-4 py-2.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario">
                 {textos.busca.areas[area]}
               </span>
             </label>

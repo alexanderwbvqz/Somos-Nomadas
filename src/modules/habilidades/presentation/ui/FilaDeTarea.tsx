@@ -43,7 +43,7 @@ export function FilaDeTarea({ textos, fila, alAlternar, alCambiarFrecuencia }: P
                 onChange={() => alCambiarFrecuencia(fila.habilidad, frecuencia)}
                 className="peer sr-only"
               />
-              <span className="text-cuerpo block cursor-pointer rounded-full border-[1.5px] border-texto/45 bg-tarjeta px-3.5 py-1.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario">
+              <span className="text-cuerpo block cursor-pointer rounded-full border-[1.5px] border-borde-campo bg-tarjeta px-3.5 py-1.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario">
                 {textos.frecuencias[frecuencia]}
               </span>
             </label>

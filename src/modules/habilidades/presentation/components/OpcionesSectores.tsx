@@ -38,7 +38,7 @@ export function OpcionesSectores({ textos, marcados, alElegir, error }: Props) {
               />
               <span
                 className={`text-cuerpo block cursor-pointer rounded-full border-[1.5px] bg-tarjeta px-4 py-2.5 peer-checked:border-texto peer-checked:bg-texto peer-checked:text-fondo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primario peer-disabled:cursor-not-allowed peer-disabled:opacity-40 ${
-                  error ? 'border-primario' : 'border-texto/45'
+                  error ? 'border-primario' : 'border-borde-campo'
                 }`}
               >
                 {t.nombres[sector]}

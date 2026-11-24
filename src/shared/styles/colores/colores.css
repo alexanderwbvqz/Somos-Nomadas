@@ -8,6 +8,11 @@
   --color-texto: #082023;
   --color-texto-suave: #3f5254;
   --color-borde: #082023;
+  /* Tonos tenues, ya mezclados con el fondo (no se usa opacity ni /NN para esto). Contraste comprobado:
+     texto-tenue: 5,7 sobre tarjeta y 4,7 sobre suave (texto de apoyo y placeholders, mínimo 4,5);
+     borde-campo: 4,4 sobre fondo (bordes de campos y opciones, mínimo 3) */
+  --color-texto-tenue: #5b6a69;
+  --color-borde-campo: #677573;
   --color-primario: #fe412a;
   --color-tarjeta: #ffffff;
   --color-suave: #ece9df;
