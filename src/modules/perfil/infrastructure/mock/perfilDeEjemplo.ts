@@ -90,12 +90,15 @@ export function perfilDeEjemplo(): Perfil {
       {
         pregunta: 'Algo que lograste o construiste y de lo que estás orgulloso',
         texto: 'Armé con mi hermana una tienda en línea de artesanías. Hicimos la página, las fotos y los primeros envíos, y en tres meses vendimos a otros dos países.',
+        aceptaMostrar: true,
       },
       {
         pregunta: 'Una vez que resolviste un problema difícil con otras personas',
         texto: 'Nuestro proveedor falló una semana antes de una campaña. Hablamos con tres talleres nuevos, repartimos el trabajo y entregamos a tiempo.',
+        aceptaMostrar: true,
       },
-      { pregunta: '¿Qué problema del mundo te gustaría resolver?', texto: 'El acceso a crédito para pequeños talleres.' },
+      // inventado: sin permiso para mostrarla, para que «Ver como me ven» no la enseñe
+      { pregunta: '¿Qué problema del mundo te gustaría resolver?', texto: 'El acceso a crédito para pequeños talleres.', aceptaMostrar: false },
     ],
     sectores: { pregunta: 'Sectores que te mueven', respuestas: ['Educación', 'Fintech', 'Impacto social'] },
     forma: [

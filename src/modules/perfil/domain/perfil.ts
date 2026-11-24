@@ -22,6 +22,9 @@ export type RespuestaPerfil = { pregunta: string; respuestas: string[] }
 /** Una pregunta de texto libre con lo que se escribió */
 export type TextoPerfil = { pregunta: string; texto: string }
 
+/** Una historia que la persona escribió; `aceptaMostrar` dice si dio permiso para enseñarla a otras personas */
+export type HistoriaPerfil = TextoPerfil & { aceptaMostrar: boolean }
+
 export type HabilidadPerfil = {
   nombre: string
   /** De 1 a 5 */
@@ -46,7 +49,7 @@ export type Perfil = {
   habilidades: HabilidadPerfil[]
   /** Las tareas que marcó, por grupo, y cuántas hay en total para elegir */
   tareas: { total: number; grupos: GrupoTareasPerfil[] }
-  historias: TextoPerfil[]
+  historias: HistoriaPerfil[]
   /** «Sectores que te mueven» con los que eligió */
   sectores: RespuestaPerfil
   forma: RespuestaPerfil[]

@@ -35,7 +35,7 @@ function perfilDePrueba(cambios: Partial<Perfil> = {}): Perfil {
         { grupo: 'Darte a conocer', tareas: [{ texto: 'Lanzar campañas de anuncios en internet', veces: 'Varias veces' }, { texto: 'Manejar redes sociales o crear contenido', veces: 'Una vez' }] },
       ],
     },
-    historias: [{ pregunta: 'Algo que lograste o construiste y de lo que estás orgulloso', texto: 'Armé una tienda en línea.' }],
+    historias: [{ pregunta: 'Algo que lograste o construiste y de lo que estás orgulloso', texto: 'Armé una tienda en línea.', aceptaMostrar: true }],
     sectores: { pregunta: 'Sectores que te mueven', respuestas: ['Educación', 'Fintech'] },
     forma: [{ pregunta: '¿Cuándo quieres arrancar?', respuestas: ['Ya mismo'] }],
     buscaPerfil: { pregunta: '¿Qué perfil buscas para tu equipo?', respuestas: ['Ventas y Marketing'] },
@@ -499,7 +499,7 @@ describe('MiPerfilView', () => {
     })
 
     it('«Tus historias» sin nada escrito dice que no escribió nada en el paso', () => {
-      montar(perfilDePrueba({ historias: [{ pregunta: 'Algo que lograste', texto: '  ' }], sectores: { pregunta: 'Sectores que te mueven', respuestas: [] } }))
+      montar(perfilDePrueba({ historias: [{ pregunta: 'Algo que lograste', texto: '  ', aceptaMostrar: true }], sectores: { pregunta: 'Sectores que te mueven', respuestas: [] } }))
       expect(within(bloque('Tus historias')).getByText('No escribiste nada en este paso.')).toBeInTheDocument()
     })
   })

@@ -66,6 +66,12 @@ describe('perfilDeEjemplo', () => {
     expect(ejemplo.habilidades.filter((habilidad) => habilidad.detalle !== undefined)).toHaveLength(3)
   })
 
+  it('trae historias con permiso para mostrar y una sin él, para que «Ver como me ven» enseñe el filtro', () => {
+    const permisos = perfilDeEjemplo().historias.map((historia) => historia.aceptaMostrar)
+    expect(permisos).toContain(true)
+    expect(permisos).toContain(false)
+  })
+
   it('cada habilidad tiene un nivel de 1 a 5, y las estimadas no pasan de 3', () => {
     for (const habilidad of perfilDeEjemplo().habilidades) {
       expect(habilidad.nivel).toBeGreaterThanOrEqual(1)
