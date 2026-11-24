@@ -1,4 +1,5 @@
 import { tiposAliado } from '@/modules/aliados/domain/Aliado'
+import { obtenerHistorias } from '@/modules/landing/application/obtenerHistorias'
 import { aliados } from '@/modules/landing/domain/aliados'
 import { cifras } from '@/modules/landing/domain/cifras'
 import { areasMatch } from '@/modules/landing/domain/match'
@@ -9,9 +10,12 @@ import { LandingView } from '@/modules/landing/presentation/LandingView'
 import type { Idioma } from '@/shared/idiomas/idiomas'
 import { formatearCifra, formatearFuente } from '@/modules/landing/presentation/mappers/formatoCifras'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
+import { crearHistoriasRepository } from '@/composition/landing/fabricas/historias'
 
-export function LandingConectado({ idioma }: { idioma: Idioma }) {
+// Las historias se leen aquí: si no se pueden leer, la landing sigue completa sin esa sección.
+export async function LandingConectado({ idioma }: { idioma: Idioma }) {
   const t = textosLanding(idioma)
+  const resultadoHistorias = await obtenerHistorias(crearHistoriasRepository(), idioma, new Date().getFullYear())
 
   const items: ItemProblema[] = clavesProblemas.map((clave) => ({ clave, ...t.problemas.items[clave] }))
 
@@ -92,6 +96,12 @@ export function LandingConectado({ idioma }: { idioma: Idioma }) {
           hrefPostular: `/${idioma}/registro`,
           hrefPerfiles: `/${idioma}/directorio?area=${clave}`,
         })),
+      }}
+      historias={{
+        textos: t.historias,
+        historias: resultadoHistorias.ok ? resultadoHistorias.historias : [],
+        textoBoton: t.hero.botonPrincipal,
+        hrefBoton: `/${idioma}/registro`,
       }}
       cifras={{
         textos: { titulo: t.cifras.titulo, parrafo: t.cifras.parrafo, etiquetaLista: t.cifras.etiquetaLista },
