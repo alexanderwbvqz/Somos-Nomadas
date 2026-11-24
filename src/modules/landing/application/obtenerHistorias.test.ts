@@ -16,7 +16,7 @@ function historia(clave: string, cambios: Partial<Historia> = {}): Historia {
       { iniciales: 'BB', nombre: 'Beto', area: 'tecnologia', aporte: 'Ingeniería' },
     ],
     parrafos: ['Se conocieron.'],
-    fuente: { texto: 'Fuente', href: 'https://example.com/historia' },
+    fuentes: [{ texto: 'Fuente', href: 'https://example.com/historia' }],
     ...cambios,
   }
 }

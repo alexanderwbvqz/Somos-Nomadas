@@ -18,7 +18,7 @@ function historia(cambios: Partial<Historia> = {}): Historia {
       { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia', aporte: 'Ingeniería' },
     ],
     parrafos: ['Se conocieron en 1971.'],
-    fuente: { texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' },
+    fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
     ...cambios,
   }
 }
@@ -28,15 +28,30 @@ describe('historiaPublicable', () => {
     expect(historiaPublicable(historia(), ANIO)).toBe(true)
   })
 
-  it('sin fuente no se publica: lo que no se puede comprobar no sale', () => {
-    expect(historiaPublicable(historia({ fuente: { texto: '', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' } }), ANIO)).toBe(false)
-    expect(historiaPublicable(historia({ fuente: { texto: 'Wikipedia', href: '' } }), ANIO)).toBe(false)
+  it('sin ninguna fuente no se publica: lo que no se puede comprobar no sale', () => {
+    expect(historiaPublicable(historia({ fuentes: [] }), ANIO)).toBe(false)
   })
 
-  it('el enlace de la fuente tiene que ser seguro: https, sin usuario y hacia un sitio con nombre', () => {
+  it('cada fuente lleva su texto y su enlace', () => {
+    expect(historiaPublicable(historia({ fuentes: [{ texto: '', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }] }), ANIO)).toBe(false)
+    expect(historiaPublicable(historia({ fuentes: [{ texto: 'Wikipedia', href: '' }] }), ANIO)).toBe(false)
+  })
+
+  it('el enlace de cada fuente tiene que ser seguro: https, sin usuario y hacia un sitio con nombre', () => {
+    const buena = { texto: 'Buena', href: 'https://example.com/a' }
     for (const href of ['http://example.com/a', 'https://banco.com@otro.com/', 'https://192.168.0.1/', 'javascript:alert(1)', 'no es un enlace']) {
-      expect(historiaPublicable(historia({ fuente: { texto: 'Fuente', href } }), ANIO)).toBe(false)
+      expect(historiaPublicable(historia({ fuentes: [{ texto: 'Fuente', href }] }), ANIO)).toBe(false)
+      // basta una mala entre varias
+      expect(historiaPublicable(historia({ fuentes: [buena, { texto: 'Mala', href }] }), ANIO)).toBe(false)
     }
+  })
+
+  it('puede tener hasta tres fuentes, no más', () => {
+    expect(LIMITES_HISTORIAS.fuentes).toEqual({ min: 1, max: 3 })
+    const fuente = (n: number) => ({ texto: `Fuente ${n}`, href: `https://example.com/${n}` })
+    expect(historiaPublicable(historia({ fuentes: [fuente(1), fuente(2)] }), ANIO)).toBe(true)
+    expect(historiaPublicable(historia({ fuentes: [fuente(1), fuente(2), fuente(3)] }), ANIO)).toBe(true)
+    expect(historiaPublicable(historia({ fuentes: [fuente(1), fuente(2), fuente(3), fuente(4)] }), ANIO)).toBe(false)
   })
 
   it('necesita entre dos y tres personas', () => {

@@ -126,6 +126,7 @@ export const pt: TextosLanding = {
     cerrar: 'Fechar a história',
     aportes: 'O que cada pessoa contribuiu',
     fuente: 'Fonte',
+    fuentes: 'Fontes',
     fuenteNueva: 'abre em outra aba',
     cierre: 'Sua história também pode começar assim.',
   },

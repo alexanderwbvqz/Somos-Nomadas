@@ -5,7 +5,7 @@ import type { Historia, PersonaHistoria } from '../../domain/Historia'
 // Las traducciones a en y pt son propuestas. Mercado Libre y Rappi están por escribir: no tienen texto ni fuente y por eso la
 // regla del dominio no las deja salir.
 
-type Textos = Pick<Historia, 'combinacion' | 'frase' | 'parrafos' | 'fuente'> & { aportes: string[] }
+type Textos = Pick<Historia, 'combinacion' | 'frase' | 'parrafos' | 'fuentes'> & { aportes: string[] }
 
 type HistoriaBase = {
   clave: string
@@ -37,7 +37,7 @@ const base: HistoriaBase[] = [
           'Steve Jobs y Steve Wozniak se conocieron en 1971, en California, a través de un amigo en común.',
           'Wozniak diseñaba los computadores; Jobs entendió que podían venderse. En 1976 fundaron Apple junto con Ronald Wayne.',
         ],
-        fuente: { texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' },
+        fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
       },
       en: {
         combinacion: 'Engineering + Sales',
@@ -47,7 +47,7 @@ const base: HistoriaBase[] = [
           'Steve Jobs and Steve Wozniak met in 1971, in California, through a mutual friend.',
           'Wozniak designed the computers; Jobs realised they could be sold. In 1976 they founded Apple together with Ronald Wayne.',
         ],
-        fuente: { texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' },
+        fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
       },
       pt: {
         combinacion: 'Engenharia + Vendas',
@@ -57,7 +57,7 @@ const base: HistoriaBase[] = [
           'Steve Jobs e Steve Wozniak se conheceram em 1971, na Califórnia, por meio de um amigo em comum.',
           'Wozniak projetava os computadores; Jobs percebeu que eles podiam ser vendidos. Em 1976 fundaram a Apple junto com Ronald Wayne.',
         ],
-        fuente: { texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' },
+        fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
       },
     },
   },
@@ -80,7 +80,7 @@ const base: HistoriaBase[] = [
           'Brian Chesky y Joe Gebbia estudiaron diseño en la Rhode Island School of Design.',
           'Años después se sumó Nathan Blecharczyk, ingeniero, para construir la plataforma. Fundaron Airbnb en 2008.',
         ],
-        fuente: { texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' },
+        fuentes: [{ texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' }],
       },
       en: {
         combinacion: 'Design + Engineering',
@@ -90,7 +90,7 @@ const base: HistoriaBase[] = [
           'Brian Chesky and Joe Gebbia studied design at the Rhode Island School of Design.',
           'Years later Nathan Blecharczyk, an engineer, joined to build the platform. They founded Airbnb in 2008.',
         ],
-        fuente: { texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' },
+        fuentes: [{ texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' }],
       },
       pt: {
         combinacion: 'Design + Engenharia',
@@ -100,7 +100,7 @@ const base: HistoriaBase[] = [
           'Brian Chesky e Joe Gebbia estudaram design na Rhode Island School of Design.',
           'Anos depois, Nathan Blecharczyk, engenheiro, se juntou para construir a plataforma. Fundaram o Airbnb em 2008.',
         ],
-        fuente: { texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' },
+        fuentes: [{ texto: 'Wikipedia: Airbnb', href: 'https://en.wikipedia.org/wiki/Airbnb' }],
       },
     },
   },
@@ -122,7 +122,7 @@ const base: HistoriaBase[] = [
           'Phil Knight corría en la Universidad de Oregon, entrenado por Bill Bowerman.',
           'En 1964 fundaron Blue Ribbon Sports: Knight llevaba las cuentas y las ventas; Bowerman diseñaba el calzado.',
         ],
-        fuente: { texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' },
+        fuentes: [{ texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' }],
       },
       en: {
         combinacion: 'Finance + Product',
@@ -132,7 +132,7 @@ const base: HistoriaBase[] = [
           'Phil Knight ran at the University of Oregon, coached by Bill Bowerman.',
           'In 1964 they founded Blue Ribbon Sports: Knight handled the accounts and sales; Bowerman designed the footwear.',
         ],
-        fuente: { texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' },
+        fuentes: [{ texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' }],
       },
       pt: {
         combinacion: 'Finanças + Produto',
@@ -142,7 +142,7 @@ const base: HistoriaBase[] = [
           'Phil Knight corria na Universidade de Oregon, treinado por Bill Bowerman.',
           'Em 1964 fundaram a Blue Ribbon Sports: Knight cuidava das contas e das vendas; Bowerman projetava o calçado.',
         ],
-        fuente: { texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' },
+        fuentes: [{ texto: 'Wikipedia: Nike, Inc.', href: 'https://en.wikipedia.org/wiki/Nike,_Inc.' }],
       },
     },
   },
@@ -161,7 +161,7 @@ const base: HistoriaBase[] = [
         frase: { inicio: 'Historia', resaltado: 'por escribir', fin: '.' },
         aportes: ['Por verificar', 'Por verificar'],
         parrafos: [],
-        fuente: { texto: '', href: '' },
+        fuentes: [],
       },
     },
   },
@@ -181,7 +181,7 @@ const base: HistoriaBase[] = [
         frase: { inicio: 'Historia', resaltado: 'por escribir', fin: '.' },
         aportes: ['Por verificar', 'Por verificar', 'Por verificar'],
         parrafos: [],
-        fuente: { texto: '', href: '' },
+        fuentes: [],
       },
     },
   },

@@ -126,6 +126,7 @@ export const en: TextosLanding = {
     cerrar: 'Close the story',
     aportes: 'What each person contributed',
     fuente: 'Source',
+    fuentes: 'Sources',
     fuenteNueva: 'opens in a new tab',
     cierre: 'Your story can start this way too.',
   },

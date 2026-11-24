@@ -85,6 +85,8 @@ export type TextosLanding = {
     /** Nombre accesible de lo que aportó cada persona */
     aportes: string
     fuente: string
+    /** El rótulo cuando una historia tiene más de una fuente */
+    fuentes: string
     /** Se lee junto al enlace de la fuente, que se abre en otra pestaña */
     fuenteNueva: string
     cierre: string

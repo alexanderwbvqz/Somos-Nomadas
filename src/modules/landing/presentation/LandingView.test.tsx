@@ -15,7 +15,7 @@ const historia: Historia = {
     { iniciales: 'SW', nombre: 'Steve Wozniak', area: 'tecnologia', aporte: 'Ingeniería' },
   ],
   parrafos: ['Se conocieron en 1971.'],
-  fuente: { texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' },
+  fuentes: [{ texto: 'Wikipedia: Steve Wozniak', href: 'https://en.wikipedia.org/wiki/Steve_Wozniak' }],
 }
 
 const props: LandingViewProps = {
@@ -123,6 +123,7 @@ const props: LandingViewProps = {
       cerrar: 'Cerrar la historia',
       aportes: 'Lo que aportó cada persona',
       fuente: 'Fuente',
+      fuentes: 'Fuentes',
       fuenteNueva: 'se abre en otra pestaña',
       cierre: 'Tu historia también puede empezar así.',
     },

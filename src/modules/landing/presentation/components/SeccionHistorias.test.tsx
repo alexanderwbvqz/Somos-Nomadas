@@ -17,7 +17,7 @@ function historia(clave: string, nombre: string, cambios: Partial<Historia> = {}
       { iniciales: 'BB', nombre: `Beto de ${nombre}`, area: 'tecnologia', aporte: 'Ingeniería' },
     ],
     parrafos: [`Primer párrafo de ${nombre}.`, `Segundo párrafo de ${nombre}.`],
-    fuente: { texto: `Fuente de ${nombre}`, href: `https://example.com/${clave}` },
+    fuentes: [{ texto: `Fuente de ${nombre}`, href: `https://example.com/${clave}` }],
     ...cambios,
   }
 }
@@ -33,6 +33,7 @@ const props: SeccionHistoriasProps = {
     cerrar: 'Cerrar la historia',
     aportes: 'Lo que aportó cada persona',
     fuente: 'Fuente',
+    fuentes: 'Fuentes',
     fuenteNueva: 'se abre en otra pestaña',
     cierre: 'Tu historia también puede empezar así.',
   },
@@ -154,6 +155,28 @@ describe('SeccionHistorias', () => {
     expect(enlace).toHaveAttribute('target', '_blank')
     expect(enlace.getAttribute('rel')).toContain('noopener')
     expect(enlace).toHaveAccessibleName(/se abre en otra pestaña/)
+  })
+
+  it('con varias fuentes el rótulo va en plural y cada una es un enlace seguro que se abre en otra pestaña', async () => {
+    const usuario = userEvent.setup()
+    const dos = historia('apple', 'Apple', {
+      fuentes: [
+        { texto: 'Primera fuente', href: 'https://example.com/uno' },
+        { texto: 'Segunda fuente', href: 'https://example.com/dos' },
+      ],
+    })
+    render(<SeccionHistorias {...props} historias={[dos]} />)
+    await usuario.click(screen.getByRole('button', { name: 'Leer la historia' }))
+    const primera = screen.getByRole('link', { name: /Primera fuente/ })
+    const segunda = screen.getByRole('link', { name: /Segunda fuente/ })
+    expect(primera.closest('p')).toHaveTextContent(/^Fuentes: Primera fuente/)
+    expect(primera.closest('p')).toBe(segunda.closest('p'))
+    expect(primera.closest('p')).toHaveTextContent(/Primera fuente.*\), Segunda fuente/)
+    for (const [enlace, href] of [[primera, 'https://example.com/uno'], [segunda, 'https://example.com/dos']] as const) {
+      expect(enlace).toHaveAttribute('href', href)
+      expect(enlace).toHaveAttribute('target', '_blank')
+      expect(enlace).toHaveAccessibleName(/se abre en otra pestaña/)
+    }
   })
 
   it('lo que aportó cada persona va en una lista con nombre', async () => {

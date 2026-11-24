@@ -21,6 +21,7 @@ export type SeccionHistoriasProps = {
     cerrar: string
     aportes: string
     fuente: string
+    fuentes: string
     fuenteNueva: string
     cierre: string
   }
@@ -103,11 +104,16 @@ export function SeccionHistorias({ textos, historias, textoBoton, hrefBoton }: S
                 ))}
               </ul>
               <p className="text-nota escritorio:col-span-2">
-                {textos.fuente}:{' '}
-                <a href={historia.fuente.href} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${areaTactil} ${foco}`}>
-                  {historia.fuente.texto}{' '}
-                  <span className="sr-only">({textos.fuenteNueva})</span>
-                </a>
+                {historia.fuentes.length > 1 ? textos.fuentes : textos.fuente}:{' '}
+                {historia.fuentes.map((fuente, lugar) => (
+                  <span key={fuente.href}>
+                    {lugar > 0 && ', '}
+                    <a href={fuente.href} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 ${areaTactil} ${foco}`}>
+                      {fuente.texto}{' '}
+                      <span className="sr-only">({textos.fuenteNueva})</span>
+                    </a>
+                  </span>
+                ))}
               </p>
             </div>
           </div>

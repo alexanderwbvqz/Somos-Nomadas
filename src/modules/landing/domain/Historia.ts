@@ -1,7 +1,7 @@
 import type { ClaveArea } from './match'
 
 // Una historia de personas que se complementaron y construyeron algo juntas, tal como se muestra en la landing: ya armada y con
-// los textos en el idioma pedido. Los datos son editoriales: cada historia tiene que poder comprobarse en su fuente.
+// los textos en el idioma pedido. Los datos son editoriales: cada historia tiene que poder comprobarse en sus fuentes.
 
 export type PersonaHistoria = {
   /** De una a tres letras; en vez de la foto */
@@ -30,5 +30,6 @@ export type Historia = {
   frase: FraseHistoria
   personas: PersonaHistoria[]
   parrafos: string[]
-  fuente: FuenteHistoria
+  /** Dónde se puede comprobar lo que cuenta: de una a tres */
+  fuentes: FuenteHistoria[]
 }
