@@ -87,7 +87,7 @@ export function SeccionHistorias({ textos, historias, textoBoton, hrefBoton }: S
         <div id={idDetalle} data-abierto={abierta} className="despliegue">
           <div inert={!abierta} className="despliegue-interior">
             <div className="mt-8 grid gap-8 border-t border-borde-campo pt-8 escritorio:grid-cols-[7fr_5fr] escritorio:gap-10">
-              <div className="grid max-w-xl gap-3.5">
+              <div className="grid max-w-xl content-start gap-3.5">
                 {historia.parrafos.map((parrafo) => (
                   <p key={parrafo} className="text-parrafo">
                     {parrafo}

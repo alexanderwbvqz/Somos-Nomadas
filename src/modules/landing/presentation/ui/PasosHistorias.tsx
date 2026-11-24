@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, type KeyboardEvent } from 'react'
-import { areaTactil, foco } from '@/shared/ui/EnlaceBoton'
+import { foco } from '@/shared/ui/EnlaceBoton'
 
 export type PasoHistoria = { clave: string; nombre: string; combinacion: string }
 
@@ -66,7 +66,7 @@ export function PasosHistorias({ pasos, activa, alElegir, etiqueta, idBase, idPa
             tabIndex={esActiva ? 0 : -1}
             onClick={() => alElegir(indice)}
             onKeyDown={(evento) => alPulsarTecla(evento, indice)}
-            className={`group grid cursor-pointer content-start gap-2.5 text-left ${areaTactil} ${foco}`}
+            className={`group grid cursor-pointer content-start gap-2.5 text-left ${foco}`}
           >
             <span aria-hidden="true" className="relative block h-[3px] w-full overflow-hidden rounded-full bg-borde-campo">
               <span data-activo={esActiva} className="relleno-progreso absolute inset-0 block bg-texto" />
