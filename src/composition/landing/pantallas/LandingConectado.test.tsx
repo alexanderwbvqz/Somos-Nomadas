@@ -65,7 +65,7 @@ describe('LandingConectado', () => {
     expect(screen.getByText(/versus 35% of new ones/)).toBeInTheDocument()
   })
 
-  it('incluye la sección de historias entre los pilares y los aliados, con las cuatro historias completas', async () => {
+  it('incluye la sección de historias entre los pilares y los aliados, con las cinco historias completas', async () => {
     await dibujar('es')
     const pilares = screen.getByRole('heading', { level: 2, name: /Todo equipo necesita las cuatro/ })
     const historias = screen.getByRole('heading', { level: 2, name: 'Los grandes proyectos empezaron con un encuentro.' })
@@ -80,12 +80,8 @@ describe('LandingConectado', () => {
       expect.stringContaining('Airbnb'),
       expect.stringContaining('Nike'),
       expect.stringContaining('Mercado Libre'),
+      expect.stringContaining('Rappi'),
     ])
-  })
-
-  it('la historia que falta por escribir no sale', async () => {
-    await dibujar('es')
-    expect(screen.queryByRole('tab', { name: /Rappi/ })).not.toBeInTheDocument()
   })
 
   it('el botón de las historias lleva al registro, igual que el del hero', async () => {

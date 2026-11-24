@@ -1,11 +1,12 @@
 import type { Historia, PersonaHistoria } from '../../domain/Historia'
 
 // inventado / por verificar: historias de ejemplo para armar la sección. Cada una está redactada solo con lo que dicen sus fuentes
-// (universidades, museos, revistas o la propia empresa; nunca Wikipedia) y las citas se comprobaron en esas páginas, pero hay que
-// volver a leerlas antes de publicar. El área de cada persona es una decisión editorial, porque las fuentes dan cargos y formación y
-// no áreas. Las traducciones a en y pt son propuestas. Rappi está por escribir: las fuentes que se encontraron se contradicen en la
-// ciudad y en los años, y la amistad de sus fundadores solo la cuenta un informe de análisis; por eso no tiene texto ni fuentes y la
-// regla del dominio no la deja salir.
+// (universidades, museos, revistas, aceleradoras o la propia empresa; nunca Wikipedia) y las citas se comprobaron en esas páginas,
+// pero hay que volver a leerlas antes de publicar. El área de cada persona es una decisión editorial, porque las fuentes dan cargos
+// y formación y no áreas. Las traducciones a en y pt son propuestas.
+// Rappi se cuenta con lo que coinciden Semana, Y Combinator y LAVCA. Las fuentes se contradicen en la ciudad de origen y en los
+// años de las empresas anteriores, y la amistad de colegio de Borrero y Mejía solo la cuenta un informe de análisis: por eso el
+// texto no dice nada de eso ni de cómo se conocieron.
 
 type Textos = Pick<Historia, 'combinacion' | 'frase' | 'parrafos' | 'fuentes'> & { aportes: string[] }
 
@@ -189,16 +190,17 @@ const base: HistoriaBase[] = [
     personas: [
       { iniciales: 'MG', nombre: 'Marcos Galperin', area: 'marketing' },
       { iniciales: 'HK', nombre: 'Hernán Kazah', area: 'operaciones' },
+      { iniciales: 'ST', nombre: 'Stelleo Tolda', area: 'operaciones' },
     ],
     textos: {
       es: {
         combinacion: 'Negocio + Operaciones',
         frase: { inicio: 'Galperin escribió un plan de negocio durante su MBA. Pronto convenció a un compañero,', resaltado: 'Hernán Kazah', fin: ', de unirse.' },
-        aportes: ['Plan de negocio y dirección', 'Operaciones'],
+        aportes: ['Plan de negocio y dirección', 'Operaciones', 'Operaciones en Brasil'],
         parrafos: [
-          'Marcos Galperin y Hernán Kazah se conocieron como compañeros del MBA de Stanford, promoción de 1999.',
+          'Marcos Galperin, Hernán Kazah y Stelleo Tolda se conocieron como compañeros del MBA de Stanford, promoción de 1999.',
           'En marzo de 1999, mientras estudiaba el MBA, Galperin escribió el plan de negocio de Mercado Libre y empezó a reunir un equipo. Pronto convenció a Kazah de sumarse.',
-          'La empresa empezó a operar en Argentina en agosto de 1999, como un mercado en línea para comercio electrónico y subastas. Galperin fue su director ejecutivo y Kazah, su director de operaciones.',
+          'La empresa empezó a operar en Argentina en agosto de 1999, como un mercado en línea para comercio electrónico y subastas. Galperin fue su director ejecutivo, Kazah, su director de operaciones y Tolda, gerente de país de Brasil.',
         ],
         fuentes: [
           { texto: 'Stanford GSB: Mercado Libre Founders', href: 'https://www.gsb.stanford.edu/insights/mercado-libre-founders-it-takes-patience-resilience' },
@@ -208,11 +210,11 @@ const base: HistoriaBase[] = [
       en: {
         combinacion: 'Business + Operations',
         frase: { inicio: 'Galperin wrote a business plan during his MBA. Soon he convinced a classmate,', resaltado: 'Hernán Kazah', fin: ', to join.' },
-        aportes: ['Business plan and leadership', 'Operations'],
+        aportes: ['Business plan and leadership', 'Operations', 'Operations in Brazil'],
         parrafos: [
-          'Marcos Galperin and Hernán Kazah met as classmates in Stanford’s MBA class of 1999.',
+          'Marcos Galperin, Hernán Kazah and Stelleo Tolda met as classmates in Stanford’s MBA class of 1999.',
           'In March 1999, while studying for his MBA, Galperin wrote the business plan for Mercado Libre and began to assemble a team. He soon convinced Kazah to join.',
-          'The company began operating in Argentina in August 1999, as an online marketplace for e-commerce and auctions. Galperin was its chief executive officer and Kazah its chief operating officer.',
+          'The company began operating in Argentina in August 1999, as an online marketplace for e-commerce and auctions. Galperin was its chief executive officer, Kazah its chief operating officer and Tolda its country manager for Brazil.',
         ],
         fuentes: [
           { texto: 'Stanford GSB: Mercado Libre Founders', href: 'https://www.gsb.stanford.edu/insights/mercado-libre-founders-it-takes-patience-resilience' },
@@ -222,11 +224,11 @@ const base: HistoriaBase[] = [
       pt: {
         combinacion: 'Negócio + Operações',
         frase: { inicio: 'Galperin escreveu um plano de negócios durante o MBA. Logo convenceu um colega,', resaltado: 'Hernán Kazah', fin: ', a se juntar.' },
-        aportes: ['Plano de negócios e liderança', 'Operações'],
+        aportes: ['Plano de negócios e liderança', 'Operações', 'Operações no Brasil'],
         parrafos: [
-          'Marcos Galperin e Hernán Kazah se conheceram como colegas de turma no MBA de Stanford, turma de 1999.',
+          'Marcos Galperin, Hernán Kazah e Stelleo Tolda se conheceram como colegas de turma no MBA de Stanford, turma de 1999.',
           'Em março de 1999, enquanto cursava o MBA, Galperin escreveu o plano de negócios do Mercado Libre e começou a montar uma equipe. Logo convenceu Kazah a se juntar.',
-          'A empresa começou a operar na Argentina em agosto de 1999, como um mercado on-line de comércio eletrônico e leilões. Galperin foi seu diretor executivo e Kazah, seu diretor de operações.',
+          'A empresa começou a operar na Argentina em agosto de 1999, como um mercado on-line de comércio eletrônico e leilões. Galperin foi seu diretor executivo, Kazah, seu diretor de operações e Tolda, gerente do país para o Brasil.',
         ],
         fuentes: [
           { texto: 'Stanford GSB: Mercado Libre Founders', href: 'https://www.gsb.stanford.edu/insights/mercado-libre-founders-it-takes-patience-resilience' },
@@ -239,22 +241,61 @@ const base: HistoriaBase[] = [
     clave: 'rappi',
     nombre: 'Rappi',
     anio: 2015,
-    areaFondo: 'tecnologia',
+    areaFondo: 'operaciones',
     personas: [
       { iniciales: 'SB', nombre: 'Simón Borrero', area: 'tecnologia' },
-      { iniciales: 'SM', nombre: 'Sebastián Mejía', area: 'operaciones' },
-      { iniciales: 'FV', nombre: 'Felipe Villamarín', area: 'marketing' },
+      { iniciales: 'SM', nombre: 'Sebastián Mejía', area: 'marketing' },
+      { iniciales: 'FV', nombre: 'Felipe Villamarín', area: 'finanzas' },
     ],
     textos: {
       es: {
-        combinacion: 'Por escribir',
-        frase: { inicio: 'Historia', resaltado: 'por escribir', fin: '.' },
-        aportes: ['Por verificar', 'Por verificar', 'Por verificar'],
-        parrafos: [],
-        fuentes: [],
+        combinacion: 'Software + Logística',
+        frase: { inicio: 'Tres socios que ya hacían software de compras en línea lo unieron a', resaltado: 'una logística de reparto colaborativa', fin: '.' },
+        aportes: ['Empresa de software (Imaginamos)', 'Negocios', 'Economía'],
+        parrafos: [
+          'Simón Borrero, Sebastián Mejía y Felipe Villamarín trabajaban juntos en software que cambiaba la forma de comprar el supermercado en línea. Borrero había creado Imaginamos, una empresa que desarrolla software, y pusieron su propio dinero, ganado licenciando software de compras en línea a grandes minoristas.',
+          'Según contó Borrero en 2016, en 2015 todavía eran un equipo pequeño que repartía donas en la calle a cambio de descargas de la aplicación.',
+          'Rappi empezó como una aplicación para pedir a domicilio productos de una tienda de barrio, en unas pocas cuadras de Bogotá. Su idea fue combinar el software de compras con una logística de última milla hecha por repartidores colaborativos.',
+        ],
+        fuentes: [
+          { texto: 'Semana: Rappi, una idea millonaria que vino de los usuarios (2018)', href: 'https://www.semana.com/economia/articulo/rappi-el-secreto-del-exito/583525' },
+          { texto: 'Y Combinator: Q&A with the cofounders of Rappi (2018)', href: 'https://www.ycombinator.com/blog/qa-with-felipe-villamarin-simon-borrero-and-sebastian-mejia-cofounders-of-rappi' },
+          { texto: 'LAVCA: Entrepreneur Profile, Simón Borrero (2016)', href: 'https://www.lavca.org/feature/entrepreneur-profile-simon-borrero-co-founder-ceo-rappi/' },
+        ],
+      },
+      en: {
+        combinacion: 'Software + Logistics',
+        frase: { inicio: 'Three partners who already built online shopping software combined it with', resaltado: 'crowdsourced delivery logistics', fin: '.' },
+        aportes: ['Software company (Imaginamos)', 'Business', 'Economics'],
+        parrafos: [
+          'Simón Borrero, Sebastián Mejía and Felipe Villamarín worked together on software that transformed the way people buy groceries online. Borrero had created Imaginamos, a company that develops software, and they put in their own money, earned from licensing online shopping software to big retailers.',
+          'As Borrero told it in 2016, in 2015 they were still a small team giving away donuts in the street in exchange for app downloads.',
+          'Rappi began as an app for ordering products from a neighborhood shop for delivery, within a few blocks of Bogotá. The idea was to combine the shopping software with crowdsourced last-mile logistics.',
+        ],
+        fuentes: [
+          { texto: 'Semana: Rappi, una idea millonaria que vino de los usuarios (2018)', href: 'https://www.semana.com/economia/articulo/rappi-el-secreto-del-exito/583525' },
+          { texto: 'Y Combinator: Q&A with the cofounders of Rappi (2018)', href: 'https://www.ycombinator.com/blog/qa-with-felipe-villamarin-simon-borrero-and-sebastian-mejia-cofounders-of-rappi' },
+          { texto: 'LAVCA: Entrepreneur Profile, Simón Borrero (2016)', href: 'https://www.lavca.org/feature/entrepreneur-profile-simon-borrero-co-founder-ceo-rappi/' },
+        ],
+      },
+      pt: {
+        combinacion: 'Software + Logística',
+        frase: { inicio: 'Três sócios que já faziam software de compras on-line o uniram a', resaltado: 'uma logística de entrega colaborativa', fin: '.' },
+        aportes: ['Empresa de software (Imaginamos)', 'Negócios', 'Economia'],
+        parrafos: [
+          'Simón Borrero, Sebastián Mejía e Felipe Villamarín trabalhavam juntos em um software que mudava a forma de fazer compras de supermercado on-line. Borrero havia criado a Imaginamos, uma empresa que desenvolve software, e colocaram dinheiro próprio, ganho licenciando software de compras on-line para grandes varejistas.',
+          'Segundo contou Borrero em 2016, em 2015 ainda eram uma equipe pequena distribuindo donuts na rua em troca de downloads do aplicativo.',
+          'A Rappi começou como um aplicativo para pedir em casa produtos de uma loja de bairro, em poucos quarteirões de Bogotá. A ideia era combinar o software de compras com uma logística de última milha feita por entregadores colaborativos.',
+        ],
+        fuentes: [
+          { texto: 'Semana: Rappi, una idea millonaria que vino de los usuarios (2018)', href: 'https://www.semana.com/economia/articulo/rappi-el-secreto-del-exito/583525' },
+          { texto: 'Y Combinator: Q&A with the cofounders of Rappi (2018)', href: 'https://www.ycombinator.com/blog/qa-with-felipe-villamarin-simon-borrero-and-sebastian-mejia-cofounders-of-rappi' },
+          { texto: 'LAVCA: Entrepreneur Profile, Simón Borrero (2016)', href: 'https://www.lavca.org/feature/entrepreneur-profile-simon-borrero-co-founder-ceo-rappi/' },
+        ],
       },
     },
   },
+
 ]
 
 export function historiasDeEjemplo(idioma: string): Historia[] {

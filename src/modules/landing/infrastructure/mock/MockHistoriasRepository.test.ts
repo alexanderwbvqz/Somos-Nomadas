@@ -15,17 +15,16 @@ describe('MockHistoriasRepository', () => {
 
   it.each(idiomas)('en %s las completas se pueden publicar: tienen fuente, texto y personas', async (idioma) => {
     const historias = await new MockHistoriasRepository().obtener(idioma)
-    for (const clave of ['apple', 'airbnb', 'nike', 'mercadolibre']) {
+    for (const clave of ['apple', 'airbnb', 'nike', 'mercadolibre', 'rappi']) {
       const historia = historias.find((h) => h.clave === clave)
       expect(historia, clave).toBeDefined()
       expect(historiaPublicable(historia!, ANIO), `${clave} en ${idioma}`).toBe(true)
     }
   })
 
-  it('la que falta por escribir llega, pero no se puede publicar', async () => {
+  it('todas las historias del adaptador están completas: ya no queda ninguna por escribir', async () => {
     const historias = await new MockHistoriasRepository().obtener('es')
-    const incompletas = historias.filter((historia) => !historiaPublicable(historia, ANIO))
-    expect(incompletas.map((h) => h.clave)).toEqual(['rappi'])
+    expect(historias.filter((historia) => !historiaPublicable(historia, ANIO))).toEqual([])
   })
 
   it.each(idiomas)('en %s ninguna fuente es Wikipedia', async (idioma) => {
@@ -88,16 +87,51 @@ describe('MockHistoriasRepository', () => {
     })
   })
 
+  describe('Rappi', () => {
+    const rappi = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'rappi')!
+
+    it('son los tres fundadores que nombran Y Combinator y Semana, con lo que consta de cada uno', async () => {
+      const historia = await rappi('es')
+      expect(historia.anio).toBe(2015)
+      expect(historia.personas.map((p) => [p.nombre, p.area, p.aporte])).toEqual([
+        ['Simón Borrero', 'tecnologia', 'Empresa de software (Imaginamos)'],
+        ['Sebastián Mejía', 'marketing', 'Negocios'],
+        ['Felipe Villamarín', 'finanzas', 'Economía'],
+      ])
+    })
+
+    it.each(idiomas)('en %s se apoya en Semana, Y Combinator y LAVCA', async (idioma) => {
+      const { fuentes } = await rappi(idioma)
+      expect(fuentes.map((f) => new URL(f.href).hostname)).toEqual(['www.semana.com', 'www.ycombinator.com', 'www.lavca.org'])
+    })
+
+    it.each(idiomas)('en %s no afirma lo que las fuentes se contradicen o solo cuenta un informe de análisis: ciudad de origen, años de Grability, amistad de colegio ni cómo se conocieron', async (idioma) => {
+      const historia = await rappi(idioma)
+      const texto = [historia.frase.inicio, historia.frase.resaltado, historia.frase.fin, ...historia.parrafos].join(' ')
+      expect(texto).toContain('Bogotá')
+      expect(texto).toContain('2015')
+      expect(texto).not.toMatch(/Cali\b|Grability|2013|2014/)
+      expect(texto).not.toMatch(/colegio|high school|escola|se conocieron|se conheceram|met /i)
+    })
+  })
+
   describe('Mercado Libre', () => {
     const mercadoLibre = async (idioma: string) => (await new MockHistoriasRepository().obtener(idioma)).find((h) => h.clave === 'mercadolibre')!
 
-    it('son dos personas, con su área y lo que aportó cada una según su cargo', async () => {
+    it('son tres cofundadores, como los cuenta Stanford, con su área y lo que aportó cada uno según su cargo', async () => {
       const historia = await mercadoLibre('es')
       expect(historia.anio).toBe(1999)
       expect(historia.personas.map((p) => [p.nombre, p.area, p.aporte])).toEqual([
         ['Marcos Galperin', 'marketing', 'Plan de negocio y dirección'],
         ['Hernán Kazah', 'operaciones', 'Operaciones'],
+        ['Stelleo Tolda', 'operaciones', 'Operaciones en Brasil'],
       ])
+    })
+
+    it.each(idiomas)('en %s nombra a Tolda y su cargo en Brasil, que consta en el formulario de la SEC', async (idioma) => {
+      const texto = (await mercadoLibre(idioma)).parrafos.join(' ')
+      expect(texto).toContain('Tolda')
+      expect(texto).toMatch(/Brasil|Brazil/)
     })
 
     it.each(idiomas)('en %s se apoya en dos fuentes: Stanford y el formulario de la SEC, con enlaces seguros', async (idioma) => {
