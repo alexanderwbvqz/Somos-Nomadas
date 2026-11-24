@@ -149,7 +149,7 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
                 <span className="sr-only">{`: ${listas[clave] ? t.listo : t.pendiente}`}</span>
                 <small className="text-nota mt-0.5 block opacity-65">{t.partes[clave].lugar}</small>
               </span>
-              <span className="text-etiqueta-chica whitespace-nowrap opacity-60">{rellenarPlantilla(t.paso, { n: pasoParte })}</span>
+              <span className="text-etiqueta-chica whitespace-nowrap text-texto-tenue">{rellenarPlantilla(t.paso, { n: pasoParte })}</span>
             </li>
           ))}
           <li className="mt-2.5 grid grid-cols-[1.5rem_1fr_auto] items-baseline gap-2.5 rounded-xl bg-suave px-3 py-2.5">
@@ -160,7 +160,7 @@ export function VistaPreviaPerfil({ textos, datos, paso }: Props) {
               <b className="font-medium">{t.privadas.texto}</b>
               <small className="text-nota mt-0.5 block opacity-65">{t.privadas.lugar}</small>
             </span>
-            <span className="text-etiqueta-chica whitespace-nowrap opacity-60">{rellenarPlantilla(t.paso, { n: 1 })}</span>
+            <span className="text-etiqueta-chica whitespace-nowrap text-texto-tenue">{rellenarPlantilla(t.paso, { n: 1 })}</span>
           </li>
         </ul>
       </section>

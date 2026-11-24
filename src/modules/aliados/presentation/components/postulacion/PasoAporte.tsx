@@ -21,7 +21,7 @@ function BotonAnadir({ alPulsar, children }: { alPulsar: () => void; children: s
 }
 
 function Opcional({ texto }: { texto: string }) {
-  return <span className="text-etiqueta-chica ml-2 opacity-60">{texto}</span>
+  return <span className="text-etiqueta-chica ml-2 text-texto-tenue">{texto}</span>
 }
 
 function ContadorPalabras({ textos, palabras }: Pick<PropsPaso, 'textos'> & { palabras: number }) {

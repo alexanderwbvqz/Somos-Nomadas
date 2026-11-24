@@ -53,7 +53,7 @@ export function MiPerfilView({ textos, perfil, pasos, acciones, anioActual }: Mi
         <div className="grid gap-4">
           <FichaDelPerfil ficha={actual.ficha} textos={textos} />
 
-          <h2 className="text-etiqueta-chica opacity-60">{textos.completaTuPerfil}</h2>
+          <h2 className="text-etiqueta-chica text-texto-tenue">{textos.completaTuPerfil}</h2>
           <BloqueSobreMi textos={textos} sobreMi={sobreMi} />
           <BloqueTrayectoria textos={textos} trayectoria={trayectoria} />
           <BloqueEvidencia textos={textos} evidencia={evidencia} />
