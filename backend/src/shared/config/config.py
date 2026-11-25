@@ -45,6 +45,22 @@ class Configuracion(BaseSettings):
     # inventado: versión de la política de datos que se guarda como prueba del consentimiento; poner la real
     politica_version: str = "v1"
 
+    # Envío de correos (contrato/confirmacion-correo.md). Sin decirlo: Resend en producción y la carpeta en desarrollo,
+    # que escribe cada correo como archivo en vez de enviarlo. La carpeta no se acepta en producción.
+    enviador_de_correos: Literal["resend", "carpeta"] | None = None
+    resend_clave: SecretStr = SecretStr("")
+    # Quién firma los correos, por ejemplo «Somos Nómadas <hola@somosnomadas.app>»
+    correo_remitente: str = ""
+    # La web, para armar los enlaces de los correos
+    url_web: str = "http://localhost:3000"
+    carpeta_de_correos: str = "correos-de-prueba"
+
+    @property
+    def enviador(self) -> Literal["resend", "carpeta"]:
+        if self.enviador_de_correos is not None:
+            return self.enviador_de_correos
+        return "resend" if self.entorno == "produccion" else "carpeta"
+
     @property
     def lista_de_origenes(self) -> list[str]:
         return [origen.strip() for origen in self.origenes_permitidos.split(",") if origen.strip()]
@@ -73,6 +89,10 @@ class Configuracion(BaseSettings):
             if len(self.huellas_secreto.get_secret_value()) < LARGO_MINIMO_SECRETO:
                 raise ValueError(f"HUELLAS_SECRETO debe tener al menos {LARGO_MINIMO_SECRETO} caracteres")
 
+        url_web = self.url_web.strip()
+        if not url_web.startswith(("http://", "https://")) or "#" in url_web or "?" in url_web:
+            raise ValueError("URL_WEB debe ser la dirección de la web (http o https), sin # ni ?")
+
         if self.entorno == "produccion":
             if self.almacen_de_datos == "memoria":
                 raise ValueError("En producción el almacén de datos no puede ser memoria: se perderían los datos")
@@ -85,4 +105,16 @@ class Configuracion(BaseSettings):
                 raise ValueError(
                     "En producción falta SECRETO_INTERNO: sin él no se puede saber la IP real de cada persona"
                 )
+            if self.enviador != "resend":
+                raise ValueError("En producción ENVIADOR_DE_CORREOS tiene que ser resend: la carpeta no envía nada")
+            if not url_web.startswith("https://"):
+                raise ValueError("En producción URL_WEB debe ser https: los enlaces de los correos llevan tokens")
+
+        if self.enviador == "resend":
+            if not self.resend_clave.get_secret_value().strip():
+                raise ValueError("Falta RESEND_CLAVE: la clave de la API de Resend para enviar los correos")
+            if not self.correo_remitente.strip():
+                raise ValueError("Falta CORREO_REMITENTE: quién firma los correos")
+            if "@" not in self.correo_remitente:
+                raise ValueError("CORREO_REMITENTE debe llevar un correo, por ejemplo Somos Nómadas <hola@dominio>")
         return self

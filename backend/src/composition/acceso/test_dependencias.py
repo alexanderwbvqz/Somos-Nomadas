@@ -1,6 +1,7 @@
 """Comprueba el cableado: qué adaptador queda conectado a cada puerto según la configuración."""
 
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any, cast
 from uuid import uuid4
 
@@ -8,6 +9,8 @@ import pytest
 from supabase import Client
 
 from composition.acceso.dependencias import armar_acceso
+from modules.acceso.infrastructure.correo.carpeta_correos import CarpetaCorreos
+from modules.acceso.infrastructure.correo.resend_correos import ResendCorreos
 from modules.acceso.infrastructure.memoria.hasheador_falso import HasheadorFalso
 from modules.acceso.infrastructure.memoria.memoria_confirmacion_repository import MemoriaConfirmacionRepository
 from modules.acceso.infrastructure.memoria.memoria_cuenta_repository import MemoriaCuentaRepository
@@ -36,6 +39,11 @@ def entorno_limpio(monkeypatch: pytest.MonkeyPatch) -> None:
         "SUPABASE_URL",
         "SUPABASE_SERVICE_ROLE_KEY",
         "EXIGIR_CORREO_CONFIRMADO",
+        "ENVIADOR_DE_CORREOS",
+        "RESEND_CLAVE",
+        "CORREO_REMITENTE",
+        "URL_WEB",
+        "CARPETA_DE_CORREOS",
     ):
         monkeypatch.delenv(nombre, raising=False)
 
@@ -161,3 +169,32 @@ def test_con_supabase_el_limitador_recibe_el_secreto_de_huellas() -> None:
 def test_con_supabase_sin_cliente_es_un_error() -> None:
     with pytest.raises(ValueError, match="cliente"):
         armar_acceso(config_supabase(), None, reloj)
+
+
+# --- Envío de correos ---
+
+
+def test_en_desarrollo_los_correos_van_a_la_carpeta_configurada() -> None:
+    casos = armar_acceso(config(carpeta_de_correos="mis-correos", url_web="http://localhost:3001"), None, reloj)
+
+    assert isinstance(casos.correos, CarpetaCorreos)
+    assert casos.correos._carpeta == Path("mis-correos")
+    assert casos.correos._url_web == "http://localhost:3001"
+
+
+def test_con_resend_usa_el_adaptador_de_resend_con_la_clave_el_remitente_y_la_web() -> None:
+    casos = armar_acceso(
+        config(
+            enviador_de_correos="resend",
+            resend_clave="re_clave_de_prueba_0123456789",
+            correo_remitente="Somos Nómadas <hola@somosnomadas.app>",
+            url_web="https://pruebas.somosnomadas.app",
+        ),
+        None,
+        reloj,
+    )
+
+    assert isinstance(casos.correos, ResendCorreos)
+    assert casos.correos._clave.valor() == "re_clave_de_prueba_0123456789"
+    assert casos.correos._remitente == "Somos Nómadas <hola@somosnomadas.app>"
+    assert casos.correos._url_web == "https://pruebas.somosnomadas.app"

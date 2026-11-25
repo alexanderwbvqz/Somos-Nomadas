@@ -159,6 +159,9 @@ def test_en_produccion_la_documentacion_esta_desactivada(monkeypatch: pytest.Mon
         huellas_secreto=HUELLAS,
         secreto_interno=INTERNO,
         exigir_correo_confirmado=True,
+        resend_clave="re_clave_de_resend_0123456789",
+        correo_remitente="Somos Nómadas <hola@somosnomadas.app>",
+        url_web="https://somosnomadas.app",
     )
     cliente = cliente_http(produccion)
 

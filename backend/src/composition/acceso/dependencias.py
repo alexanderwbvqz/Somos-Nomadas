@@ -6,7 +6,9 @@ Es de los pocos sitios que conoce los adaptadores concretos. El cliente de Supab
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 
+import httpx
 from supabase import Client
 
 from modules.acceso.application.cerrar_sesion import CerrarSesion
@@ -17,9 +19,12 @@ from modules.acceso.application.reenviar_confirmacion import ReenviarConfirmacio
 from modules.acceso.application.registrar_cuenta import RegistrarCuenta
 from modules.acceso.application.renovar_sesion import RenovarSesion
 from modules.acceso.domain.confirmacion_repository import ConfirmacionRepository
+from modules.acceso.domain.correos_de_acceso import CorreosDeAcceso
 from modules.acceso.domain.cuenta_repository import CuentaRepository
 from modules.acceso.domain.limitador_intentos import LimitadorIntentos
 from modules.acceso.domain.sesion_repository import SesionRepository
+from modules.acceso.infrastructure.correo.carpeta_correos import CarpetaCorreos
+from modules.acceso.infrastructure.correo.resend_correos import ResendCorreos
 from modules.acceso.infrastructure.memoria.memoria_confirmacion_repository import MemoriaConfirmacionRepository
 from modules.acceso.infrastructure.memoria.memoria_cuenta_repository import MemoriaCuentaRepository
 from modules.acceso.infrastructure.memoria.memoria_limitador_intentos import MemoriaLimitadorIntentos
@@ -42,6 +47,28 @@ class CasosDeUsoAcceso:
     obtener_cuenta_actual: ObtenerCuentaActual
     confirmar_correo: ConfirmarCorreo
     reenviar_confirmacion: ReenviarConfirmacion
+    # Lo usa la ruta para enviar, después de responder, el correo que devuelven el registro y el reenvío
+    correos: CorreosDeAcceso
+
+
+# Para la carpeta, que no envía nada: el remitente solo se anota en el archivo
+REMITENTE_DE_LA_CARPETA = "Somos Nómadas <no-responder@localhost>"
+
+
+def armar_correos(config: Configuracion) -> CorreosDeAcceso:
+    if config.enviador == "resend":
+        return ResendCorreos(
+            httpx.Client(),
+            clave=config.resend_clave.get_secret_value(),
+            remitente=config.correo_remitente,
+            url_web=config.url_web,
+        )
+    # Solo desarrollo y pruebas (la configuración lo prohíbe en producción)
+    return CarpetaCorreos(
+        Path(config.carpeta_de_correos),
+        url_web=config.url_web,
+        remitente=config.correo_remitente or REMITENTE_DE_LA_CARPETA,
+    )
 
 
 def armar_acceso(config: Configuracion, cliente: Client | None, ahora: Callable[[], datetime]) -> CasosDeUsoAcceso:
@@ -96,4 +123,5 @@ def armar_acceso(config: Configuracion, cliente: Client | None, ahora: Callable[
         reenviar_confirmacion=ReenviarConfirmacion(
             confirmaciones=confirmaciones, emisor=emisor, limitador=limitador, ahora=ahora
         ),
+        correos=armar_correos(config),
     )

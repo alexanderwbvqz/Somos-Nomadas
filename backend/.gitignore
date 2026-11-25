@@ -10,3 +10,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+
+# Correos que escribe el enviador de carpeta (desarrollo): llevan correos de personas y tokens
+correos-de-prueba/

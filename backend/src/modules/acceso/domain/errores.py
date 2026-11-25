@@ -29,6 +29,14 @@ class EnlaceInvalido(ErrorDeAcceso):
     """El enlace de confirmación no existe, ya se usó, caducó o se anuló al pedir otro. Nunca dice cuál."""
 
 
+class CorreoNoEnviado(ErrorDeAcceso):
+    """El servicio de correo no aceptó el envío. `motivo` es un código corto, sin datos de la persona."""
+
+    def __init__(self, motivo: str) -> None:
+        super().__init__(f"No se pudo enviar el correo: {motivo}")
+        self.motivo = motivo
+
+
 class LimiteExcedido(ErrorDeAcceso):
     def __init__(self, reintentar_en_segundos: int) -> None:
         super().__init__("Demasiados intentos")

@@ -8,6 +8,8 @@ JWT = "jwt-secreto-" + "j" * 30
 HUELLAS = "huellas-secreto-" + "h" * 30
 INTERNO = "interno-secreto-" + "n" * 30
 LLAVE = "llave-de-servidor-" + "k" * 30
+RESEND = "re_clave_de_resend_0123456789"
+REMITENTE = "Somos Nómadas <hola@somosnomadas.app>"
 VARIABLES = [
     "ENTORNO",
     "ALMACEN_DE_DATOS",
@@ -19,6 +21,11 @@ VARIABLES = [
     "ORIGENES_PERMITIDOS",
     "EXIGIR_CORREO_CONFIRMADO",
     "POLITICA_VERSION",
+    "ENVIADOR_DE_CORREOS",
+    "RESEND_CLAVE",
+    "CORREO_REMITENTE",
+    "URL_WEB",
+    "CARPETA_DE_CORREOS",
 ]
 
 
@@ -44,6 +51,9 @@ def produccion(**cambios: Any) -> Configuracion:
         "huellas_secreto": HUELLAS,
         "secreto_interno": INTERNO,
         "origenes_permitidos": "https://nomadas.example",
+        "resend_clave": RESEND,
+        "correo_remitente": REMITENTE,
+        "url_web": "https://somosnomadas.app",
     }
     return configurar(**{**base, **cambios})
 
@@ -72,6 +82,9 @@ def test_si_se_olvida_el_entorno_se_aplican_las_reglas_de_produccion() -> None:
         "supabase_service_role_key": LLAVE,
         "huellas_secreto": HUELLAS,
         "secreto_interno": INTERNO,
+        "resend_clave": RESEND,
+        "correo_remitente": REMITENTE,
+        "url_web": "https://somosnomadas.app",
     }
 
     c = Configuracion(_env_file=None, origenes_permitidos="https://nomadas.example", **sin_entorno)  # type: ignore[call-arg]
@@ -96,6 +109,11 @@ def test_lee_las_variables_de_entorno_con_los_nombres_del_env_example(monkeypatc
     monkeypatch.setenv("ORIGENES_PERMITIDOS", "https://nomadas.example, https://www.nomadas.example")
     monkeypatch.setenv("EXIGIR_CORREO_CONFIRMADO", "true")
     monkeypatch.setenv("POLITICA_VERSION", "2027-01")
+    monkeypatch.setenv("ENVIADOR_DE_CORREOS", "resend")
+    monkeypatch.setenv("RESEND_CLAVE", RESEND)
+    monkeypatch.setenv("CORREO_REMITENTE", REMITENTE)
+    monkeypatch.setenv("URL_WEB", "https://somosnomadas.app")
+    monkeypatch.setenv("CARPETA_DE_CORREOS", "otra-carpeta")
 
     c = Configuracion(_env_file=None)  # type: ignore[call-arg]
 
@@ -107,6 +125,11 @@ def test_lee_las_variables_de_entorno_con_los_nombres_del_env_example(monkeypatc
     assert c.secreto_interno.get_secret_value() == INTERNO
     assert c.lista_de_origenes == ["https://nomadas.example", "https://www.nomadas.example"]
     assert c.politica_version == "2027-01"
+    assert c.enviador == "resend"
+    assert c.resend_clave.get_secret_value() == RESEND
+    assert c.correo_remitente == REMITENTE
+    assert c.url_web == "https://somosnomadas.app"
+    assert c.carpeta_de_correos == "otra-carpeta"
 
 
 def test_las_variables_de_entorno_pueden_ir_en_minusculas_o_mayusculas(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -271,3 +294,67 @@ def test_en_desarrollo_si_se_puede_desactivar_la_confirmacion_y_usar_http() -> N
     c = configurar(exigir_correo_confirmado=False, origenes_permitidos="http://localhost:3000")
 
     assert c.exigir_correo_confirmado is False
+
+
+# --- Envío de correos ---
+
+
+def test_en_desarrollo_los_correos_van_a_la_carpeta_si_no_se_dice_otra_cosa() -> None:
+    c = configurar()
+
+    assert c.enviador == "carpeta"
+    assert c.carpeta_de_correos == "correos-de-prueba"
+    assert c.url_web == "http://localhost:3000"
+
+
+def test_en_produccion_los_correos_van_por_resend_si_no_se_dice_otra_cosa() -> None:
+    assert produccion().enviador == "resend"
+
+
+def test_en_produccion_no_se_acepta_la_carpeta() -> None:
+    with pytest.raises(ValueError, match="ENVIADOR_DE_CORREOS"):
+        produccion(enviador_de_correos="carpeta")
+
+
+@pytest.mark.parametrize("falta", ["resend_clave", "correo_remitente"])
+def test_con_resend_hacen_falta_la_clave_y_el_remitente(falta: str) -> None:
+    with pytest.raises(ValueError, match=falta.upper()):
+        produccion(**{falta: ""})
+    con_resend: dict[str, Any] = {
+        "enviador_de_correos": "resend",
+        "resend_clave": RESEND,
+        "correo_remitente": REMITENTE,
+    }
+    with pytest.raises(ValueError, match=falta.upper()):
+        configurar(**{**con_resend, falta: ""})
+
+
+def test_el_remitente_tiene_que_ser_un_correo() -> None:
+    with pytest.raises(ValueError, match="CORREO_REMITENTE"):
+        produccion(correo_remitente="Somos Nómadas")
+
+
+def test_en_desarrollo_se_puede_probar_resend_de_verdad() -> None:
+    c = configurar(enviador_de_correos="resend", resend_clave=RESEND, correo_remitente=REMITENTE)
+
+    assert c.enviador == "resend"
+
+
+def test_en_produccion_la_web_tiene_que_ser_https() -> None:
+    with pytest.raises(ValueError, match="URL_WEB"):
+        produccion(url_web="http://somosnomadas.app")
+
+
+@pytest.mark.parametrize(
+    "url", ["", "somosnomadas.app", "ftp://somosnomadas.app", "https://somosnomadas.app/#x", "https://a.app/?b=1", " "]
+)
+def test_url_web_tiene_que_ser_una_direccion_http_sin_fragmento_ni_consulta(url: str) -> None:
+    with pytest.raises(ValueError, match="URL_WEB"):
+        configurar(url_web=url)
+
+
+def test_la_clave_de_resend_no_sale_al_imprimir_la_configuracion() -> None:
+    c = produccion()
+
+    assert RESEND not in repr(c) + str(c)
+    assert c.resend_clave.get_secret_value() == RESEND
