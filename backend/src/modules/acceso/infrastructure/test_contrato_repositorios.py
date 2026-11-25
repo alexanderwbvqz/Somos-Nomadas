@@ -16,7 +16,7 @@ Mientras no haya base de pruebas, la parte de Supabase aparece como «skipped»,
 
 import os
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
@@ -129,6 +129,29 @@ def test_crear_con_un_correo_repetido_devuelve_false_y_no_cambia_nada(repos: Rep
 def test_una_cuenta_que_no_existe_devuelve_none(repos: Repos) -> None:
     assert repos.cuentas.obtener_por_correo(f"{unico()}{DOMINIO_DE_PRUEBA}") is None
     assert repos.cuentas.obtener_por_id(uuid4()) is None
+
+
+def test_actualizar_la_clave_hash_cambia_solo_la_clave_y_solo_si_sigue_siendo_la_anterior(repos: Repos) -> None:
+    c = con_cuenta(repos)
+
+    assert repos.cuentas.actualizar_clave_hash(c.id, c.clave_hash, "hash-nuevo")
+
+    assert repos.cuentas.obtener_por_correo(c.correo) == replace(c, clave_hash="hash-nuevo")
+    # El anterior ya no coincide (alguien cambió la clave en medio): no pisa nada
+    assert not repos.cuentas.actualizar_clave_hash(c.id, c.clave_hash, "hash-otro")
+    assert repos.cuentas.obtener_por_id(c.id) == replace(c, clave_hash="hash-nuevo")
+
+
+def test_actualizar_la_clave_hash_de_otra_cuenta_o_de_una_que_no_existe_no_cambia_nada(repos: Repos) -> None:
+    c = con_cuenta(repos)
+    otra = con_cuenta(repos)
+
+    assert not repos.cuentas.actualizar_clave_hash(uuid4(), c.clave_hash, "hash-nuevo")
+    # Las dos cuentas tienen el mismo hash ("hash"): solo cambia la que se indica, el id manda
+    assert repos.cuentas.actualizar_clave_hash(otra.id, otra.clave_hash, "hash-de-otra")
+
+    assert repos.cuentas.obtener_por_id(c.id) == c
+    assert repos.cuentas.obtener_por_id(otra.id) == replace(otra, clave_hash="hash-de-otra")
 
 
 # --- Sesiones ---

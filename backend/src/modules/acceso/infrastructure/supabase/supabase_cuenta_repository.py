@@ -21,6 +21,19 @@ class SupabaseCuentaRepository:
             raise ErrorDeBaseDeDatos("respuesta_inesperada")
         return respuesta.data
 
+    def actualizar_clave_hash(self, cuenta_id: UUID, hash_anterior: str, hash_nuevo: str) -> bool:
+        # Una función SQL (POST con cuerpo): el hash anterior no va en la URL de la petición, como haría un filtro
+        parametros = {
+            "p_cuenta_id": str(cuenta_id),
+            "p_clave_hash_anterior": hash_anterior,
+            "p_clave_hash_nuevo": hash_nuevo,
+        }
+        with traducir_errores():
+            respuesta = self._cliente.rpc("actualizar_clave_hash", parametros).execute()
+        if not isinstance(respuesta.data, bool):
+            raise ErrorDeBaseDeDatos("respuesta_inesperada")
+        return respuesta.data
+
     def obtener_por_correo(self, correo: str) -> Cuenta | None:
         # Una función SQL (POST con cuerpo) en vez de `.eq("correo", ...)`: así el correo no va en la URL
         with traducir_errores():

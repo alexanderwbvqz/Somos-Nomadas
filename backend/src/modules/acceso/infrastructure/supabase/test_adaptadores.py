@@ -92,6 +92,35 @@ def test_crear_con_una_respuesta_que_no_es_booleana_es_un_error(respuesta: objec
         SupabaseCuentaRepository(como_cliente(falso)).crear(cuenta())
 
 
+def test_actualizar_la_clave_hash_llama_a_una_funcion_sql_para_que_el_hash_no_vaya_en_la_url() -> None:
+    falso = ClienteFalso({"actualizar_clave_hash": True})
+    cuenta_id = uuid4()
+
+    assert SupabaseCuentaRepository(como_cliente(falso)).actualizar_clave_hash(cuenta_id, "viejo", "nuevo") is True
+
+    (llamada,) = falso.llamadas
+    assert (llamada.tipo, llamada.nombre) == ("rpc", "actualizar_clave_hash")
+    assert llamada.parametros == {
+        "p_cuenta_id": str(cuenta_id),
+        "p_clave_hash_anterior": "viejo",
+        "p_clave_hash_nuevo": "nuevo",
+    }
+
+
+def test_actualizar_la_clave_hash_devuelve_false_si_la_base_dice_que_ya_no_era_el_anterior() -> None:
+    falso = ClienteFalso({"actualizar_clave_hash": False})
+
+    assert SupabaseCuentaRepository(como_cliente(falso)).actualizar_clave_hash(uuid4(), "a", "b") is False
+
+
+@pytest.mark.parametrize("respuesta", [None, 1, "true", [], {}])
+def test_actualizar_la_clave_hash_con_una_respuesta_que_no_es_booleana_es_un_error(respuesta: object) -> None:
+    falso = ClienteFalso({"actualizar_clave_hash": respuesta})
+
+    with pytest.raises(ErrorDeBaseDeDatos):
+        SupabaseCuentaRepository(como_cliente(falso)).actualizar_clave_hash(uuid4(), "a", "b")
+
+
 def test_obtener_por_correo_llama_a_una_funcion_sql_para_que_el_correo_no_vaya_en_la_url() -> None:
     c = cuenta()
     falso = ClienteFalso({"obtener_cuenta_por_correo": [fila_cuenta(c)]})

@@ -1,3 +1,4 @@
+from dataclasses import replace
 from uuid import UUID
 
 from modules.acceso.domain.cuenta import Cuenta
@@ -20,6 +21,13 @@ class MemoriaCuentaRepository:
 
     def obtener_por_id(self, cuenta_id: UUID) -> Cuenta | None:
         return next((c for c in self._por_correo.values() if c.id == cuenta_id), None)
+
+    def actualizar_clave_hash(self, cuenta_id: UUID, hash_anterior: str, hash_nuevo: str) -> bool:
+        cuenta = self.obtener_por_id(cuenta_id)
+        if cuenta is None or cuenta.clave_hash != hash_anterior:
+            return False
+        self._por_correo[cuenta.correo] = replace(cuenta, clave_hash=hash_nuevo)
+        return True
 
     def cantidad(self) -> int:
         return len(self._por_correo)

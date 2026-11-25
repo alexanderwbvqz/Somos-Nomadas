@@ -91,3 +91,39 @@ def test_un_hash_corrupto_no_rompe_y_devuelve_false() -> None:
 
     for roto in ["", "basura", "$argon2id$v=19$m=65536,t=3,p=4$corto$corto", "x" * 500]:
         assert not hasheador.verificar(CLAVE, roto)
+
+
+def hasher_debil() -> PasswordHasher:
+    """Parámetros mucho más flojos que los de la librería: es lo que tendría un hash guardado antes de endurecerlos."""
+    return PasswordHasher(time_cost=1, memory_cost=8, parallelism=1)
+
+
+def test_un_hash_con_parametros_mas_debiles_que_los_actuales_necesita_recalcularse() -> None:
+    hash_viejo = Argon2Hasheador(hasher=hasher_debil()).hashear(CLAVE)
+
+    assert Argon2Hasheador().necesita_recalcular(hash_viejo)
+
+
+def test_un_hash_con_los_parametros_actuales_no_necesita_recalcularse() -> None:
+    hasheador = Argon2Hasheador()
+
+    assert not hasheador.necesita_recalcular(hasheador.hashear(CLAVE))
+
+
+def test_el_hash_viejo_sigue_verificando_y_el_recalculado_tambien() -> None:
+    hasheador = Argon2Hasheador()
+    hash_viejo = Argon2Hasheador(hasher=hasher_debil()).hashear(CLAVE)
+    assert hasheador.verificar(CLAVE, hash_viejo)
+
+    hash_nuevo = hasheador.hashear(CLAVE)
+
+    assert hasheador.verificar(CLAVE, hash_nuevo)
+    assert not hasheador.necesita_recalcular(hash_nuevo)
+
+
+def test_un_hash_corrupto_no_se_recalcula_ni_rompe() -> None:
+    hasheador = Argon2Hasheador()
+
+    # Solo se pregunta por un hash que ya se verificó, así que uno ilegible no llega: pero si llegara, no rompe
+    for roto in ["", "basura", "x" * 500]:
+        assert not hasheador.necesita_recalcular(roto)

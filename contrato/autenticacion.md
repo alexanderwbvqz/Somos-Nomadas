@@ -242,5 +242,10 @@ Resuelta tras la revisión de código: el reúso de un token revocado (carreras 
 
 Resuelta también: el bloqueo de una cuenta por un tercero (sección 8: límite por pareja de correo y origen, con un techo por correo).
 
-Pendientes de decidir (salieron de la revisión de código de la rama):
-1. **Recalcular el hash al iniciar sesión** cuando cambien los parámetros de argon2 (`check_needs_rehash`); hoy las cuentas viejas conservan los parámetros con los que se crearon.
+Resuelta: **recalcular el hash al iniciar sesión.** Si el hash guardado se hizo con parámetros más flojos que los actuales (`HasheadorClaves.necesita_recalcular`, que usa `check_needs_rehash` de argon2), al entrar con éxito se vuelve a hashear la clave que se acaba de escribir y se guarda con `CuentaRepository.actualizar_clave_hash`. Detalles:
+- Solo ocurre con la clave correcta y después de comprobar el correo confirmado; con una clave mala, o con el correo sin confirmar, el hash no se toca.
+- El cambio es atómico y condicional (función SQL `actualizar_clave_hash`, migración `0006`): solo se guarda si el hash sigue siendo el que se verificó. Si otra petición se adelantó o la clave se cambió en medio, no se pisa nada.
+- Es una mejora opcional: si guardarlo falla, la persona entra igual y se reintenta en el siguiente inicio de sesión.
+- La función recibe el hash anterior en el cuerpo de una petición POST, no en la URL, como el resto de las funciones.
+
+Sin pendientes de decidir.

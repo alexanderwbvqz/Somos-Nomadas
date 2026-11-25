@@ -146,7 +146,7 @@ def principal() -> None:
         "select string_agg(p.oid::regprocedure::text, '|') from pg_proc p join pg_namespace n on n.oid=p.pronamespace "
         "where n.nspname='public';"
     ).split("|")
-    comprobar("las 6 funciones existen", len(funciones) == 6, str(funciones))
+    comprobar("las 7 funciones existen", len(funciones) == 7, str(funciones))
     for f in funciones:
         for rol in ("anon", "authenticated", "public"):
             ejecutable = (
@@ -241,6 +241,54 @@ def principal() -> None:
     comprobar(
         "y solo queda una cuenta con ese correo",
         valor("select count(*) from cuentas where correo='carrera@correo.com';") == "1",
+    )
+
+    # Recalcular el hash de la clave (migración 0006): cambia solo si el hash sigue siendo el que se verificó
+    clave_h = "55555555-5555-4555-8555-555555555555"
+    valor(crear(clave_h, "hash@correo.com"), rol="service_role")
+
+    def actualizar(i, anterior, nuevo):
+        return f"select actualizar_clave_hash('{i}','{anterior}','{nuevo}');"
+
+    comprobar(
+        "actualizar_clave_hash devuelve true y cambia el hash si el anterior coincide",
+        valor(actualizar(clave_h, "$argon2id$h", "$argon2id$nuevo"), rol="service_role") == "t"
+        and valor(f"select clave_hash from cuentas where id='{clave_h}';") == "$argon2id$nuevo",
+    )
+    comprobar(
+        "actualizar_clave_hash devuelve false y no cambia nada si el anterior ya no es ese",
+        valor(actualizar(clave_h, "$argon2id$h", "$argon2id$otro"), rol="service_role") == "f"
+        and valor(f"select clave_hash from cuentas where id='{clave_h}';") == "$argon2id$nuevo",
+    )
+    comprobar(
+        "actualizar_clave_hash devuelve false si la cuenta no existe",
+        valor(actualizar("99999999-9999-4999-8999-999999999999", "$argon2id$h", "x"), rol="service_role") == "f",
+    )
+    comprobar(
+        "actualizar_clave_hash no toca otras cuentas aunque tengan el mismo hash",
+        valor(f"select clave_hash from cuentas where id='{uno}';") == "$argon2id$h",
+    )
+    comprobar("actualizar_clave_hash no la puede llamar anon", denegado(actualizar(clave_h, "a", "b"), "anon"))
+    comprobar(
+        "actualizar_clave_hash no la puede llamar authenticated",
+        denegado(actualizar(clave_h, "a", "b"), "authenticated"),
+    )
+    salidas = en_paralelo(
+        [
+            (
+                0.0,
+                "begin;\n" + actualizar(clave_h, "$argon2id$nuevo", "$argon2id$A") + "\nselect pg_sleep(2);\ncommit;",
+            ),
+            (0.7, actualizar(clave_h, "$argon2id$nuevo", "$argon2id$B")),
+        ]
+    )
+    lineas = [x for s_ in salidas for x in s_.split() if x in ("t", "f")]
+    comprobar(
+        "dos cambios simultáneos desde el mismo hash: exactamente uno gana", sorted(lineas) == ["f", "t"], str(salidas)
+    )
+    comprobar(
+        "y el hash guardado es el del que ganó (no una mezcla)",
+        valor(f"select clave_hash from cuentas where id='{clave_h}';") == "$argon2id$A",
     )
 
     print("\n[4] Sesiones")
@@ -445,7 +493,7 @@ def principal() -> None:
 
 BASE_ANTIGUA = "nomadas_antigua"
 FUNCIONES = (
-    "'crear_cuenta','obtener_cuenta_por_correo','rotar_sesion','revocar_sesion',"
+    "'crear_cuenta','obtener_cuenta_por_correo','actualizar_clave_hash','rotar_sesion','revocar_sesion',"
     "'revocar_sesiones_de_cuenta','consumir_intento'"
 )
 

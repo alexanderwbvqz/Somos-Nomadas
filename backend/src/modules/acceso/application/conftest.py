@@ -2,9 +2,9 @@
 
 import pytest
 
-from modules.acceso.infrastructure.memoria.entorno_de_pruebas import CLAVE, POLITICA, Entorno
+from modules.acceso.infrastructure.memoria.entorno_de_pruebas import CLAVE, POLITICA, CuentasQue, Entorno
 
-__all__ = ["CLAVE", "POLITICA", "Entorno", "entorno"]
+__all__ = ["CLAVE", "POLITICA", "CuentasQue", "Entorno", "entorno"]
 
 
 @pytest.fixture

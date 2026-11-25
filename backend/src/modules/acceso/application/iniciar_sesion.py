@@ -1,10 +1,11 @@
+import contextlib
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from uuid import uuid4
 
 from modules.acceso.application.exigir_limite import exigir_limite
-from modules.acceso.domain.cuenta import DatosInicioSesion, normalizar_correo, validar_inicio_sesion
+from modules.acceso.domain.cuenta import Cuenta, DatosInicioSesion, normalizar_correo, validar_inicio_sesion
 from modules.acceso.domain.cuenta_repository import CuentaRepository
 from modules.acceso.domain.emisor_tokens import EmisorTokens
 from modules.acceso.domain.errores import CorreoSinConfirmar, CredencialesInvalidas, DatosInvalidos
@@ -26,6 +27,9 @@ class IniciarSesion:
 
     Si falla el correo o falla la clave el error es el mismo y tarda lo mismo. El correo sin confirmar solo se
     avisa cuando la clave es correcta: antes sería revelar que la cuenta existe.
+
+    Al entrar con éxito es también el único momento en que se tiene la clave en claro: si el hash guardado se hizo con
+    parámetros más flojos que los actuales, se vuelve a hashear y se guarda, sin que la persona note nada.
     """
 
     def __init__(
@@ -71,6 +75,8 @@ class IniciarSesion:
         if self._exigir_correo_confirmado and not cuenta.correo_confirmado:
             raise CorreoSinConfirmar("El correo aún no se confirmó")
 
+        self._recalcular_hash_si_hace_falta(cuenta, datos.clave)
+
         acceso = self._emisor.emitir_acceso(cuenta.id, ahora)
         token_renovacion = self._emisor.nuevo_token_renovacion()
         self._sesiones.guardar(
@@ -84,3 +90,11 @@ class IniciarSesion:
         )
         tokens = ParDeTokens(acceso.valor, acceso.expira_en_segundos, token_renovacion)
         return SesionIniciada(tokens=tokens, correo=cuenta.correo)
+
+    def _recalcular_hash_si_hace_falta(self, cuenta: Cuenta, clave: str) -> None:
+        if not self._hasheador.necesita_recalcular(cuenta.clave_hash):
+            return
+        # Mejora opcional: si falla (la base no responde) o el hash ya cambió (la guardada devuelve False porque otra
+        # petición se adelantó, o la clave se cambió en medio), la persona entra igual y se reintenta la próxima vez
+        with contextlib.suppress(Exception):
+            self._cuentas.actualizar_clave_hash(cuenta.id, cuenta.clave_hash, self._hasheador.hashear(clave))

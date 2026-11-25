@@ -3,9 +3,10 @@
 Lo usan los tests de los casos de uso y los de la API, para armar los mismos casos de uso de la misma manera.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from modules.acceso.application.cerrar_sesion import CerrarSesion
 from modules.acceso.application.iniciar_sesion import IniciarSesion
@@ -23,6 +24,17 @@ from modules.acceso.infrastructure.memoria.memoria_sesion_repository import Memo
 INICIO = datetime(2026, 11, 24, 12, 0, tzinfo=UTC)
 POLITICA = "2026-11"
 CLAVE = "Clave-segura1"
+
+
+class CuentasQue(MemoriaCuentaRepository):
+    """Un repositorio de cuentas al que se le puede hacer fallar o contestar distinto al actualizar el hash."""
+
+    def __init__(self, al_actualizar: Callable[[], bool]) -> None:
+        super().__init__()
+        self._al_actualizar = al_actualizar
+
+    def actualizar_clave_hash(self, cuenta_id: UUID, hash_anterior: str, hash_nuevo: str) -> bool:
+        return self._al_actualizar()
 
 
 class RelojDePrueba:
@@ -74,11 +86,19 @@ class Entorno:
     def obtener_cuenta_actual(self) -> ObtenerCuentaActual:
         return ObtenerCuentaActual(cuentas=self.cuentas, emisor=self.emisor, ahora=self.reloj)
 
-    def crear_cuenta(self, correo: str = "ana@correo.com", clave: str = CLAVE, *, confirmada: bool = True) -> Cuenta:
+    def crear_cuenta(
+        self,
+        correo: str = "ana@correo.com",
+        clave: str = CLAVE,
+        *,
+        confirmada: bool = True,
+        hash_antiguo: bool = False,
+    ) -> Cuenta:
+        """Con `hash_antiguo` el hash se guarda como lo habría hecho una versión anterior, con parámetros más flojos."""
         cuenta = Cuenta(
             id=uuid4(),
             correo=normalizar_correo(correo),
-            clave_hash=self.hasheador.hashear(clave),
+            clave_hash=f"viejo({clave})" if hash_antiguo else self.hasheador.hashear(clave),
             correo_confirmado=confirmada,
             politica_aceptada_en=self.reloj(),
             politica_version=POLITICA,

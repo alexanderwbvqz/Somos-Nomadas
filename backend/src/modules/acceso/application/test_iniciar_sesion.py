@@ -1,8 +1,9 @@
+from dataclasses import replace
 from datetime import timedelta
 
 import pytest
 
-from modules.acceso.application.conftest import CLAVE, Entorno
+from modules.acceso.application.conftest import CLAVE, CuentasQue, Entorno
 from modules.acceso.domain.cuenta import DatosInicioSesion
 from modules.acceso.domain.errores import (
     CorreoSinConfirmar,
@@ -212,3 +213,85 @@ def test_el_limite_por_correo_y_origen_se_libera_al_pasar_la_ventana(entorno: En
     entorno.reloj.avanzar(seconds=SESION_POR_CORREO_Y_ORIGEN.ventana_segundos)
 
     assert entorno.iniciar_sesion().ejecutar(datos(), ORIGEN).correo == "ana@correo.com"
+
+
+# --- Recalcular el hash con los parámetros actuales ---
+
+
+def test_al_entrar_con_un_hash_antiguo_se_guarda_uno_nuevo_de_la_misma_clave(entorno: Entorno) -> None:
+    cuenta = entorno.crear_cuenta(hash_antiguo=True)
+
+    entorno.iniciar_sesion().ejecutar(datos(), ORIGEN)
+
+    guardada = entorno.cuentas.obtener_por_id(cuenta.id)
+    assert guardada is not None
+    assert guardada.clave_hash == entorno.hasheador.hashear(CLAVE)
+    assert not entorno.hasheador.necesita_recalcular(guardada.clave_hash)
+    # Lo demás de la cuenta no cambia
+    assert guardada == replace(cuenta, clave_hash=guardada.clave_hash)
+
+
+def test_despues_de_recalcular_se_sigue_entrando_con_la_misma_clave_y_ya_no_se_recalcula_otra_vez(
+    entorno: Entorno,
+) -> None:
+    entorno.crear_cuenta(hash_antiguo=True)
+    entorno.iniciar_sesion().ejecutar(datos(), ORIGEN)
+    hasheos = entorno.hasheador.hasheos
+
+    resultado = entorno.iniciar_sesion().ejecutar(datos(), ORIGEN)
+
+    assert resultado.correo == "ana@correo.com"
+    assert entorno.hasheador.hasheos == hasheos
+
+
+def test_con_un_hash_al_dia_no_se_vuelve_a_hashear_ni_a_guardar(entorno: Entorno) -> None:
+    cuenta = entorno.crear_cuenta()
+    hasheos = entorno.hasheador.hasheos
+
+    entorno.iniciar_sesion().ejecutar(datos(), ORIGEN)
+
+    assert entorno.hasheador.hasheos == hasheos
+    assert entorno.cuentas.obtener_por_id(cuenta.id) == cuenta
+
+
+def test_con_la_clave_incorrecta_el_hash_antiguo_no_se_toca(entorno: Entorno) -> None:
+    cuenta = entorno.crear_cuenta(hash_antiguo=True)
+    hasheos = entorno.hasheador.hasheos
+
+    with pytest.raises(CredencialesInvalidas):
+        entorno.iniciar_sesion().ejecutar(datos(clave="Otra-clave9"), ORIGEN)
+
+    assert entorno.hasheador.hasheos == hasheos
+    assert entorno.cuentas.obtener_por_id(cuenta.id) == cuenta
+
+
+def test_si_el_correo_no_esta_confirmado_el_hash_antiguo_no_se_toca(entorno: Entorno) -> None:
+    cuenta = entorno.crear_cuenta(confirmada=False, hash_antiguo=True)
+
+    with pytest.raises(CorreoSinConfirmar):
+        entorno.iniciar_sesion(exigir_correo_confirmado=True).ejecutar(datos(), ORIGEN)
+
+    assert entorno.cuentas.obtener_por_id(cuenta.id) == cuenta
+
+
+def test_si_no_se_puede_guardar_el_hash_nuevo_se_entra_igual(entorno: Entorno) -> None:
+    def falla() -> bool:
+        raise RuntimeError("la base no responde")
+
+    entorno.cuentas = CuentasQue(falla)
+    entorno.crear_cuenta(hash_antiguo=True)
+
+    resultado = entorno.iniciar_sesion().ejecutar(datos(), ORIGEN)
+
+    assert resultado.correo == "ana@correo.com"
+    assert len(entorno.sesiones.de_cuenta(entorno.cuentas.obtener_por_correo("ana@correo.com").id)) == 1  # type: ignore[union-attr]
+
+
+def test_si_el_hash_cambio_mientras_tanto_se_entra_igual_y_no_se_pisa(entorno: Entorno) -> None:
+    entorno.cuentas = CuentasQue(lambda: False)
+    cuenta = entorno.crear_cuenta(hash_antiguo=True)
+
+    resultado = entorno.iniciar_sesion().ejecutar(datos(), ORIGEN)
+
+    assert resultado.correo == "ana@correo.com"
+    assert entorno.cuentas.obtener_por_id(cuenta.id) == cuenta

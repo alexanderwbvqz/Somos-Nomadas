@@ -5,8 +5,9 @@ from argon2.exceptions import InvalidHashError, VerificationError
 class Argon2Hasheador:
     """Hash de claves con argon2id y los parámetros por defecto de la librería (los recomendados por OWASP).
 
-    Cada hash lleva su propia sal y sus parámetros: tras endurecerlos, los hashes viejos se siguen verificando.
-    Pero NO se actualizan solos (falta volver a hashear al iniciar sesión; ver «Pendientes» en backend/CLAUDE.md).
+    Cada hash lleva su propia sal y sus parámetros: tras endurecerlos, los hashes viejos se siguen verificando, y
+    `necesita_recalcular` avisa de cuáles conviene volver a hashear (lo hace el inicio de sesión, que es cuando se
+    tiene la clave en claro).
     Si el servidor de Render resulta lento, se ajustan los parámetros midiendo, no a ojo.
     """
 
@@ -17,6 +18,13 @@ class Argon2Hasheador:
 
     def hashear(self, clave: str) -> str:
         return self._hasher.hash(clave)
+
+    def necesita_recalcular(self, hash_guardado: str) -> bool:
+        try:
+            return self._hasher.check_needs_rehash(hash_guardado)
+        except InvalidHashError:
+            # Un hash ilegible no se puede «actualizar»: verificar ya lo rechaza, y aquí no se inventa nada
+            return False
 
     def verificar(self, clave: str, hash_guardado: str | None) -> bool:
         # Sin hash (el correo no existe) se hace la misma verificación contra uno falso para que tarde lo mismo
