@@ -3,12 +3,15 @@
 -- Spec: contrato/autenticacion.md, secciones 3 y 7.
 
 create table sesiones (
-  id uuid primary key,
-  cuenta_id uuid not null references cuentas (id) on delete cascade,
-  token_hash text not null unique,
+  id uuid not null,
+  cuenta_id uuid not null,
+  token_hash text not null,
   expira_en timestamptz not null,
   creada_en timestamptz not null,
-  revocada_en timestamptz
+  revocada_en timestamptz,
+  constraint sesiones_pkey primary key (id),
+  constraint sesiones_token_hash_key unique (token_hash),
+  constraint sesiones_cuenta_id_fkey foreign key (cuenta_id) references cuentas (id) on delete cascade
 );
 
 create index sesiones_cuenta_id_idx on sesiones (cuenta_id);

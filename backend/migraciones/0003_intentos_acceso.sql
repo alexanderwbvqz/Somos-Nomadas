@@ -3,13 +3,15 @@
 -- Spec: contrato/autenticacion.md, sección 8.
 
 create table intentos_acceso (
-  id bigint generated always as identity primary key,
-  accion text not null check (accion in ('registro', 'sesion')),
+  id bigint generated always as identity,
+  accion text not null,
   huella text not null,
-  ocurrido_en timestamptz not null
+  ocurrido_en timestamptz not null,
+  constraint intentos_acceso_pkey primary key (id),
+  constraint intentos_acceso_accion_check check (accion in ('registro', 'sesion'))
 );
 
-create index intentos_acceso_clave_idx on intentos_acceso (accion, huella, ocurrido_en);
+create index intentos_acceso_accion_huella_ocurrido_en_idx on intentos_acceso (accion, huella, ocurrido_en);
 
 alter table intentos_acceso enable row level security;
 revoke all on table intentos_acceso from public;

@@ -374,8 +374,116 @@ def principal() -> None:
     )
 
 
+# Formato de un identificador: español sin tildes ni ñ, snake_case, en minúsculas
+FORMATO = "^[a-z][a-z0-9]*(_[a-z0-9]+)*$"
+ESQUEMAS = "('public', 'nomadas')"
+
+# Cada regla es una consulta al catálogo de Postgres que devuelve las infracciones: una lista vacía es que se cumple
+REGLAS_DE_NOMBRES: list[tuple[str, str]] = [
+    (
+        "tablas, índices, columnas, funciones y restricciones en snake_case, sin tildes ni mayúsculas",
+        f"""
+        select 'tabla o indice ' || c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+         where n.nspname in {ESQUEMAS} and c.relkind in ('r', 'i') and c.relname !~ '{FORMATO}'
+        union all
+        select 'columna ' || c.relname || '.' || a.attname
+          from pg_attribute a join pg_class c on c.oid = a.attrelid join pg_namespace n on n.oid = c.relnamespace
+         where n.nspname in {ESQUEMAS} and c.relkind = 'r' and a.attnum > 0 and not a.attisdropped
+           and a.attname !~ '{FORMATO}'
+        union all
+        select 'funcion ' || p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+         where n.nspname = 'public' and p.proname !~ '{FORMATO}'
+        union all
+        select 'restriccion ' || k.conname from pg_constraint k join pg_namespace n on n.oid = k.connamespace
+         where n.nspname in {ESQUEMAS} and k.conname !~ '{FORMATO}'
+        """,
+    ),
+    (
+        "toda tabla de public tiene la clave primaria `id` llamada <tabla>_pkey",
+        """
+        select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+         where n.nspname = 'public' and c.relkind = 'r'
+           and not exists (
+             select 1 from pg_constraint k
+              where k.conrelid = c.oid and k.contype = 'p' and k.conname = c.relname || '_pkey'
+                and (select array_agg(a.attname::text) from pg_attribute a
+                      where a.attrelid = c.oid and a.attnum = any (k.conkey)) = array['id'])
+        """,
+    ),
+    (
+        "restricciones llamadas <tabla>_pkey, <tabla>_<columnas>_key, _fkey o _check según su tipo",
+        f"""
+        select k.conname from pg_constraint k
+          join pg_class c on c.oid = k.conrelid join pg_namespace n on n.oid = c.relnamespace
+         where n.nspname in {ESQUEMAS} and (
+               (k.contype = 'p' and k.conname <> c.relname || '_pkey')
+            or (k.contype = 'u' and k.conname !~ ('^' || c.relname || '_[a-z0-9_]+_key$'))
+            or (k.contype = 'f' and k.conname !~ ('^' || c.relname || '_[a-z0-9_]+_fkey$'))
+            or (k.contype = 'c' and k.conname !~ ('^' || c.relname || '_[a-z0-9_]+_check$')))
+        """,
+    ),
+    (
+        "las claves foráneas son columnas <entidad>_id",
+        f"""
+        select k.conname from pg_constraint k
+          join pg_class c on c.oid = k.conrelid join pg_namespace n on n.oid = c.relnamespace
+         where n.nspname in {ESQUEMAS} and k.contype = 'f'
+           and exists (select 1 from unnest(k.conkey) as cn(num)
+                        join pg_attribute a on a.attrelid = k.conrelid and a.attnum = cn.num
+                       where a.attname !~ '_id$')
+        """,
+    ),
+    (
+        "los índices se llaman <tabla>_<columnas>_idx (con las columnas en orden)",
+        f"""
+        select ic.relname from pg_index i
+          join pg_class ic on ic.oid = i.indexrelid join pg_class t on t.oid = i.indrelid
+          join pg_namespace n on n.oid = t.relnamespace
+         where n.nspname in {ESQUEMAS}
+           and not exists (select 1 from pg_constraint k where k.conindid = i.indexrelid)
+           and ic.relname <> t.relname || '_' || (
+                 select string_agg(a.attname, '_' order by x.orden)
+                   from unnest(string_to_array(i.indkey::text, ' ')::int[]) with ordinality as x(num, orden)
+                   join pg_attribute a on a.attrelid = t.oid and a.attnum = x.num) || '_idx'
+        """,
+    ),
+    (
+        "las columnas de fecha terminan en _en",
+        f"""
+        select c.relname || '.' || a.attname
+          from pg_attribute a join pg_class c on c.oid = a.attrelid join pg_namespace n on n.oid = c.relnamespace
+         where n.nspname in {ESQUEMAS} and c.relkind = 'r' and a.attnum > 0 and not a.attisdropped
+           and a.atttypid in ('timestamptz'::regtype, 'timestamp'::regtype, 'date'::regtype)
+           and a.attname !~ '_en$'
+        """,
+    ),
+    (
+        "las funciones empiezan por un verbo en infinitivo y sus parámetros por p_",
+        """
+        select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+         where n.nspname = 'public' and p.proname !~ '^[a-z]+(ar|er|ir)(_|$)'
+        union all
+        select p.proname || '(' || a.nombre || ')'
+          from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+          cross join lateral unnest(coalesce(p.proargnames, '{}')) as a(nombre)
+         where n.nspname = 'public' and a.nombre !~ '^p_'
+        """,
+    ),
+]
+
+
+def convenciones() -> None:
+    print("\n[6] Reglas de nombres (backend/CLAUDE.md, «Base de datos: nombres»)")
+    for descripcion, consulta in REGLAS_DE_NOMBRES:
+        infracciones = valor(consulta)
+        comprobar(descripcion, infracciones == "", infracciones.replace("\n", ", "))
+
+
 try:
     principal()
+    # Las reglas de nombres se comprueban siempre que las migraciones se hayan aplicado, aunque falle otra cosa
+    if valor("select to_regclass('public.cuentas') is not null;") == "t":
+        convenciones()
 finally:
     docker("rm", "-f", CONTENEDOR, ok=False)
     print(f"\nContenedor {CONTENEDOR} borrado.")

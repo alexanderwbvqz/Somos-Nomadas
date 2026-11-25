@@ -89,9 +89,10 @@ def pendientes(locales: list[Migracion], aplicadas: dict[str, str]) -> list[Migr
 PREPARAR = """
 create schema if not exists nomadas;
 create table if not exists nomadas.migraciones_aplicadas (
-  nombre text primary key,
+  nombre text not null,
   suma text not null,
-  aplicada_en timestamptz not null default now()
+  aplicada_en timestamptz not null default now(),
+  constraint migraciones_aplicadas_pkey primary key (nombre)
 );
 revoke all on schema nomadas from public;
 revoke all on table nomadas.migraciones_aplicadas from public;

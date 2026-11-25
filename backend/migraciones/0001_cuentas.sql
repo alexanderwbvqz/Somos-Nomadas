@@ -3,17 +3,19 @@
 -- Spec: contrato/autenticacion.md, sección 3.
 
 create table cuentas (
-  id uuid primary key,
-  -- El backend siempre lo guarda recortado y en minúsculas; la base lo exige para que el único no se pueda esquivar
-  correo text not null unique
-    check (correo = lower(btrim(correo)) and char_length(correo) between 3 and 120),
+  id uuid not null,
+  correo text not null,
   -- argon2id. La clave nunca se guarda tal cual
   clave_hash text not null,
   correo_confirmado boolean not null default false,
   -- Prueba del consentimiento
   politica_aceptada_en timestamptz not null,
   politica_version text not null,
-  creada_en timestamptz not null
+  creada_en timestamptz not null,
+  constraint cuentas_pkey primary key (id),
+  constraint cuentas_correo_key unique (correo),
+  -- El backend siempre lo guarda recortado y en minúsculas; la base lo exige para que el único no se pueda esquivar
+  constraint cuentas_correo_check check (correo = lower(btrim(correo)) and char_length(correo) between 3 and 120)
 );
 
 -- RLS activado y SIN políticas: nadie entra salvo el backend, con la clave de servidor (service_role se salta RLS)
