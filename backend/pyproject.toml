@@ -105,6 +105,12 @@ ignore_imports = [
 ]
 
 [[tool.importlinter.contracts]]
+name = "api no usa directamente la base de datos ni la criptografía"
+type = "forbidden"
+source_modules = ["modules.acceso.api"]
+forbidden_modules = ["supabase", "postgrest", "jwt", "argon2"]
+
+[[tool.importlinter.contracts]]
 name = "shared no importa de ningún módulo ni de composition"
 type = "forbidden"
 source_modules = ["shared"]
