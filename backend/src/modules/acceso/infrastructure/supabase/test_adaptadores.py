@@ -54,6 +54,7 @@ def fila_sesion(s: Sesion) -> dict[str, object]:
         "expira_en": s.expira_en.isoformat(),
         "creada_en": s.creada_en.isoformat(),
         "revocada_en": None,
+        "motivo_revocacion": None,
     }
 
 
@@ -203,12 +204,22 @@ def test_revocar_y_revocar_todas_llaman_a_sus_funciones() -> None:
     sesion_id, cuenta_id = uuid4(), uuid4()
 
     repositorio.revocar(sesion_id)
-    repositorio.revocar_todas_de_cuenta(cuenta_id)
+    repositorio.revocar_todas_de_cuenta(cuenta_id, "robo")
 
     assert [(c.tipo, c.nombre, c.parametros) for c in falso.llamadas] == [
         ("rpc", "revocar_sesion", {"p_sesion_id": str(sesion_id)}),
-        ("rpc", "revocar_sesiones_de_cuenta", {"p_cuenta_id": str(cuenta_id)}),
+        ("rpc", "revocar_sesiones_de_cuenta", {"p_cuenta_id": str(cuenta_id), "p_motivo": "robo"}),
     ]
+
+
+@pytest.mark.parametrize("motivo", ["rotada", "cerrada", "robo"])
+def test_revocar_todas_envia_el_motivo_que_se_le_da(motivo: str) -> None:
+    falso = ClienteFalso()
+    cuenta_id = uuid4()
+
+    SupabaseSesionRepository(como_cliente(falso)).revocar_todas_de_cuenta(cuenta_id, motivo)  # type: ignore[arg-type]
+
+    assert falso.llamadas[0].parametros == {"p_cuenta_id": str(cuenta_id), "p_motivo": motivo}
 
 
 def test_los_errores_de_la_base_en_sesiones_se_traducen() -> None:
@@ -219,7 +230,7 @@ def test_los_errores_de_la_base_en_sesiones_se_traducen() -> None:
         lambda: repositorio.obtener_por_token_hash("h1"),
         lambda: repositorio.rotar(sesion(), sesion()),
         lambda: repositorio.revocar(uuid4()),
-        lambda: repositorio.revocar_todas_de_cuenta(uuid4()),
+        lambda: repositorio.revocar_todas_de_cuenta(uuid4(), "robo"),
     ):
         with pytest.raises(ErrorDeBaseDeDatos):
             accion()

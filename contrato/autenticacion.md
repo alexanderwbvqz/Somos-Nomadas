@@ -37,7 +37,7 @@ Tabla `cuentas` (migración `0001_cuentas.sql`, que **no se ejecuta sobre la bas
 | `politica_version` | `text` | Qué versión de la política se aceptó |
 | `creada_en` | `timestamptz` | |
 
-Tabla `sesiones` (token de renovación, ver sección 7): `id`, `cuenta_id`, `token_hash` (el token nunca se guarda tal cual), `expira_en`, `revocada_en`, `creada_en`.
+Tabla `sesiones` (token de renovación, ver sección 7): `id`, `cuenta_id`, `token_hash` (el token nunca se guarda tal cual), `expira_en`, `revocada_en`, `motivo_revocacion` (`rotada`, `cerrada` o `robo`; lleva valor si y solo si la sesión está revocada) y `creada_en`.
 
 Tabla `intentos_acceso` (límite de intentos, ver sección 8): `id`, `accion` (`registro` o `sesion`), `huella` (HMAC de la IP o del correo con un secreto del servidor; nunca el valor en claro) y `ocurrido_en`. La función SQL `consumir_intento` borra lo caducado **solo de la clave que consulta**: falta una limpieza periódica del resto (ver «Pendientes» en `backend/CLAUDE.md`).
 
@@ -100,7 +100,7 @@ Sin token, o con un token inválido o caducado: `401 no_autenticado`, con la cab
 Petición: `{ "token_renovacion": "…" }`. Respuesta `200`: `{ "token_acceso": "…", "expira_en": 900, "token_renovacion": "…" }` (un par nuevo; el token anterior queda revocado).
 
 - Token desconocido, caducado o revocado: `401 no_autenticado`.
-- Un token ya usado se toma por robo: se cierran **todas** las sesiones de esa cuenta.
+- Un token ya revocado se rechaza con `401`. Si se tomó por robo, se cierran además **todas** las sesiones de la cuenta; los casos están en la sección 7.
 
 ### `POST /acceso/cierre`
 
@@ -140,7 +140,22 @@ Los mensajes que ve la persona **no** vienen de la API: son del frontend (`langu
 **Duración y renovación (decidido).**
 - Token de acceso de **15 minutos**.
 - Token de renovación **opaco** (no JWT), de 30 días, guardado **con hash** en la tabla `sesiones` y **rotado** en cada uso: al renovar, el anterior queda revocado. Permite cerrar sesión de verdad y revocar si se roba.
-- Si se presenta un token de renovación ya usado o revocado, se revocan **todas** las sesiones de esa cuenta (señal de robo).
+- **Qué pasa si llega un token de renovación que ya estaba revocado** depende de por qué lo estaba (`motivo_revocacion`):
+
+  | Motivo | Cuándo se presenta | Resultado |
+  |---|---|---|
+  | `rotada` | pasados **10 segundos** de la rotación | `401` y se toma por **robo**: se cierran todas las sesiones de la cuenta que sigan abiertas (motivo `robo`) |
+  | `rotada` | dentro de esos 10 segundos | `401` y **nada más**: es una carrera legítima (dos peticiones casi a la vez con el mismo token, por ejemplo dos de Next, o un reintento de red) |
+  | `cerrada` | cuando sea | `401` y nada más: la persona cerró esa sesión a propósito; una pestaña vieja que reenvía el token no desconecta los demás dispositivos |
+  | `robo` | cuando sea | `401` y nada más |
+
+  Si dos peticiones simultáneas compiten por rotar el mismo token, gana una y la otra recibe `401` sin cerrar nada.
+  Un token caducado también solo se rechaza.
+- **Riesgo que se acepta con la tolerancia de 10 segundos:** dentro de ese margen, reusar un token robado ya no cierra
+  todas las sesiones. El atacante tampoco obtiene sesión (el token está revocado, recibe `401`), salvo que gane una
+  carrera exacta con la víctima; entonces la víctima recibe `401` y debe volver a iniciar sesión. Es el equilibrio
+  habitual de esta técnica. La tolerancia es la constante `TOLERANCIA_REUSO_SEGUNDOS` del dominio.
+- Una revocación conserva su fecha y su motivo originales: revocar otra vez no los cambia.
 - `POST /acceso/renovar` recibe el token de renovación y devuelve un par nuevo. `POST /acceso/cierre` revoca la sesión actual.
 
 **Cookies en Next** (el navegador nunca ve los tokens):
@@ -201,7 +216,8 @@ Decididas: renovación con dos tokens, contador de intentos en la base, correo c
 
 Librerías aprobadas e instaladas: `fastapi`, `uvicorn`, `pydantic`, `pydantic-settings`, `argon2-cffi`, `pyjwt`, `supabase`, y para desarrollo `pytest`, `httpx`, `ruff`, `mypy`, `import-linter`.
 
+Resuelta tras la revisión de código: el reúso de un token revocado (carreras entre dos `/renovar`, o una pestaña vieja tras cerrar sesión) ya no desconecta todos los dispositivos; ver la sección 7 y la migración `0004`.
+
 Pendientes de decidir (salieron de la revisión de código de la rama):
-1. **Reúso de un token de renovación cerrado.** Hoy un token revocado se toma por robo y cierra **todas** las sesiones, pero «cerrada por la persona» y «rotada» se ven igual. Así, una pestaña vieja que reenvía el token de una sesión recién cerrada, o dos `/renovar` simultáneos con el mismo token (dos peticiones de Next a la vez), desconectan todos los dispositivos. Opciones: un margen de gracia de unos segundos tras la rotación, y/o guardar el motivo de la revocación (`rotada`, `cerrada`) para que solo el reúso de una `rotada` cuente como robo.
-2. **Bloqueo de una cuenta por un tercero.** El límite por correo cuenta todos los intentos antes de comprobar la clave: cinco intentos con basura con el correo de otra persona la dejan 15 minutos sin poder entrar, y se puede repetir. Opciones: contar solo los fallos, o bloqueo progresivo, o que los aciertos no consuman cupo.
-3. **Recalcular el hash al iniciar sesión** cuando cambien los parámetros de argon2 (`check_needs_rehash`); hoy las cuentas viejas conservan los parámetros con los que se crearon.
+1. **Bloqueo de una cuenta por un tercero.** El límite por correo cuenta todos los intentos antes de comprobar la clave: cinco intentos con basura con el correo de otra persona la dejan 15 minutos sin poder entrar, y se puede repetir. Opciones: contar solo los fallos, o bloqueo progresivo, o que los aciertos no consuman cupo.
+2. **Recalcular el hash al iniciar sesión** cuando cambien los parámetros de argon2 (`check_needs_rehash`); hoy las cuentas viejas conservan los parámetros con los que se crearon.

@@ -4,6 +4,7 @@ from modules.acceso.api.conftest import CLAVE, Entorno, Fabrica
 from modules.acceso.application.registrar_cuenta import RegistrarCuenta
 from modules.acceso.domain.cuenta import DatosRegistro
 from modules.acceso.domain.intentos import REGISTRO_POR_ORIGEN, SESION_POR_CORREO
+from modules.acceso.domain.sesion import TOLERANCIA_REUSO_SEGUNDOS
 
 
 def registro(**cambios: object) -> dict[str, object]:
@@ -278,6 +279,7 @@ def test_renovar_dos_veces_el_mismo_token_responde_401_y_cierra_las_sesiones(
     entorno.crear_cuenta()
     sesion = entrar(cliente)
     primera = cliente.post("/acceso/renovar", json={"token_renovacion": sesion["token_renovacion"]})
+    entorno.reloj.avanzar(seconds=TOLERANCIA_REUSO_SEGUNDOS + 1)  # pasada la tolerancia, ya no es una carrera
 
     segunda = cliente.post("/acceso/renovar", json={"token_renovacion": sesion["token_renovacion"]})
 
@@ -285,6 +287,21 @@ def test_renovar_dos_veces_el_mismo_token_responde_401_y_cierra_las_sesiones(
     assert segunda.json() == {"codigo": "no_autenticado"}
     tercera = cliente.post("/acceso/renovar", json={"token_renovacion": primera.json()["token_renovacion"]})
     assert tercera.status_code == 401
+
+
+def test_reusar_un_token_justo_despues_de_rotarlo_responde_401_pero_no_cierra_la_sesion(
+    cliente: TestClient, entorno: Entorno
+) -> None:
+    # Dos peticiones casi a la vez con el mismo token: la perdedora recibe 401 y la ganadora conserva su sesión
+    entorno.crear_cuenta()
+    sesion = entrar(cliente)
+    ganadora = cliente.post("/acceso/renovar", json={"token_renovacion": sesion["token_renovacion"]})
+
+    perdedora = cliente.post("/acceso/renovar", json={"token_renovacion": sesion["token_renovacion"]})
+
+    assert perdedora.status_code == 401
+    seguimiento = cliente.post("/acceso/renovar", json={"token_renovacion": ganadora.json()["token_renovacion"]})
+    assert seguimiento.status_code == 200
 
 
 def test_renovar_con_un_token_desconocido_responde_401(cliente: TestClient) -> None:

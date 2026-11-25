@@ -1,7 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-from modules.acceso.domain.sesion import Sesion
+from modules.acceso.domain.sesion import TOLERANCIA_REUSO_SEGUNDOS, Sesion
 
 AHORA = datetime(2026, 11, 24, 12, 0, tzinfo=UTC)
 
@@ -30,3 +30,11 @@ def test_una_sesion_caducada_no_esta_vigente_ni_en_el_instante_exacto() -> None:
     assert sesion().esta_vigente(caduca - timedelta(seconds=1))
     assert not sesion().esta_vigente(caduca)
     assert not sesion().esta_vigente(caduca + timedelta(seconds=1))
+
+
+def test_una_sesion_nueva_no_tiene_motivo_de_revocacion() -> None:
+    assert sesion().motivo_revocacion is None
+
+
+def test_la_tolerancia_para_reusar_un_token_rotado_es_de_10_segundos() -> None:
+    assert TOLERANCIA_REUSO_SEGUNDOS == 10

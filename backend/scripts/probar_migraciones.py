@@ -34,7 +34,9 @@ def docker(*args: str, entrada: str | None = None, ok: bool = True) -> subproces
     return r
 
 
-def psql(sql: str, *, rol: str | None = None, parar: bool = False) -> subprocess.CompletedProcess[str]:
+def psql(
+    sql: str, *, rol: str | None = None, parar: bool = False, base: str = "nomadas"
+) -> subprocess.CompletedProcess[str]:
     """Ejecuta SQL por stdin; devuelve stdout/stderr. `rol` ejecuta como ese rol (set role)."""
     prefijo = f"set role {rol};\n" if rol else ""
     banderas = ["-v", "ON_ERROR_STOP=1"] if parar else []
@@ -46,7 +48,7 @@ def psql(sql: str, *, rol: str | None = None, parar: bool = False) -> subprocess
         "-U",
         "postgres",
         "-d",
-        "nomadas",
+        base,
         "-q",
         "-tA",
         *banderas,
@@ -57,8 +59,8 @@ def psql(sql: str, *, rol: str | None = None, parar: bool = False) -> subprocess
     )
 
 
-def valor(sql: str, *, rol: str | None = None) -> str:
-    r = psql(sql, rol=rol)
+def valor(sql: str, *, rol: str | None = None, base: str = "nomadas") -> str:
+    r = psql(sql, rol=rol, base=base)
     return r.stdout.strip()
 
 
@@ -309,10 +311,60 @@ def principal() -> None:
         "revocar es idempotente: no cambia la fecha de una ya revocada",
         valor("select revocada_en from sesiones where token_hash='h1';") == antes,
     )
-    psql(f"select revocar_sesiones_de_cuenta('{uno}');", rol="service_role")
+    comprobar(
+        "revocar no pisa el motivo de una ya rotada: sigue siendo rotada",
+        valor("select motivo_revocacion from sesiones where token_hash='h1';") == "rotada",
+    )
+    comprobar(
+        "al rotar, la anterior queda con motivo rotada y la nueva sin motivo",
+        valor(
+            "select (select motivo_revocacion from sesiones where token_hash='h1') || ',' || "
+            "coalesce((select motivo_revocacion from sesiones where token_hash='h2'), '-');"
+        )
+        == "rotada,-",
+    )
+    cerrada_id, abierta_id = "aaaaaaaa-0000-4000-8000-0000000000b1", "aaaaaaaa-0000-4000-8000-0000000000b2"
+    psql(insertar(cerrada_id, "h10"), parar=True)
+    psql(f"select revocar_sesion('{cerrada_id}');", rol="service_role")
+    comprobar(
+        "revocar_sesion deja el motivo cerrada",
+        valor("select motivo_revocacion from sesiones where token_hash='h10';") == "cerrada",
+    )
+    psql(insertar(abierta_id, "h11"), parar=True)
+    comprobar(
+        "un motivo que no existe se rechaza (restricción)",
+        "check" in psql(f"select revocar_sesiones_de_cuenta('{uno}', 'otro');", rol="service_role").stderr.lower(),
+    )
+    comprobar(
+        "y esa llamada fallida no revocó nada",
+        valor("select count(*) from sesiones where token_hash='h11' and revocada_en is null;") == "1",
+    )
+    psql(f"select revocar_sesion('{abierta_id}');", rol="service_role")
+    comprobar(
+        "una sesión no puede tener motivo sin estar revocada",
+        "check" in psql("update sesiones set revocada_en = null where token_hash='h1';").stderr.lower(),
+    )
+    comprobar(
+        "ni estar revocada sin motivo",
+        "check" in psql("update sesiones set motivo_revocacion = null where token_hash='h1';").stderr.lower(),
+    )
+    psql(insertar("aaaaaaaa-0000-4000-8000-0000000000b3", "h12"), parar=True)
+    psql(f"select revocar_sesiones_de_cuenta('{uno}', 'robo');", rol="service_role")
     comprobar(
         "revocar_sesiones_de_cuenta revoca todas las de la cuenta",
         valor(f"select count(*) from sesiones where cuenta_id='{uno}' and revocada_en is null;") == "0",
+    )
+    comprobar(
+        "las que seguían abiertas quedan con motivo robo y las ya revocadas conservan el suyo",
+        valor(
+            f"select string_agg(token_hash || ':' || motivo_revocacion, ',' order by token_hash) "
+            f"from sesiones where cuenta_id='{uno}';"
+        )
+        == "h1:rotada,h10:cerrada,h11:cerrada,h12:robo,h2:robo,h7:rotada,h8:robo",
+        valor(
+            f"select string_agg(token_hash || ':' || motivo_revocacion, ',' order by token_hash) "
+            f"from sesiones where cuenta_id='{uno}';"
+        ),
     )
     psql(f"delete from cuentas where id='{uno}';", parar=True)
     comprobar(
@@ -372,6 +424,105 @@ def principal() -> None:
         "y quedan registrados exactamente 3",
         valor("select count(*) from intentos_acceso where huella='carrera';") == "3",
     )
+
+
+BASE_ANTIGUA = "nomadas_antigua"
+FUNCIONES = (
+    "'crear_cuenta','obtener_cuenta_por_correo','rotar_sesion','revocar_sesion',"
+    "'revocar_sesiones_de_cuenta','consumir_intento'"
+)
+
+
+def actualizacion() -> None:
+    """Una base que ya tiene las migraciones 1 a 3 y datos recibe la 4: lo que pasaría en un proyecto real."""
+    print("\n[7] Actualización: una base con las migraciones 1 a 3 y datos recibe la 4")
+    nueva = [m for m in MIGRACIONES if m.name.startswith("0004")]
+    if not nueva:
+        comprobar("existe la migración 0004", False, "no se encuentra")
+        return
+    docker("exec", CONTENEDOR, "psql", "-U", "postgres", "-c", f"create database {BASE_ANTIGUA};", ok=False)
+    for m in [m for m in MIGRACIONES if not m.name.startswith("0004")]:
+        r = psql(m.read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
+        comprobar(f"se aplica {m.name} en la base antigua", r.returncode == 0, r.stderr.strip()[:300])
+    cuenta = "cccccccc-0000-4000-8000-000000000001"
+    psql(
+        f"insert into cuentas(id,correo,clave_hash,politica_aceptada_en,politica_version,creada_en) values "
+        f"('{cuenta}','vieja@correo.com','h','2026-11-01','v1','2026-11-01');"
+        f"insert into sesiones(id,cuenta_id,token_hash,expira_en,creada_en,revocada_en) values "
+        f"('cccccccc-0000-4000-8000-0000000000a1','{cuenta}','abierta','2026-12-01','2026-11-01',null),"
+        f"('cccccccc-0000-4000-8000-0000000000a2','{cuenta}','revocada1','2026-12-01','2026-11-01','2026-11-02'),"
+        f"('cccccccc-0000-4000-8000-0000000000a3','{cuenta}','revocada2','2026-12-01','2026-11-01','2026-11-03');",
+        parar=True,
+        base=BASE_ANTIGUA,
+    )
+    r = psql(nueva[0].read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
+    comprobar(f"se aplica {nueva[0].name} sobre esos datos", r.returncode == 0, r.stderr.strip()[:300])
+
+    def v(sql: str) -> str:
+        return valor(sql, base=BASE_ANTIGUA)
+
+    comprobar(
+        "las sesiones ya revocadas quedan con motivo cerrada (no cuentan como robo)",
+        v(
+            "select string_agg(token_hash || ':' || motivo_revocacion, ',' order by token_hash) from sesiones "
+            "where revocada_en is not null;"
+        )
+        == "revocada1:cerrada,revocada2:cerrada",
+    )
+    comprobar(
+        "la abierta sigue sin motivo",
+        v("select motivo_revocacion is null from sesiones where token_hash='abierta';") == "t",
+    )
+    comprobar(
+        "solo queda la función revocar_sesiones_de_cuenta con motivo (la antigua se eliminó)",
+        v(
+            "select string_agg(pg_get_function_identity_arguments(oid), ' | ') from pg_proc "
+            "where proname = 'revocar_sesiones_de_cuenta';"
+        )
+        == "p_cuenta_id uuid, p_motivo text",
+    )
+    comprobar(
+        "anon, authenticated y PUBLIC siguen sin poder ejecutar ninguna función",
+        v(
+            f"select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace "
+            f"and p.proname in ({FUNCIONES}) "
+            "and (has_function_privilege('anon', p.oid, 'execute') "
+            "or has_function_privilege('authenticated', p.oid, 'execute') "
+            "or exists (select 1 from aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a "
+            "where a.grantee = 0 and a.privilege_type = 'EXECUTE'));"
+        )
+        == "0",
+    )
+    comprobar(
+        "service_role puede ejecutar las 6",
+        v(
+            f"select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace "
+            f"and p.proname in ({FUNCIONES}) "
+            "and has_function_privilege('service_role', p.oid, 'execute');"
+        )
+        == "6",
+    )
+    comprobar(
+        "las 3 tablas siguen con RLS y sin políticas",
+        v(
+            "select count(*) from pg_class where relnamespace='public'::regnamespace and relname in "
+            "('cuentas','sesiones','intentos_acceso') and relrowsecurity;"
+        )
+        == "3"
+        and v("select count(*) from pg_policies;") == "0",
+    )
+    comprobar(
+        "la función rotar_sesion actualizada marca la anterior como rotada",
+        valor(
+            "select rotar_sesion('cccccccc-0000-4000-8000-0000000000a1','cccccccc-0000-4000-8000-0000000000a4',"
+            f"'{cuenta}','nueva','2026-12-24','2026-11-24');",
+            rol="service_role",
+            base=BASE_ANTIGUA,
+        )
+        == "t"
+        and v("select motivo_revocacion from sesiones where token_hash='abierta';") == "rotada",
+    )
+    convenciones(BASE_ANTIGUA)
 
 
 # Formato de un identificador: español sin tildes ni ñ, snake_case, en minúsculas
@@ -472,11 +623,12 @@ REGLAS_DE_NOMBRES: list[tuple[str, str]] = [
 ]
 
 
-def convenciones() -> None:
-    print("\n[6] Reglas de nombres (backend/CLAUDE.md, «Base de datos: nombres»)")
+def convenciones(base: str = "nomadas") -> None:
+    sufijo = "" if base == "nomadas" else " (tras actualizar)"
+    print(f"\n[6] Reglas de nombres{sufijo} (backend/CLAUDE.md, «Base de datos: nombres»)")
     for descripcion, consulta in REGLAS_DE_NOMBRES:
-        infracciones = valor(consulta)
-        comprobar(descripcion, infracciones == "", infracciones.replace("\n", ", "))
+        infracciones = valor(consulta, base=base)
+        comprobar(descripcion + sufijo, infracciones == "", infracciones.replace("\n", ", "))
 
 
 try:
@@ -484,6 +636,7 @@ try:
     # Las reglas de nombres se comprueban siempre que las migraciones se hayan aplicado, aunque falle otra cosa
     if valor("select to_regclass('public.cuentas') is not null;") == "t":
         convenciones()
+        actualizacion()
 finally:
     docker("rm", "-f", CONTENEDOR, ok=False)
     print(f"\nContenedor {CONTENEDOR} borrado.")

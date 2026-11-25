@@ -34,6 +34,7 @@ def fila_sesion(**cambios: object) -> dict[str, object]:
         "expira_en": "2026-12-24T12:00:00+00:00",
         "creada_en": "2026-11-24T12:00:00+00:00",
         "revocada_en": None,
+        "motivo_revocacion": None,
     }
     return {**base, **cambios}
 
@@ -124,11 +125,24 @@ def test_una_fila_de_sesion_se_convierte_en_la_entidad() -> None:
     )
 
 
-def test_una_sesion_revocada_conserva_cuando() -> None:
-    sesion = sesion_de_filas([fila_sesion(revocada_en="2026-11-25T08:00:00+00:00")])
+def test_una_sesion_revocada_conserva_cuando_y_por_que() -> None:
+    sesion = sesion_de_filas([fila_sesion(revocada_en="2026-11-25T08:00:00+00:00", motivo_revocacion="rotada")])
 
     assert sesion is not None
     assert sesion.revocada_en == datetime(2026, 11, 25, 8, 0, tzinfo=UTC)
+    assert sesion.motivo_revocacion == "rotada"
+
+
+@pytest.mark.parametrize("motivo", ["rotada", "cerrada", "robo"])
+def test_acepta_los_tres_motivos_de_revocacion(motivo: str) -> None:
+    sesion = sesion_de_filas([fila_sesion(revocada_en="2026-11-25T08:00:00+00:00", motivo_revocacion=motivo)])
+
+    assert sesion is not None and sesion.motivo_revocacion == motivo
+
+
+def test_un_motivo_de_revocacion_desconocido_es_un_error_de_base_de_datos() -> None:
+    with pytest.raises(ErrorDeBaseDeDatos):
+        sesion_de_filas([fila_sesion(revocada_en="2026-11-25T08:00:00+00:00", motivo_revocacion="otro")])
 
 
 def test_sin_filas_no_hay_sesion() -> None:

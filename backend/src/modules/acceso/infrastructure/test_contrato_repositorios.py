@@ -152,6 +152,7 @@ def test_rotar_revoca_la_anterior_y_guarda_la_nueva(repos: Repos) -> None:
 
     revocada = repos.sesiones.obtener_por_token_hash(anterior.token_hash)
     assert revocada is not None and revocada.revocada_en is not None
+    assert revocada.motivo_revocacion == "rotada"
     assert repos.sesiones.obtener_por_token_hash(nueva.token_hash) == nueva
 
 
@@ -182,6 +183,7 @@ def test_revocar_marca_la_sesion_y_es_idempotente(repos: Repos) -> None:
 
     revocada = repos.sesiones.obtener_por_token_hash(s.token_hash)
     assert revocada is not None and revocada.revocada_en is not None
+    assert revocada.motivo_revocacion == "cerrada"
 
 
 def test_revocar_todas_de_una_cuenta_no_toca_las_de_otra(repos: Repos) -> None:
@@ -190,14 +192,14 @@ def test_revocar_todas_de_una_cuenta_no_toca_las_de_otra(repos: Repos) -> None:
     repos.sesiones.guardar(suya)
     repos.sesiones.guardar(de_otra)
 
-    repos.sesiones.revocar_todas_de_cuenta(mia.id)
+    repos.sesiones.revocar_todas_de_cuenta(mia.id, "robo")
 
     revocada, intacta = (
         repos.sesiones.obtener_por_token_hash(suya.token_hash),
         repos.sesiones.obtener_por_token_hash(de_otra.token_hash),
     )
-    assert revocada is not None and revocada.revocada_en is not None
-    assert intacta is not None and intacta.revocada_en is None
+    assert revocada is not None and revocada.revocada_en is not None and revocada.motivo_revocacion == "robo"
+    assert intacta is not None and intacta.revocada_en is None and intacta.motivo_revocacion is None
 
 
 # --- Límite de intentos ---
@@ -228,3 +230,19 @@ def test_el_limitador_separa_por_clave_y_por_accion(repos: Repos) -> None:
     assert repos.limitador.consumir("sesion", otra, 3, 60, AHORA) is None
     assert repos.limitador.consumir("registro", clave, 3, 60, AHORA) is None
     assert repos.limitador.consumir("sesion", clave, 3, 60, AHORA) is not None
+
+
+def test_un_motivo_ya_registrado_no_se_pisa_al_revocar_otra_vez(repos: Repos) -> None:
+    anterior = sesion_de(con_cuenta(repos).id)
+    repos.sesiones.guardar(anterior)
+    assert repos.sesiones.rotar(anterior, sesion_de(anterior.cuenta_id))
+    antes = repos.sesiones.obtener_por_token_hash(anterior.token_hash)
+    assert antes is not None
+
+    repos.sesiones.revocar(anterior.id)
+    repos.sesiones.revocar_todas_de_cuenta(anterior.cuenta_id, "robo")
+
+    despues = repos.sesiones.obtener_por_token_hash(anterior.token_hash)
+    assert despues is not None
+    # Sigue siendo «rotada», con la fecha original: de lo contrario no se podría distinguir un robo de una carrera
+    assert despues.motivo_revocacion == "rotada" and despues.revocada_en == antes.revocada_en

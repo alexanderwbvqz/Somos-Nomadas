@@ -1,6 +1,6 @@
 """Fila de la tabla `sesiones` ↔ entidad `Sesion`. Es el único sitio que conoce los nombres de columna."""
 
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, ValidationError
@@ -9,7 +9,7 @@ from modules.acceso.domain.sesion import Sesion
 from modules.acceso.infrastructure.mappers.filas import lista_de_filas
 from shared.supabase.errores import ErrorDeBaseDeDatos
 
-COLUMNAS_SESION = ("id", "cuenta_id", "token_hash", "expira_en", "creada_en", "revocada_en")
+COLUMNAS_SESION = ("id", "cuenta_id", "token_hash", "expira_en", "creada_en", "revocada_en", "motivo_revocacion")
 
 
 class _FilaSesion(BaseModel):
@@ -21,6 +21,7 @@ class _FilaSesion(BaseModel):
     expira_en: AwareDatetime
     creada_en: AwareDatetime
     revocada_en: AwareDatetime | None
+    motivo_revocacion: Literal["rotada", "cerrada", "robo"] | None
 
 
 def sesion_de_filas(datos: object) -> Sesion | None:
@@ -39,6 +40,7 @@ def sesion_de_filas(datos: object) -> Sesion | None:
         expira_en=leida.expira_en,
         creada_en=leida.creada_en,
         revocada_en=leida.revocada_en,
+        motivo_revocacion=leida.motivo_revocacion,
     )
 
 

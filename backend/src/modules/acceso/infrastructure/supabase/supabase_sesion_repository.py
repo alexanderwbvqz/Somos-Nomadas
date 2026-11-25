@@ -2,7 +2,7 @@ from uuid import UUID
 
 from supabase import Client
 
-from modules.acceso.domain.sesion import Sesion
+from modules.acceso.domain.sesion import MotivoRevocacion, Sesion
 from modules.acceso.infrastructure.mappers.sesion_mapper import (
     COLUMNAS_SESION,
     fila_de_sesion,
@@ -41,6 +41,7 @@ class SupabaseSesionRepository:
         with traducir_errores():
             self._cliente.rpc("revocar_sesion", {"p_sesion_id": str(sesion_id)}).execute()
 
-    def revocar_todas_de_cuenta(self, cuenta_id: UUID) -> None:
+    def revocar_todas_de_cuenta(self, cuenta_id: UUID, motivo: MotivoRevocacion) -> None:
         with traducir_errores():
-            self._cliente.rpc("revocar_sesiones_de_cuenta", {"p_cuenta_id": str(cuenta_id)}).execute()
+            parametros = {"p_cuenta_id": str(cuenta_id), "p_motivo": motivo}
+            self._cliente.rpc("revocar_sesiones_de_cuenta", parametros).execute()
