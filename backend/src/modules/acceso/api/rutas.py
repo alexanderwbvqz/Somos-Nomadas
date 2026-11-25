@@ -24,6 +24,13 @@ _LIMITE: dict[int | str, dict[str, Any]] = {429: {"model": ErrorSalida, "descrip
 _NO_AUTENTICADO: dict[int | str, dict[str, Any]] = {401: {"model": ErrorSalida, "description": "No autenticado"}}
 
 
+def _texto_de_la_trampa(valor: object) -> str:
+    """Lo que no sea texto (un número, una lista...) lo manda un robot: cuenta como relleno. Nulo o vacío, no."""
+    if valor is None or valor == "":
+        return ""
+    return valor if isinstance(valor, str) else "no-es-texto"
+
+
 def _origen(peticion: Request) -> str:
     """La IP del cliente, para el límite de intentos.
 
@@ -63,7 +70,7 @@ def crear_router(
                 correo=cuerpo.correo,
                 clave=cuerpo.clave,
                 acepta_politica=cuerpo.acepta_politica,
-                sitio_secundario=cuerpo.sitio_secundario,
+                sitio_secundario=_texto_de_la_trampa(cuerpo.sitio_secundario),
             ),
             _origen(peticion),
         )

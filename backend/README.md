@@ -12,7 +12,7 @@ Hace falta [uv](https://docs.astral.sh/uv/).
 uv sync
 ```
 
-Copia `.env.example` a `.env` y rellena los valores (el `.env` nunca se sube). Para generar un secreto largo y aleatorio:
+Copia `.env.example` a `.env` y rellena los valores (el `.env` nunca se sube). Ojo: `ENTORNO` vale `produccion` si no se indica, así que en local hay que poner `ENTORNO=desarrollo`. Para generar un secreto largo y aleatorio:
 
 ```
 uv run python -c "import secrets; print(secrets.token_urlsafe(48))"

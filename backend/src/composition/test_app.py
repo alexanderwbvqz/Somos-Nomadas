@@ -36,6 +36,7 @@ def entorno_limpio(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def config(**cambios: Any) -> Configuracion:
     base: dict[str, Any] = {
+        "entorno": "desarrollo",
         "almacen_de_datos": "memoria",
         "jwt_secreto": JWT,
         "exigir_correo_confirmado": False,
@@ -185,7 +186,7 @@ def test_en_memoria_nunca_se_crea_el_cliente_de_supabase(monkeypatch: pytest.Mon
 
 def test_con_supabase_se_crea_el_cliente_una_sola_vez_con_la_url_y_la_llave(monkeypatch: pytest.MonkeyPatch) -> None:
     llamadas: list[tuple[str, str]] = []
-    falso = ClienteFalso({"cuentas": [], "consumir_intento": None})
+    falso = ClienteFalso({"obtener_cuenta_por_correo": [], "consumir_intento": None})
 
     def crear(url: str, llave: str, **_k: object) -> Client:
         llamadas.append((url, llave))
@@ -208,7 +209,7 @@ def test_con_supabase_se_crea_el_cliente_una_sola_vez_con_la_url_y_la_llave(monk
     assert [(c.tipo, c.nombre) for c in falso.llamadas] == [
         ("rpc", "consumir_intento"),
         ("rpc", "consumir_intento"),
-        ("select", "cuentas"),
+        ("rpc", "obtener_cuenta_por_correo"),
     ]
 
 
@@ -217,6 +218,7 @@ def test_con_supabase_se_crea_el_cliente_una_sola_vez_con_la_url_y_la_llave(monk
 
 def test_sin_configuracion_explicita_la_lee_del_entorno(monkeypatch: pytest.MonkeyPatch, tmp_path: Any) -> None:
     monkeypatch.chdir(tmp_path)  # sin .env en la carpeta actual
+    monkeypatch.setenv("ENTORNO", "desarrollo")
     monkeypatch.setenv("ALMACEN_DE_DATOS", "memoria")
     monkeypatch.setenv("JWT_SECRETO", JWT)
     monkeypatch.setenv("EXIGIR_CORREO_CONFIRMADO", "false")

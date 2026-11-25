@@ -46,3 +46,14 @@ def test_el_formato_no_incluye_la_ruta_de_la_peticion_ni_argumentos_sueltos(capl
 
     linea = formato.format(registro)
     assert linea.endswith("nomadas Error RuntimeError")
+
+
+def test_httpx_y_httpcore_no_escriben_las_peticiones_ni_en_modo_debug() -> None:
+    # httpx registra en INFO la URL completa de cada petición: la de Supabase llevaría ids y tokens en la ruta
+    for nombre in ("httpx", "httpcore"):
+        logging.getLogger(nombre).setLevel(logging.NOTSET)
+
+    configurar_logging("DEBUG")
+
+    for nombre in ("httpx", "httpcore"):
+        assert logging.getLogger(nombre).getEffectiveLevel() >= logging.WARNING, nombre

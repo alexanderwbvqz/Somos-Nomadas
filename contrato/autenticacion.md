@@ -1,6 +1,6 @@
 # Autenticación: correo y contraseña
 
-Estado: **decisiones aprobadas por el dueño** (en cada caso, la opción más segura: renovación con dos tokens, contador de intentos en la base y correo confirmado obligatorio). Nada está implementado todavía. Quedan por aprobar las librerías (sección 13).
+Estado: **decisiones aprobadas por el dueño** (en cada caso, la opción más segura: renovación con dos tokens, contador de intentos en la base y correo confirmado obligatorio). **Implementado en `backend/`** (módulo `acceso`, rama `feat/backend-acceso`): dominio, casos de uso, API, adaptadores de Supabase y la composición. **Falta verificar el SQL de `migraciones/` contra un Postgres real** (ver «Pendientes» en `backend/CLAUDE.md`) y conectar el frontend. Las librerías están aprobadas (sección 13).
 
 Es el contrato entre `frontend/` y `backend/` para entrar con correo y contraseña. Google, la confirmación del correo y recuperar la clave quedan para después (ver «Fuera de alcance»).
 
@@ -39,7 +39,7 @@ Tabla `cuentas` (migración `0001_cuentas.sql`, que **no se ejecuta sobre la bas
 
 Tabla `sesiones` (token de renovación, ver sección 7): `id`, `cuenta_id`, `token_hash` (el token nunca se guarda tal cual), `expira_en`, `revocada_en`, `creada_en`.
 
-Tabla `intentos_acceso` (límite de intentos, ver sección 8): `huella` (hash de la IP o del correo; nunca el valor en claro), `accion` (`registro` o `sesion`), `cuenta`, `ventana_desde`. Se limpia lo caducado.
+Tabla `intentos_acceso` (límite de intentos, ver sección 8): `id`, `accion` (`registro` o `sesion`), `huella` (HMAC de la IP o del correo con un secreto del servidor; nunca el valor en claro) y `ocurrido_en`. La función SQL `consumir_intento` borra lo caducado **solo de la clave que consulta**: falta una limpieza periódica del resto (ver «Pendientes» en `backend/CLAUDE.md`).
 
 Todas las tablas llevan RLS activado y sin políticas: solo el backend entra, con la clave de servidor.
 
@@ -54,7 +54,7 @@ Son las del dominio del frontend (`modules/acceso/domain/cuenta.ts`); el backend
   - No se intenta una validación más estricta: quien prueba que el correo existe es el enlace de confirmación.
 - `clave`: de 8 a 128 caracteres, con al menos una **minúscula**, una **mayúscula**, un **número** y un **carácter especial**. **No se recorta**: los espacios cuentan. «Carácter especial» es cualquiera que no sea letra ni número (las letras con tilde y la `ñ` cuentan como letras). Este requisito se aplica solo al **registro**: el inicio de sesión no vuelve a exigirlo, para no bloquear cuentas existentes si las reglas cambian.
 - `acepta_politica`: debe ser `true` en el registro.
-- `sitio_secundario`: campo trampa (honeypot). Una persona no lo ve ni lo rellena; si trae algo, es un robot.
+- `sitio_secundario`: campo trampa (honeypot). Una persona no lo ve ni lo rellena; si trae algo, es un robot. Acepta cualquier valor y sin tope de tamaño (un número, una lista, un texto enorme): un 422 que señalara este campo le diría al robot que es una trampa. Lo que no es texto cuenta como relleno; nulo o vacío, no.
 
 Los campos de la API van en `snake_case`. El frontend los traduce a su dominio en el mapper (zod).
 
@@ -199,5 +199,9 @@ El frontend puede seguir mostrando la pantalla «Confirma tu correo» (hoy lo ha
 
 Decididas: renovación con dos tokens, contador de intentos en la base, correo confirmado obligatorio.
 
-Pendiente:
-1. Librerías: `argon2-cffi`, `pyjwt`, `supabase`, `pydantic-settings`, y para desarrollo `pytest`, `httpx`, `ruff`, `mypy`, `import-linter`. Cada una se aprueba antes de añadirla.
+Librerías aprobadas e instaladas: `fastapi`, `uvicorn`, `pydantic`, `pydantic-settings`, `argon2-cffi`, `pyjwt`, `supabase`, y para desarrollo `pytest`, `httpx`, `ruff`, `mypy`, `import-linter`.
+
+Pendientes de decidir (salieron de la revisión de código de la rama):
+1. **Reúso de un token de renovación cerrado.** Hoy un token revocado se toma por robo y cierra **todas** las sesiones, pero «cerrada por la persona» y «rotada» se ven igual. Así, una pestaña vieja que reenvía el token de una sesión recién cerrada, o dos `/renovar` simultáneos con el mismo token (dos peticiones de Next a la vez), desconectan todos los dispositivos. Opciones: un margen de gracia de unos segundos tras la rotación, y/o guardar el motivo de la revocación (`rotada`, `cerrada`) para que solo el reúso de una `rotada` cuente como robo.
+2. **Bloqueo de una cuenta por un tercero.** El límite por correo cuenta todos los intentos antes de comprobar la clave: cinco intentos con basura con el correo de otra persona la dejan 15 minutos sin poder entrar, y se puede repetir. Opciones: contar solo los fallos, o bloqueo progresivo, o que los aciertos no consuman cupo.
+3. **Recalcular el hash al iniciar sesión** cuando cambien los parámetros de argon2 (`check_needs_rehash`); hoy las cuentas viejas conservan los parámetros con los que se crearon.

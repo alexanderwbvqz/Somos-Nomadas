@@ -4,6 +4,7 @@ Aquí solo se comprueba la forma (tipos y tamaños máximos). Las reglas de corr
 aplica una sola vez; los tamaños de aquí son holgados y solo impiden que lleguen cuerpos enormes.
 """
 
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -18,8 +19,9 @@ class RegistroEntrada(_Entrada):
     correo: str = Field(max_length=500)
     clave: str = Field(max_length=1000)
     acepta_politica: bool
-    # Campo trampa (honeypot): una persona no lo ve; si trae algo, es un robot
-    sitio_secundario: str = Field(default="", max_length=500)
+    # Campo trampa (honeypot): una persona no lo ve; si trae algo, es un robot. Acepta cualquier valor y sin tope:
+    # un 422 que señalara este campo le diría al robot que es una trampa. Decide la ruta, no pydantic.
+    sitio_secundario: Any = ""
 
 
 class SesionEntrada(_Entrada):

@@ -51,6 +51,26 @@ def test_registro_con_el_campo_trampa_relleno_responde_202_sin_crear_nada(
     assert entorno.cuentas.cantidad() == 0
 
 
+def test_el_campo_trampa_con_valores_raros_tambien_responde_202_sin_crear_nada(
+    cliente: TestClient, entorno: Entorno
+) -> None:
+    # Un robot que manda un número, una lista o un texto enorme no debe recibir un 422 que le señale el campo
+    for valor in (12345, ["spam"], {"a": 1}, True, "x" * 5000):
+        r = cliente.post(
+            "/acceso/registro", json=registro(correo=f"{type(valor).__name__}@correo.com", sitio_secundario=valor)
+        )
+        assert r.status_code == 202, valor
+        assert r.content == b""
+
+    assert entorno.cuentas.cantidad() == 0
+
+
+def test_el_campo_trampa_nulo_o_vacio_no_es_un_robot(cliente: TestClient, entorno: Entorno) -> None:
+    assert cliente.post("/acceso/registro", json=registro(sitio_secundario=None)).status_code == 202
+
+    assert entorno.cuentas.cantidad() == 1
+
+
 def test_registro_sin_el_campo_trampa_tambien_vale(cliente: TestClient) -> None:
     cuerpo = registro()
     del cuerpo["sitio_secundario"]

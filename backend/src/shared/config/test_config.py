@@ -60,8 +60,22 @@ def test_sin_indicar_nada_el_almacen_es_supabase_y_exige_sus_credenciales() -> N
         Configuracion(_env_file=None, jwt_secreto=JWT)  # type: ignore[call-arg, arg-type]
 
 
-def test_el_entorno_por_defecto_es_desarrollo() -> None:
-    assert configurar().entorno == "desarrollo"
+def test_si_se_olvida_el_entorno_se_aplican_las_reglas_de_produccion() -> None:
+    # Fallar cerrado: un despliegue sin la variable ENTORNO no puede quedar con la documentación pública ni con http
+    sin_entorno: dict[str, Any] = {
+        "jwt_secreto": JWT,
+        "almacen_de_datos": "supabase",
+        "supabase_url": "https://a.supabase.co",
+        "supabase_service_role_key": LLAVE,
+        "huellas_secreto": HUELLAS,
+    }
+
+    c = Configuracion(_env_file=None, origenes_permitidos="https://nomadas.example", **sin_entorno)  # type: ignore[call-arg]
+    assert c.entorno == "produccion"
+    with pytest.raises(ValueError, match="ORIGENES_PERMITIDOS"):
+        Configuracion(_env_file=None, **sin_entorno)  # type: ignore[call-arg]
+    with pytest.raises(ValueError, match="memoria"):
+        Configuracion(_env_file=None, jwt_secreto=JWT, almacen_de_datos="memoria")  # type: ignore[call-arg, arg-type]
 
 
 # --- Lectura de variables de entorno ---
@@ -135,6 +149,16 @@ def test_con_supabase_se_exigen_la_url_la_llave_y_el_secreto_de_huellas() -> Non
     ]:
         with pytest.raises(ValueError, match=mensaje):
             configurar(**{**base, faltante: ""})
+
+
+def test_el_secreto_de_huellas_y_el_del_jwt_no_pueden_ser_el_mismo() -> None:
+    with pytest.raises(ValueError, match="distintos"):
+        configurar(
+            almacen_de_datos="supabase",
+            supabase_url="https://abcdefgh.supabase.co",
+            supabase_service_role_key=LLAVE,
+            huellas_secreto=JWT,
+        )
 
 
 def test_el_secreto_de_huellas_exige_32_caracteres_o_mas() -> None:

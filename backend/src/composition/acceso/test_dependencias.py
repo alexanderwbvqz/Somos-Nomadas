@@ -37,7 +37,7 @@ def entorno_limpio(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def config(**cambios: Any) -> Configuracion:
-    base: dict[str, Any] = {"almacen_de_datos": "memoria", "jwt_secreto": JWT}
+    base: dict[str, Any] = {"entorno": "desarrollo", "almacen_de_datos": "memoria", "jwt_secreto": JWT}
     return Configuracion(_env_file=None, **{**base, **cambios})  # type: ignore[call-arg]
 
 

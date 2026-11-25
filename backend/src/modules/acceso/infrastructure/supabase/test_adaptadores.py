@@ -91,33 +91,37 @@ def test_crear_con_una_respuesta_que_no_es_booleana_es_un_error(respuesta: objec
         SupabaseCuentaRepository(como_cliente(falso)).crear(cuenta())
 
 
-def test_obtener_por_correo_consulta_la_tabla_con_columnas_explicitas_y_un_limite() -> None:
+def test_obtener_por_correo_llama_a_una_funcion_sql_para_que_el_correo_no_vaya_en_la_url() -> None:
     c = cuenta()
-    falso = ClienteFalso({"cuentas": [fila_cuenta(c)]})
+    falso = ClienteFalso({"obtener_cuenta_por_correo": [fila_cuenta(c)]})
 
     assert SupabaseCuentaRepository(como_cliente(falso)).obtener_por_correo("ana@correo.com") == c
 
     (llamada,) = falso.llamadas
+    # Una consulta con .eq("correo", ...) pondría el correo en la URL (y en los logs de quien la vea)
+    assert (llamada.tipo, llamada.nombre) == ("rpc", "obtener_cuenta_por_correo")
+    assert llamada.parametros == {"p_correo": "ana@correo.com"}
+    assert llamada.filtros == []
+
+
+def test_obtener_por_id_consulta_la_tabla_con_columnas_explicitas_y_un_limite() -> None:
+    c = cuenta()
+    falso = ClienteFalso({"cuentas": [fila_cuenta(c)]})
+
+    assert SupabaseCuentaRepository(como_cliente(falso)).obtener_por_id(c.id) == c
+
+    (llamada,) = falso.llamadas
     assert (llamada.tipo, llamada.nombre) == ("select", "cuentas")
-    assert llamada.filtros == [("correo", "ana@correo.com")]
+    assert llamada.filtros == [("id", str(c.id))]
     assert llamada.limite == 1
     assert "*" not in llamada.columnas  # una columna nueva en la tabla no debe llegar sin pasar por el mapper
     assert {"id", "correo", "clave_hash", "correo_confirmado"} <= set(llamada.columnas)
 
 
 def test_obtener_por_correo_sin_resultados_devuelve_none() -> None:
-    falso = ClienteFalso({"cuentas": []})
+    falso = ClienteFalso({"obtener_cuenta_por_correo": []})
 
     assert SupabaseCuentaRepository(como_cliente(falso)).obtener_por_correo("nadie@correo.com") is None
-
-
-def test_obtener_por_id_filtra_por_id() -> None:
-    c = cuenta()
-    falso = ClienteFalso({"cuentas": [fila_cuenta(c)]})
-
-    assert SupabaseCuentaRepository(como_cliente(falso)).obtener_por_id(c.id) == c
-
-    assert falso.llamadas[0].filtros == [("id", str(c.id))]
 
 
 @pytest.mark.parametrize("error", [error_de_postgres(), httpx.ConnectError("sin red")])

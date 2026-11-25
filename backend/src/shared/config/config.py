@@ -22,7 +22,9 @@ class Configuracion(BaseSettings):
         hide_input_in_errors=True,
     )
 
-    entorno: Literal["desarrollo", "produccion"] = "desarrollo"
+    # Por defecto, producción: si en el despliegue se olvida la variable ENTORNO, se aplican las reglas estrictas
+    # (solo https, correo confirmado, sin almacén en memoria, sin documentación pública). Desarrollo se pide a mano.
+    entorno: Literal["desarrollo", "produccion"] = "produccion"
     # `memoria` solo sirve para desarrollo y pruebas: los datos se pierden al apagar. Por defecto, la base real.
     almacen_de_datos: Literal["memoria", "supabase"] = "supabase"
 
@@ -49,6 +51,10 @@ class Configuracion(BaseSettings):
     def _validar(self) -> Self:
         if len(self.jwt_secreto.get_secret_value()) < LARGO_MINIMO_SECRETO:
             raise ValueError(f"JWT_SECRETO debe tener al menos {LARGO_MINIMO_SECRETO} caracteres")
+
+        huellas = self.huellas_secreto.get_secret_value()
+        if huellas and huellas == self.jwt_secreto.get_secret_value():
+            raise ValueError("JWT_SECRETO y HUELLAS_SECRETO deben ser distintos")
 
         if "*" in self.lista_de_origenes:
             raise ValueError("ORIGENES_PERMITIDOS no admite el comodín *: hay que listar los orígenes uno por uno")

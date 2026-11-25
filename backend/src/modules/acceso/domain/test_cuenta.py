@@ -82,6 +82,15 @@ def test_el_correo_admite_120_caracteres_y_no_121() -> None:
     assert validar_registro(registro(correo=exacto + "m"))["correo"] == "correo_invalido"
 
 
+def test_la_longitud_se_mide_sobre_el_correo_ya_normalizado() -> None:
+    # «İ» (U+0130) ocupa 2 caracteres al pasar a minúsculas: 60 antes son 120 después, más de los 64 permitidos
+    assert validar_registro(registro(correo="İ" * 60 + "@correo.com"))["correo"] == "correo_invalido"
+    # Y el correo entero, que se guarda normalizado, no puede pasar de 120 aunque antes cupiera
+    largo = "İ" * 30 + "@" + "d" * 70 + ".com"
+    assert len(largo) <= LIMITES_CUENTA.correo < len(normalizar_correo(largo))
+    assert validar_registro(registro(correo=largo))["correo"] == "correo_invalido"
+
+
 def test_normalizar_correo_recorta_y_pasa_a_minusculas() -> None:
     assert normalizar_correo("  Ana@Correo.COM ") == "ana@correo.com"
 

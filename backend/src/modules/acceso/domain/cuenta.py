@@ -87,7 +87,8 @@ def _es_correo_bien_formado(correo: str) -> bool:
 
 
 def _error_de_correo(correo: str) -> CodigoErrorCuenta | None:
-    limpio = correo.strip()
+    # Se valida ya normalizado: es lo que se guarda, y pasar a minúsculas puede alargar el texto («İ» ocupa 2)
+    limpio = normalizar_correo(correo)
     if limpio == "":
         return "obligatorio"
     return None if _es_correo_bien_formado(limpio) else "correo_invalido"

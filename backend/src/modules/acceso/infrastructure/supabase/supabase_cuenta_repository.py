@@ -22,12 +22,14 @@ class SupabaseCuentaRepository:
         return respuesta.data
 
     def obtener_por_correo(self, correo: str) -> Cuenta | None:
-        return self._obtener("correo", correo)
+        # Una función SQL (POST con cuerpo) en vez de `.eq("correo", ...)`: así el correo no va en la URL
+        with traducir_errores():
+            respuesta = self._cliente.rpc("obtener_cuenta_por_correo", {"p_correo": correo}).execute()
+        return cuenta_de_filas(respuesta.data)
 
     def obtener_por_id(self, cuenta_id: UUID) -> Cuenta | None:
-        return self._obtener("id", str(cuenta_id))
-
-    def _obtener(self, columna: str, valor: str) -> Cuenta | None:
         with traducir_errores():
-            respuesta = self._cliente.table("cuentas").select(*COLUMNAS_CUENTA).eq(columna, valor).limit(1).execute()
+            respuesta = (
+                self._cliente.table("cuentas").select(*COLUMNAS_CUENTA).eq("id", str(cuenta_id)).limit(1).execute()
+            )
         return cuenta_de_filas(respuesta.data)

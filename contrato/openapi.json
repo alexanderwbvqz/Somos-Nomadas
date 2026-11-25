@@ -308,8 +308,6 @@
             "title": "Acepta Politica"
           },
           "sitio_secundario": {
-            "type": "string",
-            "maxLength": 500,
             "title": "Sitio Secundario",
             "default": ""
           }

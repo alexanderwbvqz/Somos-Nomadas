@@ -5,8 +5,9 @@ from argon2.exceptions import InvalidHashError, VerificationError
 class Argon2Hasheador:
     """Hash de claves con argon2id y los parámetros por defecto de la librería (los recomendados por OWASP).
 
-    Cada hash lleva su propia sal y sus parámetros, así que se pueden endurecer más adelante sin romper los
-    existentes. Si el servidor de Render resulta lento, se ajustan los parámetros midiendo, no a ojo.
+    Cada hash lleva su propia sal y sus parámetros: tras endurecerlos, los hashes viejos se siguen verificando.
+    Pero NO se actualizan solos (falta volver a hashear al iniciar sesión; ver «Pendientes» en backend/CLAUDE.md).
+    Si el servidor de Render resulta lento, se ajustan los parámetros midiendo, no a ojo.
     """
 
     def __init__(self, hasher: PasswordHasher | None = None) -> None:
