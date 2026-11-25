@@ -69,6 +69,7 @@ describe('limpiarRegistro', () => {
     expect(limpiarRegistro({ ...completos(), correo: '  Ana@Correo.com ', clave: ' clave con espacios ' })).toEqual({
       correo: 'ana@correo.com',
       clave: ' clave con espacios ',
+      aceptaPolitica: true,
     })
   })
 })

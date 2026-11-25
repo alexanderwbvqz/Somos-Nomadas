@@ -9,19 +9,24 @@ import { identificarCliente } from '@/shared/lib/identificarCliente'
 import { crearCuentaRepository } from '../fabricas/cuentas'
 
 // Acciones de servidor que llaman los formularios de crear cuenta e iniciar sesión.
-// Aquí solo se juntan las piezas: el adaptador (fábrica), quién envía y lo que hace el módulo con lo recibido.
+// Aquí solo se juntan las piezas: el adaptador (fábrica, que recibe la IP de quien envía para reenviarla al backend),
+// quién envía y lo que hace el módulo con lo recibido.
 export async function registrarCuentaAccion(entrada: unknown): Promise<ResultadoRegistro> {
-  return await recibirRegistro(crearCuentaRepository(), entrada, await identificarCliente())
+  const cliente = await identificarCliente()
+  return await recibirRegistro(crearCuentaRepository(cliente), entrada, cliente)
 }
 
 export async function iniciarSesionAccion(entrada: unknown): Promise<ResultadoInicioSesion> {
-  return await recibirInicioSesion(crearCuentaRepository(), entrada, await identificarCliente())
+  const cliente = await identificarCliente()
+  return await recibirInicioSesion(crearCuentaRepository(cliente), entrada, cliente)
 }
 
 export async function continuarConGoogleAccion(entrada: unknown): Promise<ResultadoGoogle> {
-  return await recibirGoogle(crearCuentaRepository(), entrada, await identificarCliente())
+  const cliente = await identificarCliente()
+  return await recibirGoogle(crearCuentaRepository(cliente), entrada, cliente)
 }
 
 export async function reenviarConfirmacionAccion(entrada: unknown): Promise<ResultadoReenvio> {
-  return await recibirReenvio(crearCuentaRepository(), entrada, await identificarCliente())
+  const cliente = await identificarCliente()
+  return await recibirReenvio(crearCuentaRepository(cliente), entrada, cliente)
 }

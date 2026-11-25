@@ -81,8 +81,10 @@ export function fuerzaDeClave(clave: string): FuerzaClave {
 export type CuentaNueva = {
   correo: string
   clave: string
+  /** Siempre true: el registro ya exigió que se aceptara. Se guarda como prueba del consentimiento */
+  aceptaPolitica: true
 }
 
 export function limpiarRegistro(datos: DatosRegistro): CuentaNueva {
-  return { correo: datos.correo.trim().toLowerCase(), clave: datos.clave }
+  return { correo: datos.correo.trim().toLowerCase(), clave: datos.clave, aceptaPolitica: true }
 }
