@@ -137,7 +137,7 @@ def principal() -> None:
         return
 
     print("\n[2] Estructura y seguridad")
-    for tabla in ("cuentas", "sesiones", "intentos_acceso"):
+    for tabla in ("cuentas", "sesiones", "intentos_acceso", "confirmaciones_correo"):
         comprobar(
             f"RLS activado en {tabla}", valor(f"select relrowsecurity from pg_class where relname='{tabla}';") == "t"
         )
@@ -146,7 +146,7 @@ def principal() -> None:
         "select string_agg(p.oid::regprocedure::text, '|') from pg_proc p join pg_namespace n on n.oid=p.pronamespace "
         "where n.nspname='public';"
     ).split("|")
-    comprobar("las 7 funciones existen", len(funciones) == 7, str(funciones))
+    comprobar("las 10 funciones existen", len(funciones) == 10, str(funciones))
     for f in funciones:
         for rol in ("anon", "authenticated", "public"):
             ejecutable = (
@@ -163,7 +163,7 @@ def principal() -> None:
             f"service_role SÍ puede ejecutar {f}",
             valor(f"select has_function_privilege('service_role', '{f}'::regprocedure, 'execute');") == "t",
         )
-    for tabla in ("cuentas", "sesiones", "intentos_acceso"):
+    for tabla in ("cuentas", "sesiones", "intentos_acceso", "confirmaciones_correo"):
         for rol in ("anon", "authenticated"):
             comprobar(f"{rol} NO puede leer {tabla}", denegado(f"select * from {tabla};", rol))
             comprobar(f"{rol} NO puede escribir en {tabla}", denegado(f"delete from {tabla};", rol))
@@ -489,12 +489,155 @@ def principal() -> None:
         "y quedan registrados exactamente 3",
         valor("select count(*) from intentos_acceso where huella='carrera';") == "3",
     )
+    confirmaciones()
+
+
+def confirmaciones() -> None:
+    print("\n[9] Confirmación del correo (migración 0007)")
+    cuenta = "c0000000-0000-4000-8000-000000000001"
+    hoy = "2026-11-25T12:00:00+00:00"
+    manana = "2026-11-26T12:00:00+00:00"
+
+    def crear(cuenta_id, correo, confirmacion_id, token):
+        return (
+            f"select crear_cuenta_con_confirmacion('{cuenta_id}','{correo}','$argon2id$h','{hoy}','v1','{hoy}',"
+            f"'{confirmacion_id}','{token}','{manana}');"
+        )
+
+    def renovar(correo, confirmacion_id, token, ahora=hoy, expira=manana):
+        return f"select renovar_confirmacion('{correo}','{confirmacion_id}','{token}','{expira}','{ahora}');"
+
+    def confirmar(token, ahora=hoy):
+        return f"select coalesce(confirmar_correo('{token}','{ahora}'), '-');"
+
+    def vigentes(cuenta_id):
+        return valor(
+            f"select count(*) from confirmaciones_correo where cuenta_id='{cuenta_id}' "
+            "and usada_en is null and anulada_en is null;"
+        )
+
+    def uuid_e(n):
+        return f"e0000000-0000-4000-8000-{n:012d}"
+
+    comprobar(
+        "crear_cuenta_con_confirmacion crea la cuenta sin confirmar y su enlace",
+        valor(crear(cuenta, "conf@correo.com", uuid_e(1), "t1"), rol="service_role") == "t"
+        and valor(f"select correo_confirmado from cuentas where id='{cuenta}';") == "f"
+        and vigentes(cuenta) == "1",
+    )
+    comprobar(
+        "con el correo repetido devuelve false y no crea ni la cuenta ni otro enlace",
+        valor(crear("c0000000-0000-4000-8000-000000000002", "conf@correo.com", uuid_e(2), "t2"), rol="service_role")
+        == "f"
+        and valor("select count(*) from cuentas where correo='conf@correo.com';") == "1"
+        and valor("select count(*) from confirmaciones_correo where token_hash='t2';") == "0",
+    )
+    comprobar(
+        "renovar_confirmacion anula el enlace vigente y deja uno solo, el nuevo",
+        valor(renovar("conf@correo.com", uuid_e(3), "t3"), rol="service_role") == "t"
+        and vigentes(cuenta) == "1"
+        and valor("select anulada_en is not null from confirmaciones_correo where token_hash='t1';") == "t",
+    )
+    comprobar(
+        "un enlace anulado ya no confirma",
+        valor(confirmar("t1"), rol="service_role") == "-"
+        and valor(f"select correo_confirmado from cuentas where id='{cuenta}';") == "f",
+    )
+    comprobar("un enlace desconocido no confirma", valor(confirmar("no-existe"), rol="service_role") == "-")
+    comprobar(
+        "un enlace caducado no confirma",
+        valor(confirmar("t3", ahora="2026-11-27T12:00:00+00:00"), rol="service_role") == "-"
+        and valor("select usada_en is null from confirmaciones_correo where token_hash='t3';") == "t",
+    )
+    comprobar(
+        "el enlace vigente confirma: devuelve el correo, lo marca usado y confirma la cuenta",
+        valor(confirmar("t3"), rol="service_role") == "conf@correo.com"
+        and valor("select usada_en is not null from confirmaciones_correo where token_hash='t3';") == "t"
+        and valor(f"select correo_confirmado from cuentas where id='{cuenta}';") == "t",
+    )
+    comprobar("el mismo enlace no se usa dos veces", valor(confirmar("t3"), rol="service_role") == "-")
+    comprobar(
+        "renovar con la cuenta ya confirmada devuelve false y no crea nada",
+        valor(renovar("conf@correo.com", uuid_e(4), "t4"), rol="service_role") == "f"
+        and valor("select count(*) from confirmaciones_correo where token_hash='t4';") == "0",
+    )
+    comprobar(
+        "renovar con un correo sin cuenta devuelve false",
+        valor(renovar("nadie@correo.com", uuid_e(5), "t5"), rol="service_role") == "f",
+    )
+    comprobar(
+        "la base rechaza un enlace usado y anulado a la vez (restricción)",
+        "check" in psql(f"update confirmaciones_correo set anulada_en='{hoy}' where token_hash='t3';").stderr.lower(),
+    )
+    comprobar(
+        "la base rechaza un enlace que caduca antes de nacer (restricción)",
+        "check"
+        in psql(
+            "insert into confirmaciones_correo(id,cuenta_id,token_hash,expira_en,creada_en) values "
+            f"('{uuid_e(6)}','{cuenta}','t6','{hoy}','{manana}');"
+        ).stderr.lower(),
+    )
+    comprobar(
+        "intentos_acceso acepta las acciones reenvio y confirmacion",
+        psql(
+            "insert into intentos_acceso(accion,huella,ocurrido_en) values "
+            f"('reenvio','r1','{hoy}'),('confirmacion','c1','{hoy}');"
+        ).returncode
+        == 0
+        and valor("select count(*) from intentos_acceso where huella in ('r1','c1');") == "2",
+    )
+    comprobar(
+        "borrar la cuenta borra sus enlaces",
+        psql(f"delete from cuentas where id='{cuenta}';").returncode == 0
+        and valor(f"select count(*) from confirmaciones_correo where cuenta_id='{cuenta}';") == "0",
+    )
+    for nombre, llamada, rol in (
+        (
+            "crear_cuenta_con_confirmacion",
+            crear("c0000000-0000-4000-8000-000000000009", "x@correo.com", uuid_e(9), "tx"),
+            "anon",
+        ),
+        ("renovar_confirmacion", renovar("x@correo.com", uuid_e(10), "ty"), "authenticated"),
+        ("confirmar_correo", confirmar("tz"), "anon"),
+    ):
+        comprobar(f"{rol} no puede llamar a {nombre}", denegado(llamada, rol))
+
+    # Carreras: cada trabajo en su propia conexión
+    otra = "c0000000-0000-4000-8000-000000000020"
+    valor(crear(otra, "carrera2@correo.com", uuid_e(20), "k1"), rol="service_role")
+    salidas = en_paralelo([(0.0, "begin; " + confirmar("k1") + " select pg_sleep(2); commit;"), (0.7, confirmar("k1"))])
+    obtenidos = sorted(x for s_ in salidas for x in s_.split() if x in ("carrera2@correo.com", "-"))
+    comprobar(
+        "dos clics a la vez en el mismo enlace: exactamente uno confirma",
+        obtenidos == ["-", "carrera2@correo.com"],
+        str(salidas),
+    )
+    tercera = "c0000000-0000-4000-8000-000000000030"
+    valor(crear(tercera, "carrera3@correo.com", uuid_e(30), "m1"), rol="service_role")
+    salidas = en_paralelo(
+        [
+            (0.0, "begin; " + renovar("carrera3@correo.com", uuid_e(31), "m2") + " select pg_sleep(2); commit;"),
+            (0.7, renovar("carrera3@correo.com", uuid_e(32), "m3")),
+        ]
+    )
+    comprobar(
+        "dos reenvíos a la vez: van uno detrás de otro y queda un solo enlace vigente, el último",
+        sorted(x for s_ in salidas for x in s_.split() if x in ("t", "f")) == ["t", "t"]
+        and vigentes(tercera) == "1"
+        and valor(
+            f"select token_hash from confirmaciones_correo where cuenta_id='{tercera}' "
+            "and usada_en is null and anulada_en is null;"
+        )
+        == "m3",
+        str(salidas),
+    )
 
 
 BASE_ANTIGUA = "nomadas_antigua"
 FUNCIONES = (
     "'crear_cuenta','obtener_cuenta_por_correo','actualizar_clave_hash','rotar_sesion','revocar_sesion',"
-    "'revocar_sesiones_de_cuenta','consumir_intento'"
+    "'revocar_sesiones_de_cuenta','consumir_intento','crear_cuenta_con_confirmacion','renovar_confirmacion',"
+    "'confirmar_correo'"
 )
 
 
@@ -589,6 +732,7 @@ def actualizacion() -> None:
     )
     convenciones(BASE_ANTIGUA)
     actualizacion_reloj()
+    actualizacion_resto()
 
 
 def actualizacion_reloj() -> None:
@@ -780,6 +924,61 @@ REGLAS_DE_NOMBRES: list[tuple[str, str]] = [
         """,
     ),
 ]
+
+
+def actualizacion_resto() -> None:
+    """Las migraciones de la 0006 en adelante, sobre esa misma base con datos: lo que pasará en Supabase."""
+    print("\n[10] Actualización: de la 0006 en adelante sobre esa misma base con datos")
+
+    def v(sql: str) -> str:
+        return valor(sql, base=BASE_ANTIGUA)
+
+    cuenta = "cccccccc-0000-4000-8000-000000000001"
+    psql(
+        "insert into intentos_acceso(accion,huella,ocurrido_en) values "
+        "('registro','viejo-r','2026-11-01'),('sesion','viejo-s','2026-11-01');",
+        parar=True,
+        base=BASE_ANTIGUA,
+    )
+    antes = v("select string_agg(accion || ':' || huella, ',' order by huella) from intentos_acceso;")
+    for m in [m for m in MIGRACIONES if m.name >= "0006"]:
+        r = psql(m.read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
+        comprobar(f"se aplica {m.name} sobre esos datos", r.returncode == 0, r.stderr.strip()[:300])
+    comprobar(
+        "los intentos que ya había siguen ahí y valen con la restricción nueva",
+        v("select string_agg(accion || ':' || huella, ',' order by huella) from intentos_acceso;") == antes,
+    )
+    comprobar(
+        "una cuenta vieja sin confirmar puede pedir su primer enlace",
+        v(
+            "select renovar_confirmacion('vieja@correo.com','cccccccc-0000-4000-8000-0000000000e1','vh1',"
+            "'2026-11-26T12:00:00+00:00','2026-11-25T12:00:00+00:00');"
+        )
+        == "t"
+        and v(f"select count(*) from confirmaciones_correo where cuenta_id='{cuenta}';") == "1",
+    )
+    comprobar(
+        "anon, authenticated y PUBLIC no pueden ejecutar ninguna de las 10 funciones",
+        v(
+            f"select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace "
+            f"and p.proname in ({FUNCIONES}) "
+            "and (has_function_privilege('anon', p.oid, 'execute') "
+            "or has_function_privilege('authenticated', p.oid, 'execute') "
+            "or exists (select 1 from aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a "
+            "where a.grantee = 0 and a.privilege_type = 'EXECUTE'));"
+        )
+        == "0",
+    )
+    comprobar(
+        "service_role puede ejecutar las 10",
+        v(
+            f"select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace "
+            f"and p.proname in ({FUNCIONES}) "
+            "and has_function_privilege('service_role', p.oid, 'execute');"
+        )
+        == "10",
+    )
+    convenciones(BASE_ANTIGUA)
 
 
 def convenciones(base: str = "nomadas") -> None:
