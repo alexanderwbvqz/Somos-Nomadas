@@ -29,6 +29,15 @@ class MemoriaCuentaRepository:
         self._por_correo[cuenta.correo] = replace(cuenta, clave_hash=hash_nuevo)
         return True
 
+    def marcar_correo_confirmado(self, cuenta_id: UUID) -> Cuenta | None:
+        """Lo usa el repositorio de confirmaciones en memoria (en la base lo hace la función `confirmar_correo`)."""
+        cuenta = self.obtener_por_id(cuenta_id)
+        if cuenta is None:
+            return None
+        confirmada = replace(cuenta, correo_confirmado=True)
+        self._por_correo[cuenta.correo] = confirmada
+        return confirmada
+
     def cantidad(self) -> int:
         return len(self._por_correo)
 

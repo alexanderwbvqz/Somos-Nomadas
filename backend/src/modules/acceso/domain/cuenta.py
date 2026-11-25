@@ -108,6 +108,12 @@ def _error_de_composicion(clave: str) -> CodigoErrorCuenta | None:
     return None
 
 
+def validar_correo(correo: str) -> ErroresCampos:
+    """Solo el correo: para lo que no pide clave, como reenviar el enlace de confirmación."""
+    error = _error_de_correo(correo)
+    return {"correo": error} if error else {}
+
+
 def validar_registro(datos: DatosRegistro) -> ErroresCampos:
     errores: ErroresCampos = {}
 

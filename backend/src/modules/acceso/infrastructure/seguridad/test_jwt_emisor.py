@@ -166,3 +166,30 @@ def test_el_hash_del_token_es_estable_hexadecimal_y_distinto_del_token() -> None
     assert len(hash_guardado) == 64
     int(hash_guardado, 16)  # es hexadecimal
     assert e.hash_de_token_renovacion(token + "x") != hash_guardado
+
+
+# --- Token del enlace de confirmación ---
+
+
+def test_los_tokens_de_confirmacion_son_largos_no_se_repiten_y_tienen_la_forma_que_se_valida() -> None:
+    from modules.acceso.domain.confirmacion import tiene_forma_de_token
+
+    e = emisor()
+    tokens = {e.nuevo_token_confirmacion() for _ in range(200)}
+
+    assert len(tokens) == 200
+    assert all(len(t) >= 43 for t in tokens)  # 256 bits
+    # Si el emisor diera tokens que la validación rechaza, ningún enlace funcionaría
+    assert all(tiene_forma_de_token(t) for t in tokens)
+
+
+def test_el_hash_del_token_de_confirmacion_es_sha256_estable_y_distinto_del_token() -> None:
+    e = emisor()
+    token = e.nuevo_token_confirmacion()
+    hash_guardado = e.hash_de_token_confirmacion(token)
+
+    assert hash_guardado == e.hash_de_token_confirmacion(token)
+    assert hash_guardado != token
+    assert len(hash_guardado) == 64
+    int(hash_guardado, 16)
+    assert e.hash_de_token_confirmacion(token + "x") != hash_guardado

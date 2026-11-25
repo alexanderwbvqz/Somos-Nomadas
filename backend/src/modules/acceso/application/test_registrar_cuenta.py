@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 import pytest
 
 from modules.acceso.application.conftest import CLAVE, POLITICA, Entorno
+from modules.acceso.domain.confirmacion import HORAS_ENLACE_CONFIRMACION, CorreoPendiente
 from modules.acceso.domain.cuenta import DatosRegistro
 from modules.acceso.domain.errores import DatosInvalidos, LimiteExcedido
 from modules.acceso.domain.intentos import REGISTRO_POR_ORIGEN
@@ -91,3 +94,55 @@ def test_el_limite_es_por_origen_y_se_libera_al_pasar_la_ventana(entorno: Entorn
     entorno.registrar_cuenta().ejecutar(datos("pasada-la-ventana@correo.com"), ORIGEN)
 
     assert entorno.cuentas.cantidad() == REGISTRO_POR_ORIGEN.maximo + 2
+
+
+# --- El enlace de confirmación ---
+
+
+def test_una_cuenta_nueva_devuelve_el_correo_a_enviar_con_el_enlace_y_el_idioma(entorno: Entorno) -> None:
+    pendiente = entorno.registrar_cuenta().ejecutar(datos("  Ana@Correo.COM "), ORIGEN, "pt")
+
+    assert isinstance(pendiente, CorreoPendiente)
+    assert pendiente.destino == "ana@correo.com"
+    assert pendiente.idioma == "pt"
+    # El token del correo confirma la cuenta: lo guardado es su hash, no el token
+    hash_del_token = entorno.emisor.hash_de_token_confirmacion(pendiente.token)
+    assert hash_del_token != pendiente.token
+    assert entorno.confirmaciones.confirmar(hash_del_token, entorno.reloj()) == "ana@correo.com"
+
+
+def test_sin_idioma_el_correo_va_en_espanol(entorno: Entorno) -> None:
+    pendiente = entorno.registrar_cuenta().ejecutar(datos(), ORIGEN)
+
+    assert pendiente is not None and pendiente.idioma == "es"
+
+
+def test_el_enlace_dura_24_horas(entorno: Entorno) -> None:
+    pendiente = entorno.registrar_cuenta().ejecutar(datos(), ORIGEN)
+    assert pendiente is not None
+    hash_del_token = entorno.emisor.hash_de_token_confirmacion(pendiente.token)
+    vence = entorno.reloj() + timedelta(hours=HORAS_ENLACE_CONFIRMACION)
+
+    assert entorno.confirmaciones.confirmar(hash_del_token, vence) is None
+    assert entorno.confirmaciones.confirmar(hash_del_token, vence - timedelta(seconds=1)) == "ana@correo.com"
+
+
+def test_un_correo_ya_registrado_no_devuelve_nada_que_enviar_ni_crea_otro_enlace(entorno: Entorno) -> None:
+    original = entorno.crear_cuenta("ana@correo.com", confirmada=False)
+
+    pendiente = entorno.registrar_cuenta().ejecutar(datos("ana@correo.com"), ORIGEN)
+
+    assert pendiente is None
+    assert entorno.confirmaciones.vigentes(original.id) == 0
+
+
+def test_el_campo_trampa_relleno_no_devuelve_nada_que_enviar(entorno: Entorno) -> None:
+    assert entorno.registrar_cuenta().ejecutar(datos(sitio_secundario="http://spam.com"), ORIGEN) is None
+
+
+def test_cada_registro_tiene_su_propio_token(entorno: Entorno) -> None:
+    una = entorno.registrar_cuenta().ejecutar(datos("una@correo.com"), ORIGEN)
+    otra = entorno.registrar_cuenta().ejecutar(datos("otra@correo.com"), ORIGEN)
+
+    assert una is not None and otra is not None
+    assert una.token != otra.token

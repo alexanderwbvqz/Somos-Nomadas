@@ -33,3 +33,11 @@ class EmisorTokensFalso:
 
     def hash_de_token_renovacion(self, token: str) -> str:
         return f"hash({token})"
+
+    def nuevo_token_confirmacion(self) -> str:
+        self._contador += 1
+        # Con la forma de un token de verdad (20 caracteres o más de base64 de URL), para que pase la validación
+        return f"confirmacion-{self._contador:08d}-xxxxxxxx"
+
+    def hash_de_token_confirmacion(self, token: str) -> str:
+        return f"hashc({token})"

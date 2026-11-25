@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal, Protocol
 
-AccionLimitada = Literal["registro", "sesion"]
+AccionLimitada = Literal["registro", "sesion", "reenvio", "confirmacion"]
 
 
 class LimitadorIntentos(Protocol):

@@ -10,9 +10,11 @@ import pytest
 from postgrest.exceptions import APIError
 from supabase import Client
 
+from modules.acceso.domain.confirmacion import EnlaceNuevo
 from modules.acceso.domain.cuenta import Cuenta
 from modules.acceso.domain.sesion import Sesion
 from modules.acceso.infrastructure.supabase.cliente_falso import ClienteFalso
+from modules.acceso.infrastructure.supabase.supabase_confirmacion_repository import SupabaseConfirmacionRepository
 from modules.acceso.infrastructure.supabase.supabase_cuenta_repository import SupabaseCuentaRepository
 from modules.acceso.infrastructure.supabase.supabase_limitador_intentos import SupabaseLimitadorIntentos
 from modules.acceso.infrastructure.supabase.supabase_sesion_repository import SupabaseSesionRepository
@@ -346,3 +348,83 @@ def test_consumir_traduce_los_errores_de_la_base() -> None:
 
     with pytest.raises(ErrorDeBaseDeDatos):
         limitador.consumir("sesion", "x", 5, 900, AHORA)
+
+
+# --- Confirmaciones ---
+
+
+def enlace() -> EnlaceNuevo:
+    return EnlaceNuevo(uuid4(), "hash-del-token", AHORA + timedelta(hours=24), AHORA)
+
+
+def test_crear_cuenta_con_confirmacion_manda_la_cuenta_y_el_enlace_en_una_sola_llamada() -> None:
+    falso = ClienteFalso({"crear_cuenta_con_confirmacion": True})
+    c, e = cuenta(), enlace()
+
+    assert SupabaseConfirmacionRepository(como_cliente(falso)).crear_cuenta_con_confirmacion(c, e) is True
+
+    (llamada,) = falso.llamadas
+    assert (llamada.tipo, llamada.nombre) == ("rpc", "crear_cuenta_con_confirmacion")
+    assert llamada.parametros == {
+        "p_id": str(c.id),
+        "p_correo": "ana@correo.com",
+        "p_clave_hash": "hash",
+        "p_politica_aceptada_en": AHORA.isoformat(),
+        "p_politica_version": "v1",
+        "p_creada_en": AHORA.isoformat(),
+        "p_confirmacion_id": str(e.id),
+        "p_token_hash": "hash-del-token",
+        "p_expira_en": (AHORA + timedelta(hours=24)).isoformat(),
+    }
+
+
+def test_renovar_manda_el_correo_y_el_enlace_y_anula_en_el_instante_en_que_nace_el_nuevo() -> None:
+    falso = ClienteFalso({"renovar_confirmacion": False})
+    e = enlace()
+
+    assert SupabaseConfirmacionRepository(como_cliente(falso)).renovar("ana@correo.com", e) is False
+
+    (llamada,) = falso.llamadas
+    assert (llamada.tipo, llamada.nombre) == ("rpc", "renovar_confirmacion")
+    assert llamada.parametros == {
+        "p_correo": "ana@correo.com",
+        "p_confirmacion_id": str(e.id),
+        "p_token_hash": "hash-del-token",
+        "p_expira_en": e.expira_en.isoformat(),
+        "p_ahora": AHORA.isoformat(),
+    }
+
+
+def test_confirmar_manda_el_hash_y_la_hora_de_la_aplicacion_y_devuelve_el_correo() -> None:
+    falso = ClienteFalso({"confirmar_correo": "ana@correo.com"})
+
+    assert SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA) == "ana@correo.com"
+
+    (llamada,) = falso.llamadas
+    assert (llamada.tipo, llamada.nombre) == ("rpc", "confirmar_correo")
+    assert llamada.parametros == {"p_token_hash": "h1", "p_ahora": AHORA.isoformat()}
+
+
+def test_confirmar_sin_correo_es_un_enlace_que_no_vale() -> None:
+    falso = ClienteFalso({"confirmar_correo": None})
+
+    assert SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA) is None
+
+
+@pytest.mark.parametrize("respuesta", [True, 1, "", [], {"correo": "ana@correo.com"}])
+def test_confirmar_con_una_respuesta_rara_es_un_error_y_no_un_correo(respuesta: object) -> None:
+    falso = ClienteFalso({"confirmar_correo": respuesta})
+
+    with pytest.raises(ErrorDeBaseDeDatos):
+        SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA)
+
+
+@pytest.mark.parametrize("respuesta", [None, 1, "true", [], {}])
+def test_crear_y_renovar_con_una_respuesta_que_no_es_booleana_es_un_error(respuesta: object) -> None:
+    falso = ClienteFalso({"crear_cuenta_con_confirmacion": respuesta, "renovar_confirmacion": respuesta})
+    repositorio = SupabaseConfirmacionRepository(como_cliente(falso))
+
+    with pytest.raises(ErrorDeBaseDeDatos):
+        repositorio.crear_cuenta_con_confirmacion(cuenta(), enlace())
+    with pytest.raises(ErrorDeBaseDeDatos):
+        repositorio.renovar("ana@correo.com", enlace())

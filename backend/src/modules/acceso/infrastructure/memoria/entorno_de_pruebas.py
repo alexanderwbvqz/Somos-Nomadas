@@ -9,14 +9,17 @@ from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 from modules.acceso.application.cerrar_sesion import CerrarSesion
+from modules.acceso.application.confirmar_correo import ConfirmarCorreo
 from modules.acceso.application.iniciar_sesion import IniciarSesion
 from modules.acceso.application.obtener_cuenta_actual import ObtenerCuentaActual
+from modules.acceso.application.reenviar_confirmacion import ReenviarConfirmacion
 from modules.acceso.application.registrar_cuenta import RegistrarCuenta
 from modules.acceso.application.renovar_sesion import RenovarSesion
 from modules.acceso.domain.cuenta import Cuenta, normalizar_correo
 from modules.acceso.domain.sesion_repository import SesionRepository
 from modules.acceso.infrastructure.memoria.emisor_tokens_falso import EmisorTokensFalso
 from modules.acceso.infrastructure.memoria.hasheador_falso import HasheadorFalso
+from modules.acceso.infrastructure.memoria.memoria_confirmacion_repository import MemoriaConfirmacionRepository
 from modules.acceso.infrastructure.memoria.memoria_cuenta_repository import MemoriaCuentaRepository
 from modules.acceso.infrastructure.memoria.memoria_limitador_intentos import MemoriaLimitadorIntentos
 from modules.acceso.infrastructure.memoria.memoria_sesion_repository import MemoriaSesionRepository
@@ -56,14 +59,30 @@ class Entorno:
     limitador: MemoriaLimitadorIntentos = field(default_factory=MemoriaLimitadorIntentos)
     hasheador: HasheadorFalso = field(default_factory=HasheadorFalso)
     emisor: EmisorTokensFalso = field(default_factory=EmisorTokensFalso)
+    # Comparte las cuentas con `cuentas`, como en la base
+    confirmaciones: MemoriaConfirmacionRepository = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.confirmaciones = MemoriaConfirmacionRepository(self.cuentas)
 
     def registrar_cuenta(self) -> RegistrarCuenta:
         return RegistrarCuenta(
-            cuentas=self.cuentas,
+            confirmaciones=self.confirmaciones,
             hasheador=self.hasheador,
+            emisor=self.emisor,
             limitador=self.limitador,
             ahora=self.reloj,
             politica_version=POLITICA,
+        )
+
+    def confirmar_correo(self) -> ConfirmarCorreo:
+        return ConfirmarCorreo(
+            confirmaciones=self.confirmaciones, emisor=self.emisor, limitador=self.limitador, ahora=self.reloj
+        )
+
+    def reenviar_confirmacion(self) -> ReenviarConfirmacion:
+        return ReenviarConfirmacion(
+            confirmaciones=self.confirmaciones, emisor=self.emisor, limitador=self.limitador, ahora=self.reloj
         )
 
     def iniciar_sesion(self, *, exigir_correo_confirmado: bool = True) -> IniciarSesion:

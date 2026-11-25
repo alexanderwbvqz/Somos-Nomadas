@@ -25,6 +25,10 @@ class NoAutenticado(ErrorDeAcceso):
     """Falta el token, o es inválido, caducado, revocado o ya usado."""
 
 
+class EnlaceInvalido(ErrorDeAcceso):
+    """El enlace de confirmación no existe, ya se usó, caducó o se anuló al pedir otro. Nunca dice cuál."""
+
+
 class LimiteExcedido(ErrorDeAcceso):
     def __init__(self, reintentar_en_segundos: int) -> None:
         super().__init__("Demasiados intentos")

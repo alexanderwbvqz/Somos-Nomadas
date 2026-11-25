@@ -22,14 +22,20 @@ from uuid import UUID, uuid4
 
 import pytest
 
+from modules.acceso.domain.confirmacion import EnlaceNuevo
+from modules.acceso.domain.confirmacion_repository import ConfirmacionRepository
 from modules.acceso.domain.cuenta import Cuenta
 from modules.acceso.domain.cuenta_repository import CuentaRepository
 from modules.acceso.domain.limitador_intentos import AccionLimitada, LimitadorIntentos
 from modules.acceso.domain.sesion import Sesion
 from modules.acceso.domain.sesion_repository import SesionRepository
+from modules.acceso.infrastructure.memoria.memoria_confirmacion_repository import MemoriaConfirmacionRepository
 from modules.acceso.infrastructure.memoria.memoria_cuenta_repository import MemoriaCuentaRepository
 from modules.acceso.infrastructure.memoria.memoria_limitador_intentos import MemoriaLimitadorIntentos
 from modules.acceso.infrastructure.memoria.memoria_sesion_repository import MemoriaSesionRepository
+from modules.acceso.infrastructure.supabase.supabase_confirmacion_repository import (
+    SupabaseConfirmacionRepository,
+)
 from modules.acceso.infrastructure.supabase.supabase_cuenta_repository import SupabaseCuentaRepository
 from modules.acceso.infrastructure.supabase.supabase_limitador_intentos import SupabaseLimitadorIntentos
 from modules.acceso.infrastructure.supabase.supabase_sesion_repository import SupabaseSesionRepository
@@ -46,6 +52,7 @@ class Repos:
     cuentas: CuentaRepository
     sesiones: SesionRepository
     limitador: LimitadorIntentos
+    confirmaciones: ConfirmacionRepository
 
 
 class LimitadorQueRecuerda(SupabaseLimitadorIntentos):
@@ -65,7 +72,10 @@ class LimitadorQueRecuerda(SupabaseLimitadorIntentos):
 @pytest.fixture(params=["memoria", "supabase"])
 def repos(request: pytest.FixtureRequest) -> Iterator[Repos]:
     if request.param == "memoria":
-        yield Repos(MemoriaCuentaRepository(), MemoriaSesionRepository(), MemoriaLimitadorIntentos())
+        cuentas = MemoriaCuentaRepository()
+        yield Repos(
+            cuentas, MemoriaSesionRepository(), MemoriaLimitadorIntentos(), MemoriaConfirmacionRepository(cuentas)
+        )
         return
 
     url = os.environ.get("SUPABASE_PRUEBAS_URL")
@@ -74,7 +84,12 @@ def repos(request: pytest.FixtureRequest) -> Iterator[Repos]:
         pytest.skip("Sin base de pruebas de Supabase: ver el encabezado de test_contrato_repositorios.py")
     cliente = crear_cliente(url, clave)
     limitador = LimitadorQueRecuerda(cliente, "h" * 32)
-    yield Repos(SupabaseCuentaRepository(cliente), SupabaseSesionRepository(cliente), limitador)
+    yield Repos(
+        SupabaseCuentaRepository(cliente),
+        SupabaseSesionRepository(cliente),
+        limitador,
+        SupabaseConfirmacionRepository(cliente),
+    )
 
     # Limpieza: solo lo de las pruebas. Las sesiones se borran solas con su cuenta (on delete cascade)
     with traducir_errores():
@@ -152,6 +167,92 @@ def test_actualizar_la_clave_hash_de_otra_cuenta_o_de_una_que_no_existe_no_cambi
 
     assert repos.cuentas.obtener_por_id(c.id) == c
     assert repos.cuentas.obtener_por_id(otra.id) == replace(otra, clave_hash="hash-de-otra")
+
+
+# --- Confirmación del correo ---
+
+
+def enlace(dias: int = 1, creada_en: datetime = AHORA) -> EnlaceNuevo:
+    return EnlaceNuevo(uuid4(), unico(), creada_en + timedelta(days=dias), creada_en)
+
+
+def test_crear_cuenta_con_confirmacion_guarda_la_cuenta_sin_confirmar_y_su_enlace_vale(repos: Repos) -> None:
+    c = cuenta()
+    e = enlace()
+
+    assert repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
+
+    guardada = repos.cuentas.obtener_por_correo(c.correo)
+    assert guardada == replace(c, correo_confirmado=False)
+    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) == c.correo
+    assert repos.cuentas.obtener_por_id(c.id) == replace(c, correo_confirmado=True)
+
+
+def test_crear_con_un_correo_repetido_devuelve_false_y_no_crea_ni_cuenta_ni_enlace(repos: Repos) -> None:
+    primera = cuenta()
+    assert repos.confirmaciones.crear_cuenta_con_confirmacion(primera, enlace())
+    repetida = cuenta(primera.correo)
+    e = enlace()
+
+    assert not repos.confirmaciones.crear_cuenta_con_confirmacion(repetida, e)
+
+    assert repos.cuentas.obtener_por_id(repetida.id) is None
+    assert repos.cuentas.obtener_por_correo(primera.correo) == replace(primera, correo_confirmado=False)
+    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) is None
+
+
+def test_un_enlace_se_usa_una_sola_vez(repos: Repos) -> None:
+    c, e = cuenta(), enlace()
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
+
+    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) == c.correo
+    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) is None
+
+
+def test_un_enlace_caducado_o_desconocido_no_confirma(repos: Repos) -> None:
+    c, e = cuenta(), enlace(dias=1)
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
+
+    assert repos.confirmaciones.confirmar(e.token_hash, e.expira_en) is None
+    assert repos.confirmaciones.confirmar(unico(), AHORA) is None
+    assert repos.cuentas.obtener_por_id(c.id) == replace(c, correo_confirmado=False)
+    # Un segundo antes de caducar todavía vale
+    assert repos.confirmaciones.confirmar(e.token_hash, e.expira_en - timedelta(seconds=1)) == c.correo
+
+
+def test_renovar_anula_el_enlace_anterior_y_el_nuevo_vale(repos: Repos) -> None:
+    c, viejo = cuenta(), enlace()
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, viejo)
+    nuevo = enlace(creada_en=AHORA + timedelta(minutes=5))
+
+    assert repos.confirmaciones.renovar(c.correo, nuevo)
+
+    assert repos.confirmaciones.confirmar(viejo.token_hash, AHORA + timedelta(minutes=6)) is None
+    assert repos.confirmaciones.confirmar(nuevo.token_hash, AHORA + timedelta(minutes=6)) == c.correo
+
+
+def test_renovar_no_hace_nada_si_la_cuenta_no_existe_o_ya_esta_confirmada(repos: Repos) -> None:
+    c, e = cuenta(), enlace()
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
+    repos.confirmaciones.confirmar(e.token_hash, AHORA)
+    tras_confirmar, inexistente = enlace(), enlace()
+
+    assert not repos.confirmaciones.renovar(c.correo, tras_confirmar)
+    assert not repos.confirmaciones.renovar(f"{unico()}{DOMINIO_DE_PRUEBA}", inexistente)
+
+    assert repos.confirmaciones.confirmar(tras_confirmar.token_hash, AHORA) is None
+    assert repos.confirmaciones.confirmar(inexistente.token_hash, AHORA) is None
+
+
+def test_confirmar_una_cuenta_no_toca_las_demas(repos: Repos) -> None:
+    una, otra = cuenta(), cuenta()
+    e_una = enlace()
+    repos.confirmaciones.crear_cuenta_con_confirmacion(una, e_una)
+    repos.confirmaciones.crear_cuenta_con_confirmacion(otra, enlace())
+
+    repos.confirmaciones.confirmar(e_una.token_hash, AHORA)
+
+    assert repos.cuentas.obtener_por_id(otra.id) == replace(otra, correo_confirmado=False)
 
 
 # --- Sesiones ---

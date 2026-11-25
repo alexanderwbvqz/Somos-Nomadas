@@ -55,6 +55,13 @@ class JwtEmisor:
         # SHA-256 basta: el token ya tiene 256 bits aleatorios, no hay nada que adivinar por fuerza bruta
         return hashlib.sha256(token.encode()).hexdigest()
 
+    def nuevo_token_confirmacion(self) -> str:
+        return secrets.token_urlsafe(32)
+
+    def hash_de_token_confirmacion(self, token: str) -> str:
+        # Igual que el de renovación: 256 bits aleatorios, SHA-256 basta
+        return hashlib.sha256(token.encode()).hexdigest()
+
 
 def _es_entero(valor: object) -> bool:
     return isinstance(valor, int) and not isinstance(valor, bool)
