@@ -17,3 +17,9 @@ describe('idiomas de acceso', () => {
     expect(claves(pt)).toEqual(claves(es))
   })
 })
+
+describe('el enlace de confirmación', () => {
+  it('la pantalla dice que dura 24 horas, como el backend, en los tres idiomas', () => {
+    for (const textos of [es, en, pt]) expect(textos.confirmacion.nota).toContain('24')
+  })
+})

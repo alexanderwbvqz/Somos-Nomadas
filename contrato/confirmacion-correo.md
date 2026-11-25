@@ -3,7 +3,7 @@
 Spec de la segunda entrega de `acceso`. Completa `autenticacion.md` (secciones 9 y 11): hoy el registro crea la cuenta sin confirmar y la pantalla promete un enlace que nadie envía.
 
 **Estado:** aprobada por el dueño el 2026-11-25, con las decisiones de la sección 10.
-Hecho en el backend: migración `0007` (aplicada en Supabase), casos de uso, envío (Resend o carpeta) y rutas. Falta el frontend y la prueba de punta a punta.
+Hecho en el backend: migración `0007` (aplicada en Supabase), casos de uso, envío (Resend o carpeta) y rutas. Hecho en el frontend: la página `/{idioma}/confirmar-correo`, «Reenviar enlace» de verdad, el botón «Enviar otro enlace» en el aviso de correo sin confirmar, el idioma del registro y los textos de 24 horas. Falta la prueba de punta a punta.
 
 ## 1. Qué cubre
 

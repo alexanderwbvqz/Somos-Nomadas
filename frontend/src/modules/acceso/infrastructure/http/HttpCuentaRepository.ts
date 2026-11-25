@@ -1,16 +1,19 @@
 import type { ClienteHttp, RespuestaApi } from '@/shared/api/clienteHttp'
 import { ErrorDeApi } from '@/shared/api/errores'
 import type { CuentaRepository } from '../../domain/CuentaRepository'
+import type { IdiomaDelCorreo } from '../../domain/confirmacion'
 import type { CuentaNueva } from '../../domain/cuenta'
 import type { CredencialDeSesion, CuentaActual } from '../../domain/sesion'
 import {
   cuerpoDeInicioSesion,
   cuerpoDeRegistro,
+  cuerpoDeReenvio,
+  esEnlaceInvalido,
   esCredencialesInvalidas,
   esNoAutenticado,
   traducirErrorDeApi,
 } from '../mappers/cuentaApiMapper'
-import { leerCredencialRenovada, leerCuentaActual, leerSesionIniciada } from '../mappers/cuentaApiSchema'
+import { leerCorreoConfirmado, leerCredencialRenovada, leerCuentaActual, leerSesionIniciada } from '../mappers/cuentaApiSchema'
 
 /**
  * Las cuentas en la API del backend (contrato/autenticacion.md). Recibe el cliente ya configurado: no lee variables
@@ -19,9 +22,9 @@ import { leerCredencialRenovada, leerCuentaActual, leerSesionIniciada } from '..
 export class HttpCuentaRepository implements CuentaRepository {
   constructor(private readonly cliente: ClienteHttp) {}
 
-  async registrar(cuenta: CuentaNueva): Promise<void> {
+  async registrar(cuenta: CuentaNueva, idioma: IdiomaDelCorreo): Promise<void> {
     try {
-      await this.cliente.solicitar('POST', '/acceso/registro', { json: cuerpoDeRegistro(cuenta) })
+      await this.cliente.solicitar('POST', '/acceso/registro', { json: cuerpoDeRegistro(cuenta, idioma) })
     } catch (error) {
       throw error instanceof ErrorDeApi ? traducirErrorDeApi(error) : error
     }
@@ -75,7 +78,24 @@ export class HttpCuentaRepository implements CuentaRepository {
     throw new Error('Entrar con Google todavía no está disponible en la API')
   }
 
-  async reenviarConfirmacion(): Promise<void> {
-    throw new Error('Reenviar la confirmación del correo todavía no está disponible en la API')
+  async reenviarConfirmacion(correo: string, idioma: IdiomaDelCorreo): Promise<void> {
+    try {
+      await this.cliente.solicitar('POST', '/acceso/confirmacion/reenvio', { json: cuerpoDeReenvio(correo, idioma) })
+    } catch (error) {
+      throw error instanceof ErrorDeApi ? traducirErrorDeApi(error) : error
+    }
+  }
+
+  async confirmarCorreo(token: string): Promise<string | undefined> {
+    let respuesta: RespuestaApi
+    try {
+      respuesta = await this.cliente.solicitar('POST', '/acceso/confirmacion', { json: { token } })
+    } catch (error) {
+      if (esEnlaceInvalido(error)) return undefined
+      throw error instanceof ErrorDeApi ? traducirErrorDeApi(error) : error
+    }
+    const correo = leerCorreoConfirmado(respuesta.cuerpo)
+    if (correo === undefined) throw new Error('La API respondió con una forma inesperada al confirmar el correo')
+    return correo
   }
 }

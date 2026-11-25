@@ -28,6 +28,17 @@ function abrirSesion(correo: string): CredencialDeSesion {
   return credencial
 }
 
+// Los enlaces de confirmación vigentes: token → correo. Uno por cuenta; en globalThis por lo mismo que las cuentas.
+const globalEnlaces = globalThis as typeof globalThis & { __enlacesSimulados?: Map<string, string> }
+const enlaces = (globalEnlaces.__enlacesSimulados ??= new Map<string, string>())
+let ultimoToken: string | undefined
+
+function nuevoEnlace(correo: string): void {
+  for (const [token, deQuien] of enlaces) if (deQuien === correo) enlaces.delete(token)
+  ultimoToken = randomBytes(32).toString('base64url')
+  enlaces.set(ultimoToken, correo)
+}
+
 const SAL_FALSA = randomBytes(16)
 
 /** La cuenta de Google que "responde" en la simulación: cualquier credencial no vacía entra como esta persona */
@@ -41,6 +52,8 @@ export class MockCuentaRepository implements CuentaRepository {
     if (cuentas.has(cuenta.correo)) return
     const sal = randomBytes(16)
     cuentas.set(cuenta.correo, { sal, huella: huellaDe(cuenta.clave, sal) })
+    // simulado: no se envía ningún correo; el enlace queda guardado (las pruebas lo leen con ultimoToken)
+    nuevoEnlace(cuenta.correo)
   }
 
   async iniciarSesion(correo: string, clave: string): Promise<{ correo: string; credencial: CredencialDeSesion } | undefined> {
@@ -81,8 +94,20 @@ export class MockCuentaRepository implements CuentaRepository {
     return { correo: CORREO_GOOGLE_SIMULADO }
   }
 
-  async reenviarConfirmacion(): Promise<void> {
-    // simulado: no se manda ningún correo
+  async reenviarConfirmacion(correo: string): Promise<void> {
+    // simulado: no se manda ningún correo. El simulado no distingue cuentas confirmadas: basta con que exista
+    if (cuentas.has(correo)) nuevoEnlace(correo)
+  }
+
+  async confirmarCorreo(token: string): Promise<string | undefined> {
+    const correo = enlaces.get(token)
+    enlaces.delete(token)
+    return correo
+  }
+
+  /** Solo para pruebas: el token del último enlace creado */
+  static ultimoToken(): string | undefined {
+    return ultimoToken
   }
 
   /** Solo para pruebas */
@@ -93,6 +118,8 @@ export class MockCuentaRepository implements CuentaRepository {
   /** Solo para pruebas */
   static vaciar(): void {
     cuentas.clear()
+    enlaces.clear()
+    ultimoToken = undefined
     sesiones.clear()
   }
 }

@@ -5,6 +5,8 @@ import {
   camposDelDominio,
   cuerpoDeInicioSesion,
   cuerpoDeRegistro,
+  cuerpoDeReenvio,
+  esEnlaceInvalido,
   esCredencialesInvalidas,
   esNoAutenticado,
   traducirErrorDeApi,
@@ -33,12 +35,28 @@ describe('esNoAutenticado', () => {
 
 describe('cuerpoDeRegistro', () => {
   it('usa los nombres de campo de la API y manda el campo trampa vacío', () => {
-    expect(cuerpoDeRegistro({ correo: 'ana@correo.com', clave: ' Clave-1 ', aceptaPolitica: true })).toEqual({
+    expect(cuerpoDeRegistro({ correo: 'ana@correo.com', clave: ' Clave-1 ', aceptaPolitica: true }, 'pt')).toEqual({
       correo: 'ana@correo.com',
       clave: ' Clave-1 ',
       acepta_politica: true,
       sitio_secundario: '',
+      idioma: 'pt',
     })
+  })
+})
+
+describe('cuerpoDeReenvio', () => {
+  it('manda el correo y el idioma con los nombres de la API', () => {
+    expect(cuerpoDeReenvio('ana@correo.com', 'en')).toEqual({ correo: 'ana@correo.com', idioma: 'en' })
+  })
+})
+
+describe('esEnlaceInvalido', () => {
+  it('solo es un 400 con el código enlace_invalido', () => {
+    expect(esEnlaceInvalido(new ErrorDeApi(400, 'enlace_invalido'))).toBe(true)
+    expect(esEnlaceInvalido(new ErrorDeApi(400, 'datos_invalidos'))).toBe(false)
+    expect(esEnlaceInvalido(new ErrorDeApi(500, 'enlace_invalido'))).toBe(false)
+    expect(esEnlaceInvalido(new Error('enlace_invalido'))).toBe(false)
   })
 })
 

@@ -59,7 +59,7 @@ export const pt: TextosAcceso = {
     parrafo: 'Enviamos um link para comprovar que o e-mail é seu e continuar com seu perfil.',
     tarjetaTitulo: 'Enviamos um link',
     loEnviamosA: 'Enviamos para',
-    nota: 'Abra-o para continuar. Expira em 15 minutos.',
+    nota: 'Abra-o para continuar. Expira em 24 horas.',
     reenviar: 'Reenviar link',
     cambiarCorreo: 'Trocar e-mail',
     espera: 'Você poderá reenviá-lo em {tiempo}.',
@@ -80,6 +80,28 @@ export const pt: TextosAcceso = {
     enviando: 'Entrando…',
     pie: { texto: 'Ainda não tem conta?', enlace: 'Cadastre-se' },
     credenciales: 'E-mail ou senha incorretos. Confira os dados e tente de novo.',
+    otroEnlace: { boton: 'Enviar outro link', enviando: 'Enviando…', enviado: 'Enviamos um novo link. Confira seu e-mail.' },
+  },
+  confirmar: {
+    metadatos: { titulo: 'Confirmar e-mail | Nómadas', descripcion: 'Confirme seu e-mail para entrar na sua conta da Nómadas.' },
+    etiqueta: 'Founders',
+    confirmando: 'Confirmando seu e-mail…',
+    confirmado: {
+      titulo: 'E-mail confirmado',
+      texto: 'Pronto: {correo} foi confirmado. Você já pode entrar.',
+      boton: 'Entrar',
+    },
+    invalido: {
+      titulo: 'Este link não funciona mais',
+      texto: 'Ele pode ter expirado, já ter sido usado ou substituído por um mais novo. Digite seu e-mail e enviaremos outro.',
+    },
+    sinEnlace: {
+      titulo: 'Falta o link',
+      texto: 'Abra esta página pelo link que enviamos por e-mail. Se não o encontrar, peça um novo.',
+    },
+    error: { titulo: 'Não conseguimos confirmar seu e-mail' },
+    reintentar: 'Tentar de novo',
+    otroEnlace: { texto: 'Pedir um novo link', boton: 'Enviar link', enviando: 'Enviando…', enviado: 'Se esse e-mail tiver uma conta não confirmada, um novo link chegará em alguns minutos.' },
   },
   dentro: {
     etiqueta: 'Founders',

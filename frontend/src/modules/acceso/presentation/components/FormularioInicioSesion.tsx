@@ -20,11 +20,13 @@ type Props = {
   /** Sin esto no se muestra «Continuar con Google» */
   google?: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
   hrefRegistro: string
+  /** Con el correo sin confirmar: pedir otro enlace al correo escrito */
+  otroEnlace: { estado: 'listo' | 'enviando' | 'enviado' | 'limite' | 'fallo'; alPulsar: () => void }
 }
 
 // Formulario de iniciar sesión: con Google, o con correo y contraseña. Un aviso general cubre los datos que no
 // corresponden, sin decir cuál de los dos falla.
-export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, google, hrefRegistro }: Props) {
+export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso, cambiar, alEnviar, google, hrefRegistro, otroEnlace }: Props) {
   const t = textos.inicio
   const error = (campo: keyof DatosInicioSesion) => mensajeDeErrorCuenta(textos, campo, errores[campo])
 
@@ -47,6 +49,25 @@ export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso
           </span>
           <span>{aviso === 'credenciales' ? t.credenciales : textos.avisos[aviso]}</span>
         </p>
+      )}
+      {aviso === 'sinConfirmar' && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <button
+            type="button"
+            onClick={otroEnlace.alPulsar}
+            disabled={otroEnlace.estado === 'enviando'}
+            className={`text-parrafo font-medium underline underline-offset-4 disabled:opacity-60 ${foco}`}
+          >
+            {otroEnlace.estado === 'enviando' ? t.otroEnlace.enviando : t.otroEnlace.boton}
+          </button>
+          <p role="status" className="text-cuerpo">
+            {otroEnlace.estado === 'enviado'
+              ? t.otroEnlace.enviado
+              : otroEnlace.estado === 'limite' || otroEnlace.estado === 'fallo'
+                ? textos.avisos[otroEnlace.estado]
+                : ''}
+          </p>
+        </div>
       )}
 
       <form noValidate onSubmit={alEnviarFormulario} className="mt-6 grid gap-6">

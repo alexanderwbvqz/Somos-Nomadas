@@ -1,4 +1,5 @@
 import type { CuentaRepository } from '../domain/CuentaRepository'
+import { IDIOMA_DEL_CORREO_POR_DEFECTO, type IdiomaDelCorreo } from '../domain/confirmacion'
 import { ErrorDeCamposInvalidos, ErrorDeLimite } from '../domain/errores'
 import { camposRechazados } from './camposRechazados'
 import {
@@ -23,8 +24,13 @@ export type ResultadoRegistro =
       motivo?: 'limite' | 'fallo'
     }
 
-// Valida otra vez, en el servidor, lo que mandó el navegador; si todo está bien crea la cuenta.
-export async function registrarCuenta(repositorio: CuentaRepository, datos: DatosRegistro): Promise<ResultadoRegistro> {
+// Valida otra vez, en el servidor, lo que mandó el navegador; si todo está bien crea la cuenta. El backend envía el
+// enlace de confirmación en `idioma`.
+export async function registrarCuenta(
+  repositorio: CuentaRepository,
+  datos: DatosRegistro,
+  idioma: IdiomaDelCorreo = IDIOMA_DEL_CORREO_POR_DEFECTO,
+): Promise<ResultadoRegistro> {
   // Un robot rellena el campo trampa: se responde como si todo hubiera ido bien, sin crear nada
   if (esRobotRegistro(datos)) return { ok: true, correo: datos.correo.trim() }
 
@@ -33,7 +39,7 @@ export async function registrarCuenta(repositorio: CuentaRepository, datos: Dato
 
   const cuenta = limpiarRegistro(datos)
   try {
-    await repositorio.registrar(cuenta)
+    await repositorio.registrar(cuenta, idioma)
     return { ok: true, correo: cuenta.correo }
   } catch (error) {
     if (error instanceof ErrorDeLimite) return { ok: false, errores: {}, motivo: 'limite' }

@@ -3,24 +3,39 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import type { ResultadoGoogle } from '../application/continuarConGoogle'
 import type { ResultadoInicioSesion } from '../application/iniciarSesion'
+import type { ResultadoReenvio } from '../application/reenviarConfirmacion'
 import type { DatosInicioSesion } from '../domain/cuenta'
 import { es } from '../language/es'
 import { InicioSesionView } from './InicioSesionView'
 
 const t = es
 
-function montar(resultado: ResultadoInicioSesion = { ok: true, correo: 'ana@correo.com' }, google: ResultadoGoogle = { ok: true, correo: 'cuenta.google@ejemplo.com' }) {
+function montar(
+  resultado: ResultadoInicioSesion = { ok: true, correo: 'ana@correo.com' },
+  google: ResultadoGoogle = { ok: true, correo: 'cuenta.google@ejemplo.com' },
+  reenvio: ResultadoReenvio = { ok: true },
+) {
   const alIniciar = vi.fn<(datos: DatosInicioSesion) => Promise<ResultadoInicioSesion>>(async () => resultado)
   const alContinuarConGoogle = vi.fn<(credencial: string) => Promise<ResultadoGoogle>>(async () => google)
-  render(<InicioSesionView textos={t} alIniciar={alIniciar} alContinuarConGoogle={alContinuarConGoogle} hrefRegistro="/es/registro" hrefContinuar="/es/bienvenida" />)
-  return { alIniciar, alContinuarConGoogle, usuario: userEvent.setup() }
+  const alReenviar = vi.fn<(correo: string) => Promise<ResultadoReenvio>>(async () => reenvio)
+  render(
+    <InicioSesionView
+      textos={t}
+      alIniciar={alIniciar}
+      alReenviar={alReenviar}
+      alContinuarConGoogle={alContinuarConGoogle}
+      hrefRegistro="/es/registro"
+      hrefContinuar="/es/bienvenida"
+    />,
+  )
+  return { alIniciar, alContinuarConGoogle, alReenviar, usuario: userEvent.setup() }
 }
 
 const iniciar = () => screen.getByRole('button', { name: t.inicio.enviar })
 
 describe('InicioSesionView sin Google', () => {
   it('si no hay acción de Google no muestra el botón ni el separador, y el formulario sigue completo', () => {
-    render(<InicioSesionView textos={t} alIniciar={vi.fn()} hrefRegistro="/es/registro" hrefContinuar="/es/bienvenida" />)
+    render(<InicioSesionView textos={t} alIniciar={vi.fn()} alReenviar={vi.fn()} hrefRegistro="/es/registro" hrefContinuar="/es/bienvenida" />)
 
     expect(screen.queryByRole('button', { name: t.google.continuar })).not.toBeInTheDocument()
     expect(screen.queryByText(t.google.separador)).not.toBeInTheDocument()
@@ -80,6 +95,39 @@ describe('InicioSesionView', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.sinConfirmar)
     // La contraseña era buena: no hace falta volver a escribirla
     expect(screen.getByLabelText('Contraseña')).toHaveValue('Clave-segura-9')
+  })
+
+  it('con el correo sin confirmar ofrece enviar otro enlace al correo escrito', async () => {
+    const { alReenviar, usuario } = montar({ ok: false, errores: {}, motivo: 'sinConfirmar' })
+    await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
+    await usuario.click(iniciar())
+
+    await usuario.click(await screen.findByRole('button', { name: t.inicio.otroEnlace.boton }))
+
+    expect(alReenviar).toHaveBeenCalledExactlyOnceWith('ana@correo.com')
+    expect(await screen.findByText(t.inicio.otroEnlace.enviado)).toBeInTheDocument()
+  })
+
+  it('el botón de otro enlace solo aparece con el correo sin confirmar', async () => {
+    const { usuario } = montar({ ok: false, errores: {}, motivo: 'credenciales' })
+    await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
+    await usuario.click(iniciar())
+
+    await screen.findByRole('alert')
+    expect(screen.queryByRole('button', { name: t.inicio.otroEnlace.boton })).not.toBeInTheDocument()
+  })
+
+  it('si pedir otro enlace topa con el límite, lo avisa', async () => {
+    const { usuario } = montar({ ok: false, errores: {}, motivo: 'sinConfirmar' }, undefined, { ok: false, motivo: 'limite' })
+    await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
+    await usuario.click(iniciar())
+
+    await usuario.click(await screen.findByRole('button', { name: t.inicio.otroEnlace.boton }))
+
+    expect(await screen.findByRole('status')).toHaveTextContent(t.avisos.limite)
   })
 
   it('avisa si hubo demasiados intentos', async () => {

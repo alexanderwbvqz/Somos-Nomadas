@@ -1,19 +1,26 @@
 import { ErrorDeApi } from '@/shared/api/errores'
+import type { IdiomaDelCorreo } from '../../domain/confirmacion'
 import type { CodigoErrorCuenta, CuentaNueva } from '../../domain/cuenta'
 import { ErrorDeCamposInvalidos, ErrorDeCorreoSinConfirmar, ErrorDeLimite } from '../../domain/errores'
 
 // La traducción entre el dominio y la API de acceso: nombres de campo (camelCase ↔ snake_case), códigos de error y
 // los errores del dominio. Los nombres de la API (contrato/autenticacion.md) solo viven aquí y en el esquema.
 
-/** Lo que se manda a POST /acceso/registro */
-export function cuerpoDeRegistro(cuenta: CuentaNueva) {
+/** Lo que se manda a POST /acceso/registro. `idioma` es el del correo de confirmación */
+export function cuerpoDeRegistro(cuenta: CuentaNueva, idioma: IdiomaDelCorreo) {
   return {
     correo: cuenta.correo,
     clave: cuenta.clave,
     acepta_politica: cuenta.aceptaPolitica,
     // El campo trampa: una persona no lo ve ni lo rellena. Siempre vacío
     sitio_secundario: '',
+    idioma,
   }
+}
+
+/** Lo que se manda a POST /acceso/confirmacion/reenvio */
+export function cuerpoDeReenvio(correo: string, idioma: IdiomaDelCorreo) {
+  return { correo, idioma }
 }
 
 /** Lo que se manda a POST /acceso/sesion */
@@ -56,6 +63,11 @@ export function camposDelDominio(campos: Readonly<Record<string, string>>): Reco
 /** Las credenciales no corresponden: no es un fallo, es la respuesta normal a una contraseña equivocada */
 export function esCredencialesInvalidas(error: unknown): boolean {
   return error instanceof ErrorDeApi && error.codigo === 'credenciales_invalidas'
+}
+
+/** La API dice que el enlace de confirmación no vale (sin decir por qué) */
+export function esEnlaceInvalido(error: unknown): boolean {
+  return error instanceof ErrorDeApi && error.estado === 400 && error.codigo === 'enlace_invalido'
 }
 
 /** La API dice que la sesión no vale (token falso, caducado o de una sesión cerrada) */

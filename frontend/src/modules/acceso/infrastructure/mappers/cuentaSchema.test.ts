@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { datosRegistroVacios } from '../../domain/cuenta'
-import { leerCorreo, leerCredencial, leerDatosInicioSesion, leerDatosRegistro } from './cuentaSchema'
+import { leerCorreo, leerCredencial, leerDatosInicioSesion, leerDatosRegistro, leerToken } from './cuentaSchema'
 
 describe('leerDatosRegistro', () => {
   it('acepta unos datos con la forma correcta', () => {
@@ -31,5 +31,14 @@ describe('leerDatosInicioSesion, leerCorreo y leerCredencial', () => {
     expect(leerCredencial('')).toBeUndefined()
     expect(leerCredencial('a'.repeat(5000))).toBeUndefined()
     expect(leerCredencial({ token: 'x' })).toBeUndefined()
+  })
+})
+
+describe('leerToken', () => {
+  it('acepta un texto de hasta 500 caracteres y nada más: lo demás ni se procesa', () => {
+    expect(leerToken('a'.repeat(500))).toBe('a'.repeat(500))
+    expect(leerToken('a'.repeat(501))).toBeUndefined()
+    expect(leerToken(5)).toBeUndefined()
+    expect(leerToken(undefined)).toBeUndefined()
   })
 })

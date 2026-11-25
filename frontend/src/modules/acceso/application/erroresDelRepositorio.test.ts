@@ -27,6 +27,7 @@ function fallaCon(error: unknown): CuentaRepository {
     renovarSesion: fallar,
     cerrarSesion: fallar,
     obtenerCuenta: fallar,
+    confirmarCorreo: fallar,
   }
 }
 

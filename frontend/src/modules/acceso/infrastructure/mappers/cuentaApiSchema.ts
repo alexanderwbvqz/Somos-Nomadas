@@ -44,3 +44,11 @@ export function leerCuentaActual(cuerpo: unknown): CuentaActual | undefined {
   const { id, correo, correo_confirmado } = resultado.data
   return { id, correo, correoConfirmado: correo_confirmado }
 }
+
+const correoConfirmadoSchema = z.object({ correo: z.string().min(1) })
+
+/** El correo que devuelve `POST /acceso/confirmacion` al confirmarlo */
+export function leerCorreoConfirmado(cuerpo: unknown): string | undefined {
+  const resultado = correoConfirmadoSchema.safeParse(cuerpo)
+  return resultado.success ? resultado.data.correo : undefined
+}

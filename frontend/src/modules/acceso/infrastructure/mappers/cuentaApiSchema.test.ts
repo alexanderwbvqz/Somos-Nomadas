@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { leerCredencialRenovada, leerCuentaActual, leerSesionIniciada } from './cuentaApiSchema'
+import { leerCorreoConfirmado, leerCredencialRenovada, leerCuentaActual, leerSesionIniciada } from './cuentaApiSchema'
 
 const valida = { token_acceso: 'a.b.c', expira_en: 900, token_renovacion: 'renovacion-1', correo: 'ana@correo.com' }
 const credencial = { acceso: 'a.b.c', renovacion: 'renovacion-1', expiraEnSegundos: 900 }
@@ -82,5 +82,21 @@ describe('leerCuentaActual', () => {
     ['con correo_confirmado en texto', { ...yo, correo_confirmado: 'true' }],
   ])('una respuesta %s no es válida', (_nombre, cuerpo) => {
     expect(leerCuentaActual(cuerpo)).toBeUndefined()
+  })
+})
+
+describe('leerCorreoConfirmado', () => {
+  it('devuelve el correo de la respuesta de la confirmación', () => {
+    expect(leerCorreoConfirmado({ correo: 'ana@correo.com' })).toBe('ana@correo.com')
+    expect(leerCorreoConfirmado({ correo: 'ana@correo.com', algo_nuevo: 1 })).toBe('ana@correo.com')
+  })
+
+  it.each([
+    ['sin cuerpo', undefined],
+    ['sin correo', {}],
+    ['con correo vacío', { correo: '' }],
+    ['con correo que no es texto', { correo: 5 }],
+  ])('una respuesta %s no es válida', (_nombre, cuerpo) => {
+    expect(leerCorreoConfirmado(cuerpo)).toBeUndefined()
   })
 })

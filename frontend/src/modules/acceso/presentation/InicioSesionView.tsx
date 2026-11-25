@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import type { AccionReenviar } from './components/ConfirmaCorreo'
 import type { TextosAcceso } from '../language/tipos'
 import { FormularioInicioSesion } from './components/FormularioInicioSesion'
 import { SesionIniciada } from './components/SesionIniciada'
@@ -11,6 +12,8 @@ import { PaginaAcceso } from './components/PaginaAcceso'
 export type InicioSesionViewProps = {
   textos: TextosAcceso
   alIniciar: AccionIniciarSesion
+  /** Pedir otro enlace de confirmación desde el aviso de correo sin confirmar */
+  alReenviar: AccionReenviar
   /** Sin esta acción no se muestra «Continuar con Google» */
   alContinuarConGoogle?: AccionGoogle
   hrefRegistro: string
@@ -20,10 +23,22 @@ export type InicioSesionViewProps = {
 
 // Pantalla de iniciar sesión (con Google o con correo y contraseña). Al entrar muestra un mensaje provisional:
 // el panel todavía no existe.
-export function InicioSesionView({ textos, alIniciar, alContinuarConGoogle, hrefRegistro, hrefContinuar }: InicioSesionViewProps) {
+export function InicioSesionView({ textos, alIniciar, alReenviar, alContinuarConGoogle, hrefRegistro, hrefContinuar }: InicioSesionViewProps) {
   const { datos, errores, enviando, aviso, correoDentro, enfoque, cambiar, enviar } = useInicioSesion(alIniciar)
   const google = useGoogle(alContinuarConGoogle)
   const t = textos.inicio
+  const [otroEnlace, setOtroEnlace] = useState<'listo' | 'enviando' | 'enviado' | 'limite' | 'fallo'>('listo')
+
+  async function pedirOtroEnlace() {
+    if (otroEnlace === 'enviando') return
+    setOtroEnlace('enviando')
+    try {
+      const resultado = await alReenviar(datos.correo)
+      setOtroEnlace(resultado.ok ? 'enviado' : resultado.motivo)
+    } catch {
+      setOtroEnlace('fallo')
+    }
+  }
 
   useEffect(() => {
     if (enfoque) document.getElementById(enfoque.id)?.focus()
@@ -44,6 +59,7 @@ export function InicioSesionView({ textos, alIniciar, alContinuarConGoogle, href
         alEnviar={enviar}
         google={alContinuarConGoogle ? { cargando: google.cargando, aviso: google.aviso, alPulsar: google.continuar } : undefined}
         hrefRegistro={hrefRegistro}
+        otroEnlace={{ estado: otroEnlace, alPulsar: pedirOtroEnlace }}
       />
     </PaginaAcceso>
   )

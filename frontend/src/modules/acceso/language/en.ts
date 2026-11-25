@@ -59,7 +59,7 @@ export const en: TextosAcceso = {
     parrafo: 'We sent you a link to check that the email is yours and continue with your profile.',
     tarjetaTitulo: 'We sent you a link',
     loEnviamosA: 'We sent it to',
-    nota: 'Open it to continue. It expires in 15 minutes.',
+    nota: 'Open it to continue. It expires in 24 hours.',
     reenviar: 'Resend link',
     cambiarCorreo: 'Change email',
     espera: 'You can resend it in {tiempo}.',
@@ -80,6 +80,28 @@ export const en: TextosAcceso = {
     enviando: 'Logging in…',
     pie: { texto: 'Do not have an account yet?', enlace: 'Sign up' },
     credenciales: 'Incorrect email or password. Check your details and try again.',
+    otroEnlace: { boton: 'Send another link', enviando: 'Sending…', enviado: 'We sent you a new link. Check your inbox.' },
+  },
+  confirmar: {
+    metadatos: { titulo: 'Confirm email | Nómadas', descripcion: 'Confirm your email to sign in to your Nómadas account.' },
+    etiqueta: 'Founders',
+    confirmando: 'Confirming your email…',
+    confirmado: {
+      titulo: 'Email confirmed',
+      texto: 'Done: {correo} is confirmed. You can sign in now.',
+      boton: 'Sign in',
+    },
+    invalido: {
+      titulo: 'This link no longer works',
+      texto: 'It may have expired, been used already, or been replaced by a newer one. Enter your email and we will send you a new one.',
+    },
+    sinEnlace: {
+      titulo: 'The link is missing',
+      texto: 'Open this page from the link we emailed you. If you can not find it, ask for a new one.',
+    },
+    error: { titulo: 'We could not confirm your email' },
+    reintentar: 'Try again',
+    otroEnlace: { texto: 'Get a new link', boton: 'Send link', enviando: 'Sending…', enviado: 'If that email has an unconfirmed account, a new link will arrive in a few minutes.' },
   },
   dentro: {
     etiqueta: 'Founders',

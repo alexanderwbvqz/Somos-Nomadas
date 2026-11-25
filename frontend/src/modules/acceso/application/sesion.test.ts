@@ -31,6 +31,7 @@ function repositorioQue(cambios: Partial<CuentaRepository>): CuentaRepository {
     renovarSesion: noDebiaLlamarse,
     cerrarSesion: noDebiaLlamarse,
     obtenerCuenta: noDebiaLlamarse,
+    confirmarCorreo: noDebiaLlamarse,
     ...cambios,
   }
 }

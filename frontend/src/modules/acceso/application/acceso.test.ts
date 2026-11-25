@@ -20,6 +20,7 @@ const roto: CuentaRepository = {
   renovarSesion: async () => { throw new Error('x') },
   cerrarSesion: async () => { throw new Error('x') },
   obtenerCuenta: async () => { throw new Error('x') },
+  confirmarCorreo: async () => { throw new Error('x') },
 }
 
 describe('registrarCuenta', () => {

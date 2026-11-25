@@ -59,7 +59,7 @@ export const es: TextosAcceso = {
     parrafo: 'Te enviamos un enlace para comprobar que el correo es tuyo y seguir con tu perfil.',
     tarjetaTitulo: 'Te enviamos un enlace',
     loEnviamosA: 'Lo enviamos a',
-    nota: 'Ábrelo para continuar. Caduca en 15 minutos.',
+    nota: 'Ábrelo para continuar. Caduca en 24 horas.',
     reenviar: 'Reenviar enlace',
     cambiarCorreo: 'Cambiar correo',
     espera: 'Podrás reenviarlo en {tiempo}.',
@@ -80,6 +80,28 @@ export const es: TextosAcceso = {
     enviando: 'Entrando…',
     pie: { texto: '¿Aún no tienes cuenta?', enlace: 'Regístrate' },
     credenciales: 'Correo o contraseña incorrectos. Revisa los datos e inténtalo de nuevo.',
+    otroEnlace: { boton: 'Enviar otro enlace', enviando: 'Enviando…', enviado: 'Te enviamos un enlace nuevo. Revisa tu correo.' },
+  },
+  confirmar: {
+    metadatos: { titulo: 'Confirmar correo | Nómadas', descripcion: 'Confirma tu correo para entrar a tu cuenta de Nómadas.' },
+    etiqueta: 'Founders',
+    confirmando: 'Confirmando tu correo…',
+    confirmado: {
+      titulo: 'Correo confirmado',
+      texto: 'Listo: {correo} quedó confirmado. Ya puedes iniciar sesión.',
+      boton: 'Iniciar sesión',
+    },
+    invalido: {
+      titulo: 'Este enlace ya no sirve',
+      texto: 'Puede que haya caducado, que ya lo usaras o que pidieras otro más nuevo. Escribe tu correo y te enviamos uno nuevo.',
+    },
+    sinEnlace: {
+      titulo: 'Falta el enlace',
+      texto: 'Abre esta página desde el enlace que te enviamos por correo. Si no lo encuentras, pide uno nuevo.',
+    },
+    error: { titulo: 'No pudimos confirmar tu correo' },
+    reintentar: 'Intentar de nuevo',
+    otroEnlace: { texto: 'Pedir un enlace nuevo', boton: 'Enviar enlace', enviando: 'Enviando…', enviado: 'Si ese correo tiene una cuenta sin confirmar, te llegará un enlace nuevo en unos minutos.' },
   },
   dentro: {
     etiqueta: 'Founders',

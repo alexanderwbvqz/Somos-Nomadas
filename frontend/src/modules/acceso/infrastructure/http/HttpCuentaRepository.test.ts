@@ -41,13 +41,15 @@ describe('HttpCuentaRepository.registrar', () => {
   it('manda POST /acceso/registro con los nombres de la API y no devuelve nada', async () => {
     const { cliente, llamadas } = clienteFalso(ok(undefined, 202))
 
-    await expect(new HttpCuentaRepository(cliente).registrar(cuenta)).resolves.toBeUndefined()
+    await expect(new HttpCuentaRepository(cliente).registrar(cuenta, 'es')).resolves.toBeUndefined()
 
     expect(llamadas).toEqual([
       {
         metodo: 'POST',
         ruta: '/acceso/registro',
-        solicitud: { json: { correo: 'ana@correo.com', clave: 'Clave-segura1', acepta_politica: true, sitio_secundario: '' } },
+        solicitud: {
+          json: { correo: 'ana@correo.com', clave: 'Clave-segura1', acepta_politica: true, sitio_secundario: '', idioma: 'es' },
+        },
       },
     ])
   })
@@ -55,7 +57,7 @@ describe('HttpCuentaRepository.registrar', () => {
   it('un límite excedido es ErrorDeLimite con los segundos de espera', async () => {
     const { cliente } = clienteFalso(falla(new ErrorDeApi(429, 'limite_excedido', {}, 3600)))
 
-    const error = await captura(new HttpCuentaRepository(cliente).registrar(cuenta))
+    const error = await captura(new HttpCuentaRepository(cliente).registrar(cuenta, 'es'))
 
     expect(error).toBeInstanceOf(ErrorDeLimite)
     expect((error as ErrorDeLimite).reintentarEnSegundos).toBe(3600)
@@ -64,7 +66,7 @@ describe('HttpCuentaRepository.registrar', () => {
   it('datos que la API rechaza son ErrorDeCamposInvalidos, ya con los nombres del dominio', async () => {
     const { cliente } = clienteFalso(falla(new ErrorDeApi(422, 'datos_invalidos', { acepta_politica: 'politica_requerida', clave: 'clave_corta' })))
 
-    const error = await captura(new HttpCuentaRepository(cliente).registrar(cuenta))
+    const error = await captura(new HttpCuentaRepository(cliente).registrar(cuenta, 'es'))
 
     expect(error).toBeInstanceOf(ErrorDeCamposInvalidos)
     expect((error as ErrorDeCamposInvalidos).campos).toEqual({ aceptaPolitica: 'politicaRequerida', clave: 'claveCorta' })
@@ -74,8 +76,8 @@ describe('HttpCuentaRepository.registrar', () => {
     const caida = new ErrorDeApi(500, 'fallo')
     const sinRed = new ErrorDeRed('sin_conexion')
 
-    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(caida)).cliente).registrar(cuenta))).toBe(caida)
-    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(sinRed)).cliente).registrar(cuenta))).toBe(sinRed)
+    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(caida)).cliente).registrar(cuenta, 'es'))).toBe(caida)
+    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(sinRed)).cliente).registrar(cuenta, 'es'))).toBe(sinRed)
   })
 })
 
@@ -231,14 +233,73 @@ describe('HttpCuentaRepository.obtenerCuenta', () => {
   })
 })
 
+describe('HttpCuentaRepository.reenviarConfirmacion', () => {
+  it('manda POST /acceso/confirmacion/reenvio con el correo y el idioma', async () => {
+    const { cliente, llamadas } = clienteFalso(ok(undefined, 202))
+
+    await expect(new HttpCuentaRepository(cliente).reenviarConfirmacion('ana@correo.com', 'pt')).resolves.toBeUndefined()
+
+    expect(llamadas).toEqual([
+      { metodo: 'POST', ruta: '/acceso/confirmacion/reenvio', solicitud: { json: { correo: 'ana@correo.com', idioma: 'pt' } } },
+    ])
+  })
+
+  it('un límite excedido es ErrorDeLimite y un correo rechazado es ErrorDeCamposInvalidos', async () => {
+    const limite = clienteFalso(falla(new ErrorDeApi(429, 'limite_excedido', {}, 3600))).cliente
+    const rechazado = clienteFalso(falla(new ErrorDeApi(422, 'datos_invalidos', { correo: 'correo_invalido' }))).cliente
+
+    expect(await captura(new HttpCuentaRepository(limite).reenviarConfirmacion('a@b.co', 'es'))).toBeInstanceOf(ErrorDeLimite)
+    const error = await captura(new HttpCuentaRepository(rechazado).reenviarConfirmacion('a@b', 'es'))
+    expect((error as ErrorDeCamposInvalidos).campos).toEqual({ correo: 'correoInvalido' })
+  })
+
+  it('cualquier otro fallo se deja pasar tal cual', async () => {
+    const sinRed = new ErrorDeRed('sin_conexion')
+
+    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(sinRed)).cliente).reenviarConfirmacion('a@b.co', 'es'))).toBe(sinRed)
+  })
+})
+
+describe('HttpCuentaRepository.confirmarCorreo', () => {
+  const TOKEN = 'kVmM4x6ra2TdRrgU23duyfSBxrvhOwiN71QK2GzTuZ8'
+
+  it('manda POST /acceso/confirmacion con el token y devuelve el correo confirmado', async () => {
+    const { cliente, llamadas } = clienteFalso(ok({ correo: 'ana@correo.com' }))
+
+    expect(await new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN)).toBe('ana@correo.com')
+    expect(llamadas).toEqual([{ metodo: 'POST', ruta: '/acceso/confirmacion', solicitud: { json: { token: TOKEN } } }])
+  })
+
+  it('un 400 enlace_invalido es undefined: el enlace no vale', async () => {
+    const { cliente } = clienteFalso(falla(new ErrorDeApi(400, 'enlace_invalido')))
+
+    expect(await new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN)).toBeUndefined()
+  })
+
+  it('un límite excedido es ErrorDeLimite; los demás fallos se dejan pasar', async () => {
+    const caida = new ErrorDeApi(500, 'fallo')
+
+    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(new ErrorDeApi(429, 'limite_excedido'))).cliente).confirmarCorreo(TOKEN))).toBeInstanceOf(ErrorDeLimite)
+    expect(await captura(new HttpCuentaRepository(clienteFalso(falla(caida)).cliente).confirmarCorreo(TOKEN))).toBe(caida)
+  })
+
+  it('una respuesta sin el correo es un error, no una confirmación, y no repite el token', async () => {
+    const { cliente } = clienteFalso(ok({ ok: true }))
+
+    const error = (await captura(new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN))) as Error
+
+    expect(error.message).toContain('inesperada')
+    expect(`${error.message} ${JSON.stringify(error)}`).not.toContain(TOKEN)
+  })
+})
+
 describe('HttpCuentaRepository: lo que la API todavía no tiene', () => {
-  it('Google y el reenvío de la confirmación fallan con un mensaje claro, sin llamar a la API', async () => {
+  it('Google falla con un mensaje claro, sin llamar a la API', async () => {
     const { cliente, llamadas } = clienteFalso(ok())
     // Se prueba a través del puerto, que es como lo usa el resto del código
     const repositorio: CuentaRepository = new HttpCuentaRepository(cliente)
 
     await expect(repositorio.iniciarConGoogle('credencial')).rejects.toThrow('todavía no está disponible')
-    await expect(repositorio.reenviarConfirmacion('ana@correo.com')).rejects.toThrow('todavía no está disponible')
     expect(llamadas).toHaveLength(0)
   })
 })

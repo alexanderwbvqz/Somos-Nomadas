@@ -20,6 +20,9 @@ const inicioSesionSchema = z.object({
 
 const correoSchema = texto(LIMITES_CUENTA.correo * holgura)
 
+// El token del enlace del correo: un texto acotado. Su forma la revisa el dominio
+const tokenSchema = z.string().max(500)
+
 // La credencial de Google es un token largo; se acota para no aceptar textos desmesurados
 const credencialSchema = z.string().min(1).max(4096)
 
@@ -40,5 +43,10 @@ export function leerCorreo(entrada: unknown): string | undefined {
 
 export function leerCredencial(entrada: unknown): string | undefined {
   const resultado = credencialSchema.safeParse(entrada)
+  return resultado.success ? resultado.data : undefined
+}
+
+export function leerToken(entrada: unknown): string | undefined {
+  const resultado = tokenSchema.safeParse(entrada)
   return resultado.success ? resultado.data : undefined
 }

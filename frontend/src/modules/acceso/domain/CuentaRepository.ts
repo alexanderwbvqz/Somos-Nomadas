@@ -1,3 +1,4 @@
+import type { IdiomaDelCorreo } from './confirmacion'
 import type { CuentaNueva } from './cuenta'
 import type { CredencialDeSesion, CuentaActual } from './sesion'
 
@@ -7,7 +8,7 @@ export interface CuentaRepository {
    * quien lo escribió no debe poder averiguar quién está registrado.
    * Falla con `ErrorDeLimite` (demasiados intentos) o `ErrorDeCamposInvalidos` (datos que el servidor no acepta).
    */
-  registrar(cuenta: CuentaNueva): Promise<void>
+  registrar(cuenta: CuentaNueva, idioma: IdiomaDelCorreo): Promise<void>
   /**
    * La cuenta de ese correo y contraseña, con la sesión que se abre, o undefined si no corresponden (sin decir cuál de los dos falla).
    * Falla con `ErrorDeLimite`, `ErrorDeCamposInvalidos` o `ErrorDeCorreoSinConfirmar` (la contraseña es correcta, pero
@@ -28,6 +29,11 @@ export interface CuentaRepository {
   cerrarSesion(renovacion: string): Promise<void>
   /** Quién es la persona de ese `acceso`, o undefined si no vale (falso, caducado o de una sesión cerrada) */
   obtenerCuenta(acceso: string): Promise<CuentaActual | undefined>
-  /** Vuelve a mandar el enlace de confirmación; no dice si el correo tiene cuenta */
-  reenviarConfirmacion(correo: string): Promise<void>
+  /** Vuelve a mandar el enlace de confirmación, en `idioma`; no dice si el correo tiene cuenta */
+  reenviarConfirmacion(correo: string, idioma: IdiomaDelCorreo): Promise<void>
+  /**
+   * Usa el enlace del correo: el correo confirmado, o undefined si el enlace no vale (no existe, ya se usó, caducó o
+   * se anuló; no se sabe cuál). No abre sesión. Falla con `ErrorDeLimite` si hay demasiados intentos.
+   */
+  confirmarCorreo(token: string): Promise<string | undefined>
 }

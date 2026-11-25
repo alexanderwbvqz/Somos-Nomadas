@@ -1,12 +1,13 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it } from 'vitest'
+import type { CuentaRepository } from '../../domain/CuentaRepository'
 import { MockCuentaRepository } from './MockCuentaRepository'
 
 const cuenta = { correo: 'ana@correo.com', clave: 'Clave-segura-9', aceptaPolitica: true } as const
 
 async function conSesion() {
-  const repositorio = new MockCuentaRepository()
-  await repositorio.registrar(cuenta)
+  const repositorio: CuentaRepository = new MockCuentaRepository()
+  await repositorio.registrar(cuenta, 'es')
   const entrada = await repositorio.iniciarSesion(cuenta.correo, cuenta.clave)
   if (!entrada) throw new Error('Debía entrar')
   return { repositorio, credencial: entrada.credencial }
@@ -75,4 +76,45 @@ describe('MockCuentaRepository: sesiones', () => {
     expect(await repositorio.obtenerCuenta(otra?.credencial.acceso ?? '')).toBeDefined()
   })
 
+})
+
+describe('MockCuentaRepository: confirmación del correo', () => {
+  it('al registrar una cuenta nueva guarda un enlace que la confirma una sola vez', async () => {
+    const repositorio: CuentaRepository = new MockCuentaRepository()
+    await repositorio.registrar(cuenta, 'es')
+    const token = MockCuentaRepository.ultimoToken()
+
+    expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/)
+    expect(await repositorio.confirmarCorreo(token ?? '')).toBe('ana@correo.com')
+    expect(await repositorio.confirmarCorreo(token ?? '')).toBeUndefined()
+  })
+
+  it('un correo ya registrado no genera otro enlace', async () => {
+    const repositorio: CuentaRepository = new MockCuentaRepository()
+    await repositorio.registrar(cuenta, 'es')
+    const primero = MockCuentaRepository.ultimoToken()
+
+    await repositorio.registrar(cuenta, 'es')
+
+    expect(MockCuentaRepository.ultimoToken()).toBe(primero)
+  })
+
+  it('reenviar da un enlace nuevo y el anterior deja de valer; sin cuenta no hace nada', async () => {
+    const repositorio: CuentaRepository = new MockCuentaRepository()
+    await repositorio.registrar(cuenta, 'es')
+    const anterior = MockCuentaRepository.ultimoToken() ?? ''
+
+    await repositorio.reenviarConfirmacion('ana@correo.com', 'es')
+    const nuevo = MockCuentaRepository.ultimoToken() ?? ''
+    await repositorio.reenviarConfirmacion('nadie@correo.com', 'es')
+
+    expect(nuevo).not.toBe(anterior)
+    expect(MockCuentaRepository.ultimoToken()).toBe(nuevo)
+    expect(await repositorio.confirmarCorreo(anterior)).toBeUndefined()
+    expect(await repositorio.confirmarCorreo(nuevo)).toBe('ana@correo.com')
+  })
+
+  it('un token inventado no confirma nada', async () => {
+    expect(await new MockCuentaRepository().confirmarCorreo('inventado-0123456789-abcdefg')).toBeUndefined()
+  })
 })

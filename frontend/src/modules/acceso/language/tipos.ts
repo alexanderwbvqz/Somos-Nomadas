@@ -70,6 +70,22 @@ export type TextosAcceso = {
     enviando: string
     pie: { texto: string; enlace: string }
     credenciales: string
+    /** En el aviso de correo sin confirmar: pedir otro enlace al correo escrito */
+    otroEnlace: { boton: string; enviando: string; enviado: string }
+  }
+  /** La página a la que lleva el enlace del correo */
+  confirmar: {
+    metadatos: Metadatos
+    etiqueta: string
+    confirmando: string
+    /** `texto` lleva {correo} */
+    confirmado: { titulo: string; texto: string; boton: string }
+    invalido: { titulo: string; texto: string }
+    sinEnlace: { titulo: string; texto: string }
+    error: { titulo: string }
+    reintentar: string
+    /** Pedir otro enlace desde esta página */
+    otroEnlace: { texto: string; boton: string; enviando: string; enviado: string }
   }
   /** Lo que se ve al entrar (con correo o con Google), mientras no exista el panel */
   dentro: {

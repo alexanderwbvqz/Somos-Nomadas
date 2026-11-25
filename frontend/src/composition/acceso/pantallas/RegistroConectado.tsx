@@ -12,8 +12,8 @@ export function RegistroConectado({ idioma }: { idioma: Idioma }) {
       <main className="flex-1">
         <RegistroView
           textos={textosAcceso(idioma)}
-          alRegistrar={registrarCuentaAccion}
-          alReenviar={reenviarConfirmacionAccion}
+          alRegistrar={registrarCuentaAccion.bind(null, idioma)}
+          alReenviar={reenviarConfirmacionAccion.bind(null, idioma)}
           alContinuarConGoogle={googleDisponible() ? continuarConGoogleAccion : undefined}
           hrefInicioSesion={`/${idioma}/iniciar-sesion`}
           hrefPolitica={`/${idioma}/politica-de-datos`}

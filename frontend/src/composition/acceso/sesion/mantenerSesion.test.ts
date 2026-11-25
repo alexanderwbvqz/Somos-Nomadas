@@ -18,6 +18,7 @@ function repositorioQue(renovar: (renovacion: string) => Promise<CredencialDeSes
     reenviarConfirmacion: noDebiaLlamarse,
     cerrarSesion: noDebiaLlamarse,
     obtenerCuenta: noDebiaLlamarse,
+    confirmarCorreo: noDebiaLlamarse,
     renovarSesion: renovar,
   }
 }
