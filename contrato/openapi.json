@@ -1,0 +1,414 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Somos Nómadas API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/acceso/registro": {
+      "post": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Registro",
+        "operationId": "registro_acceso_registro_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistroEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Aceptado. No dice si el correo ya existía"
+          },
+          "422": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiados intentos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/acceso/sesion": {
+      "post": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Sesion",
+        "operationId": "sesion_acceso_sesion_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SesionEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiados intentos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Correo o contraseña incorrectos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El correo aún no se confirmó",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/acceso/renovar": {
+      "post": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Renovar",
+        "operationId": "renovar_acceso_renovar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRenovacionEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokensSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/acceso/cierre": {
+      "post": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Cierre",
+        "operationId": "cierre_acceso_cierre_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRenovacionEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Cerrada. Tampoco falla si ya estaba cerrada"
+          },
+          "422": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/acceso/yo": {
+      "get": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Yo",
+        "operationId": "yo_acceso_yo_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaSalida"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CuentaSalida": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "correo": {
+            "type": "string",
+            "title": "Correo"
+          },
+          "correo_confirmado": {
+            "type": "boolean",
+            "title": "Correo Confirmado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "correo",
+          "correo_confirmado"
+        ],
+        "title": "CuentaSalida"
+      },
+      "ErrorSalida": {
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "campos": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Campos",
+            "description": "Solo en `datos_invalidos`: campo → código"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo"
+        ],
+        "title": "ErrorSalida"
+      },
+      "RegistroEntrada": {
+        "properties": {
+          "correo": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Correo"
+          },
+          "clave": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Clave"
+          },
+          "acepta_politica": {
+            "type": "boolean",
+            "title": "Acepta Politica"
+          },
+          "sitio_secundario": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Sitio Secundario",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "correo",
+          "clave",
+          "acepta_politica"
+        ],
+        "title": "RegistroEntrada"
+      },
+      "SesionEntrada": {
+        "properties": {
+          "correo": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Correo"
+          },
+          "clave": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Clave"
+          }
+        },
+        "type": "object",
+        "required": [
+          "correo",
+          "clave"
+        ],
+        "title": "SesionEntrada"
+      },
+      "SesionSalida": {
+        "properties": {
+          "token_acceso": {
+            "type": "string",
+            "title": "Token Acceso"
+          },
+          "expira_en": {
+            "type": "integer",
+            "title": "Expira En",
+            "description": "Segundos que dura el token de acceso"
+          },
+          "token_renovacion": {
+            "type": "string",
+            "title": "Token Renovacion"
+          },
+          "correo": {
+            "type": "string",
+            "title": "Correo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token_acceso",
+          "expira_en",
+          "token_renovacion",
+          "correo"
+        ],
+        "title": "SesionSalida"
+      },
+      "TokenRenovacionEntrada": {
+        "properties": {
+          "token_renovacion": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Token Renovacion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token_renovacion"
+        ],
+        "title": "TokenRenovacionEntrada"
+      },
+      "TokensSalida": {
+        "properties": {
+          "token_acceso": {
+            "type": "string",
+            "title": "Token Acceso"
+          },
+          "expira_en": {
+            "type": "integer",
+            "title": "Expira En",
+            "description": "Segundos que dura el token de acceso"
+          },
+          "token_renovacion": {
+            "type": "string",
+            "title": "Token Renovacion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token_acceso",
+          "expira_en",
+          "token_renovacion"
+        ],
+        "title": "TokensSalida"
+      }
+    }
+  }
+}
