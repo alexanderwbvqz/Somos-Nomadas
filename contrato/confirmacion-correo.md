@@ -3,7 +3,7 @@
 Spec de la segunda entrega de `acceso`. Completa `autenticacion.md` (secciones 9 y 11): hoy el registro crea la cuenta sin confirmar y la pantalla promete un enlace que nadie envía.
 
 **Estado:** aprobada por el dueño el 2026-11-25, con las decisiones de la sección 10.
-Hecho en el backend: migración `0007` (aplicada en Supabase), casos de uso, envío (Resend o carpeta) y rutas. Hecho en el frontend: la página `/{idioma}/confirmar-correo`, «Reenviar enlace» de verdad, el botón «Enviar otro enlace» en el aviso de correo sin confirmar, el idioma del registro y los textos de 24 horas. Probado de punta a punta con Playwright (`pnpm e2e:acceso`, 15 casos: el backend exige el correo confirmado y escribe los correos en una carpeta de donde los leen las pruebas). Falta el envío real con Resend, que espera a la clave de la API.
+Hecho en el backend: migración `0007` (aplicada en Supabase), casos de uso, envío (Resend o carpeta) y rutas. Hecho en el frontend: la página `/{idioma}/confirmar-correo`, «Reenviar enlace» de verdad, el botón «Enviar otro enlace» en el aviso de correo sin confirmar, el idioma del registro y los textos de 24 horas. Probado de punta a punta con Playwright (`pnpm e2e:acceso`, 15 casos: el backend exige el correo confirmado y escribe los correos en una carpeta de donde los leen las pruebas). Envío real con Resend comprobado el 2026-11-25: un correo de confirmación desde `hola@somosnomadas.app` llegó a la bandeja de entrada de Gmail (no a spam).
 
 ## 1. Qué cubre
 
@@ -124,8 +124,8 @@ RLS activado y sin políticas; solo `service_role` puede ejecutar las funciones.
 ## 11. Lo que tienes que hacer tú (fuera del código)
 
 1. ~~Crear la cuenta en Resend~~ (hecho).
-2. ~~Añadir `somosnomadas.app` en Resend y sus registros DNS en Namecheap~~ (hecho el 2026-11-25; DKIM y SPF visibles en los DNS públicos, DMARC pendiente). Hasta que Resend lo marque como verificado, solo envía a tu propio correo desde `onboarding@resend.dev`.
-3. Generar una clave de API y ponerla en `backend/.env` como `RESEND_CLAVE`.
+2. ~~Añadir `somosnomadas.app` en Resend y sus registros DNS en Namecheap~~ (hecho y verificado en Resend el 2026-11-25; falta el registro DMARC `_dmarc`, opcional).
+3. ~~Generar una clave de API~~ (hecho: está en `backend/.env`). Se compartió por el chat: solo para desarrollo; para Render se crea otra y esta se borra.
 
 ## 12. Pruebas esperadas
 
