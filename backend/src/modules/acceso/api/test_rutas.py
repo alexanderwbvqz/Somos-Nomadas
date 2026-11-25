@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from modules.acceso.api.conftest import CLAVE, Entorno, Fabrica
 from modules.acceso.application.registrar_cuenta import RegistrarCuenta
 from modules.acceso.domain.cuenta import DatosRegistro
-from modules.acceso.domain.intentos import REGISTRO_POR_ORIGEN, SESION_POR_CORREO
+from modules.acceso.domain.intentos import REGISTRO_POR_ORIGEN, SESION_POR_CORREO_Y_ORIGEN
 from modules.acceso.domain.sesion import TOLERANCIA_REUSO_SEGUNDOS
 
 
@@ -192,15 +192,29 @@ def test_sesion_con_datos_invalidos_responde_422(cliente: TestClient) -> None:
     assert r.json() == {"codigo": "datos_invalidos", "campos": {"correo": "obligatorio", "clave": "obligatorio"}}
 
 
-def test_sesion_supera_los_intentos_por_correo_y_responde_429(cliente: TestClient, entorno: Entorno) -> None:
+def test_otra_persona_no_puede_bloquear_el_inicio_de_sesion_de_la_titular(fabrica: Fabrica, entorno: Entorno) -> None:
     entorno.crear_cuenta()
-    for _ in range(SESION_POR_CORREO.maximo):
+    atacante, titular = fabrica(origen="203.0.113.66"), fabrica(origen="198.51.100.7")
+    for _ in range(SESION_POR_CORREO_Y_ORIGEN.maximo):
+        atacante.post("/acceso/sesion", json={"correo": "ana@correo.com", "clave": "Mala-clave9"})
+    assert atacante.post("/acceso/sesion", json={"correo": "ana@correo.com", "clave": CLAVE}).status_code == 429
+
+    r = titular.post("/acceso/sesion", json={"correo": "ana@correo.com", "clave": CLAVE})
+
+    assert r.status_code == 200
+
+
+def test_sesion_supera_los_intentos_de_un_correo_desde_un_origen_y_responde_429(
+    cliente: TestClient, entorno: Entorno
+) -> None:
+    entorno.crear_cuenta()
+    for _ in range(SESION_POR_CORREO_Y_ORIGEN.maximo):
         cliente.post("/acceso/sesion", json={"correo": "ana@correo.com", "clave": "Mala-clave9"})
 
     r = cliente.post("/acceso/sesion", json={"correo": "ana@correo.com", "clave": CLAVE})
 
     assert r.status_code == 429
-    assert r.headers["retry-after"] == str(SESION_POR_CORREO.ventana_segundos)
+    assert r.headers["retry-after"] == str(SESION_POR_CORREO_Y_ORIGEN.ventana_segundos)
 
 
 # --- GET /acceso/yo ---

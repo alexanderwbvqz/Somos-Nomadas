@@ -168,7 +168,17 @@ Los mensajes que ve la persona **no** vienen de la API: son del frontend (`langu
 
 - **Hash:** `argon2id` con los parámetros por defecto recomendados de la librería elegida, ajustados al servidor de Render. Nunca SHA ni MD5.
 - **Enumeración de cuentas:** el registro responde igual exista o no el correo; el inicio de sesión responde igual si falla el correo o la clave, y tarda lo mismo.
-- **Límite de intentos (decidido):** por IP y por correo, en registro e inicio de sesión. El contador se guarda **en la base** (tabla `intentos_acceso`), así sobrevive a los reinicios de Render y funciona con varias instancias. Se guarda un hash de la IP y del correo, no el valor en claro. Umbrales (primera propuesta, en `domain/intentos.py`): registro, 5 por hora y por origen; inicio de sesión, 5 por cada 15 minutos por correo y 20 por cada 15 minutos por origen. Cuenta todos los intentos, también los que aciertan. Se ajustan con el uso real.
+- **Límite de intentos (decidido):** por IP y por correo, en registro e inicio de sesión. El contador se guarda **en la base** (tabla `intentos_acceso`), así sobrevive a los reinicios de Render y funciona con varias instancias. Se guarda un hash de la IP y del correo, no el valor en claro. Umbrales (primera propuesta, en `domain/intentos.py`; se ajustan con el uso real). Cuentan todos los intentos, también los que aciertan:
+
+  | Acción | Se cuenta por | Máximo | Ventana |
+  |---|---|---|---|
+  | Registro | origen (IP) | 5 | 1 hora |
+  | Inicio de sesión | origen (IP), cualquier correo | 20 | 15 minutos |
+  | Inicio de sesión | **pareja (correo, origen)** | 5 | 15 minutos |
+  | Inicio de sesión | correo, desde cualquier origen (techo) | 100 | 1 hora |
+
+  Se aplican en ese orden y un intento bloqueado por uno **no gasta** el cupo de los siguientes: quien ya está bloqueado no puede seguir llenando el techo ni alargar su propio bloqueo.
+- **Nadie puede bloquear la entrada de otra persona.** El bloqueo rápido es por pareja (correo, origen), no por correo: quien gasta los cinco intentos con el correo ajeno solo se bloquea a sí mismo, y la titular entra desde su propio origen. El techo por correo (100 por hora) es lo bastante holgado para que no sirva de arma, y evita que alguien pruebe claves contra una cuenta repartiendo los intentos entre muchas IPs. Riesgos que se aceptan: (a) quien comparte origen con el atacante (la misma red o el mismo equipo) sí queda bloqueado con él; (b) un atacante con muchos orígenes puede agotar el techo de un correo (hacen falta al menos 5 orígenes y 100 intentos en una hora) y bloquear a esa persona hasta una hora. Si eso ocurre, la defensa siguiente es un captcha. La clave de la pareja usa un espacio como separador, porque un correo válido no puede llevarlo.
 - **CORS:** restringido a los orígenes propios. Recordatorio: protege al navegador, no sustituye la autenticación.
 - **HTTPS** siempre (Render y Vercel lo dan).
 - **Logs:** sin correo ni clave. Se loguea el id de la cuenta, no el correo.
@@ -218,6 +228,7 @@ Librerías aprobadas e instaladas: `fastapi`, `uvicorn`, `pydantic`, `pydantic-s
 
 Resuelta tras la revisión de código: el reúso de un token revocado (carreras entre dos `/renovar`, o una pestaña vieja tras cerrar sesión) ya no desconecta todos los dispositivos; ver la sección 7 y la migración `0004`.
 
+Resuelta también: el bloqueo de una cuenta por un tercero (sección 8: límite por pareja de correo y origen, con un techo por correo).
+
 Pendientes de decidir (salieron de la revisión de código de la rama):
-1. **Bloqueo de una cuenta por un tercero.** El límite por correo cuenta todos los intentos antes de comprobar la clave: cinco intentos con basura con el correo de otra persona la dejan 15 minutos sin poder entrar, y se puede repetir. Opciones: contar solo los fallos, o bloqueo progresivo, o que los aciertos no consuman cupo.
-2. **Recalcular el hash al iniciar sesión** cuando cambien los parámetros de argon2 (`check_needs_rehash`); hoy las cuentas viejas conservan los parámetros con los que se crearon.
+1. **Recalcular el hash al iniciar sesión** cuando cambien los parámetros de argon2 (`check_needs_rehash`); hoy las cuentas viejas conservan los parámetros con los que se crearon.

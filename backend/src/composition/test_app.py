@@ -209,6 +209,7 @@ def test_con_supabase_se_crea_el_cliente_una_sola_vez_con_la_url_y_la_llave(monk
     assert [(c.tipo, c.nombre) for c in falso.llamadas] == [
         ("rpc", "consumir_intento"),
         ("rpc", "consumir_intento"),
+        ("rpc", "consumir_intento"),
         ("rpc", "obtener_cuenta_por_correo"),
     ]
 

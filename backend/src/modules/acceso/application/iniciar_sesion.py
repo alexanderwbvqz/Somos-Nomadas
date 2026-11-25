@@ -9,7 +9,7 @@ from modules.acceso.domain.cuenta_repository import CuentaRepository
 from modules.acceso.domain.emisor_tokens import EmisorTokens
 from modules.acceso.domain.errores import CorreoSinConfirmar, CredencialesInvalidas, DatosInvalidos
 from modules.acceso.domain.hasheador_claves import HasheadorClaves
-from modules.acceso.domain.intentos import SESION_POR_CORREO, SESION_POR_ORIGEN
+from modules.acceso.domain.intentos import SESION_POR_CORREO_TOTAL, SESION_POR_CORREO_Y_ORIGEN, SESION_POR_ORIGEN
 from modules.acceso.domain.limitador_intentos import LimitadorIntentos
 from modules.acceso.domain.sesion import DIAS_TOKEN_RENOVACION, ParDeTokens, Sesion
 from modules.acceso.domain.sesion_repository import SesionRepository
@@ -56,7 +56,11 @@ class IniciarSesion:
             raise DatosInvalidos(errores)
 
         correo = normalizar_correo(datos.correo)
-        exigir_limite(self._limitador, "sesion", correo, SESION_POR_CORREO, ahora)
+        # Primero la pareja (correo, origen) y después el techo por correo: quien ya está bloqueado en su pareja no
+        # gasta el techo, y así nadie puede usar el correo de otra persona para dejarla fuera. El espacio separa las
+        # dos partes sin ambigüedad: un correo válido no puede llevar espacios.
+        exigir_limite(self._limitador, "sesion", f"{correo} {origen}", SESION_POR_CORREO_Y_ORIGEN, ahora)
+        exigir_limite(self._limitador, "sesion", correo, SESION_POR_CORREO_TOTAL, ahora)
 
         cuenta = self._cuentas.obtener_por_correo(correo)
         # Sin cuenta se verifica contra nada: gasta el mismo tiempo y no se nota si el correo existe
