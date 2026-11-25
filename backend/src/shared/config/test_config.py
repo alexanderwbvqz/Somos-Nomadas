@@ -6,6 +6,7 @@ from shared.config.config import Configuracion
 
 JWT = "jwt-secreto-" + "j" * 30
 HUELLAS = "huellas-secreto-" + "h" * 30
+INTERNO = "interno-secreto-" + "n" * 30
 LLAVE = "llave-de-servidor-" + "k" * 30
 VARIABLES = [
     "ENTORNO",
@@ -14,6 +15,7 @@ VARIABLES = [
     "SUPABASE_SERVICE_ROLE_KEY",
     "JWT_SECRETO",
     "HUELLAS_SECRETO",
+    "SECRETO_INTERNO",
     "ORIGENES_PERMITIDOS",
     "EXIGIR_CORREO_CONFIRMADO",
     "POLITICA_VERSION",
@@ -40,6 +42,7 @@ def produccion(**cambios: Any) -> Configuracion:
         "supabase_url": "https://abcdefgh.supabase.co",
         "supabase_service_role_key": LLAVE,
         "huellas_secreto": HUELLAS,
+        "secreto_interno": INTERNO,
         "origenes_permitidos": "https://nomadas.example",
     }
     return configurar(**{**base, **cambios})
@@ -68,6 +71,7 @@ def test_si_se_olvida_el_entorno_se_aplican_las_reglas_de_produccion() -> None:
         "supabase_url": "https://a.supabase.co",
         "supabase_service_role_key": LLAVE,
         "huellas_secreto": HUELLAS,
+        "secreto_interno": INTERNO,
     }
 
     c = Configuracion(_env_file=None, origenes_permitidos="https://nomadas.example", **sin_entorno)  # type: ignore[call-arg]
@@ -88,6 +92,7 @@ def test_lee_las_variables_de_entorno_con_los_nombres_del_env_example(monkeypatc
     monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", LLAVE)
     monkeypatch.setenv("JWT_SECRETO", JWT)
     monkeypatch.setenv("HUELLAS_SECRETO", HUELLAS)
+    monkeypatch.setenv("SECRETO_INTERNO", INTERNO)
     monkeypatch.setenv("ORIGENES_PERMITIDOS", "https://nomadas.example, https://www.nomadas.example")
     monkeypatch.setenv("EXIGIR_CORREO_CONFIRMADO", "true")
     monkeypatch.setenv("POLITICA_VERSION", "2027-01")
@@ -99,6 +104,7 @@ def test_lee_las_variables_de_entorno_con_los_nombres_del_env_example(monkeypatc
     assert c.supabase_service_role_key.get_secret_value() == LLAVE
     assert c.jwt_secreto.get_secret_value() == JWT
     assert c.huellas_secreto.get_secret_value() == HUELLAS
+    assert c.secreto_interno.get_secret_value() == INTERNO
     assert c.lista_de_origenes == ["https://nomadas.example", "https://www.nomadas.example"]
     assert c.politica_version == "2027-01"
 
@@ -196,6 +202,43 @@ def test_un_valor_invalido_que_lleva_un_secreto_dentro_no_se_repite_en_el_error(
         configurar(entorno="otro-" + JWT)
 
     assert JWT not in str(error.value) + repr(error.value)
+
+
+# --- Secreto interno (Next ↔ API) ---
+
+
+def test_el_secreto_interno_es_opcional_en_desarrollo() -> None:
+    assert configurar().secreto_interno.get_secret_value() == ""
+
+
+def test_el_secreto_interno_se_lee_de_su_variable_de_entorno(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("SECRETO_INTERNO", INTERNO)
+
+    assert configurar().secreto_interno.get_secret_value() == INTERNO
+
+
+@pytest.mark.parametrize("secreto", ["corto", "x" * 31])
+def test_si_hay_secreto_interno_exige_32_caracteres_o_mas_aunque_sea_desarrollo(secreto: str) -> None:
+    with pytest.raises(ValueError, match="SECRETO_INTERNO"):
+        configurar(secreto_interno=secreto)
+
+
+def test_produccion_exige_el_secreto_interno() -> None:
+    with pytest.raises(ValueError, match="SECRETO_INTERNO"):
+        produccion(secreto_interno="")
+
+
+@pytest.mark.parametrize("repetido", [JWT, HUELLAS])
+def test_el_secreto_interno_debe_ser_distinto_de_los_otros_secretos(repetido: str) -> None:
+    with pytest.raises(ValueError, match="distintos"):
+        produccion(secreto_interno=repetido)
+
+
+def test_el_secreto_interno_no_aparece_en_el_texto_de_la_configuracion() -> None:
+    c = produccion()
+
+    for texto in (repr(c), str(c), c.model_dump_json()):
+        assert INTERNO not in texto
 
 
 # --- Producción ---

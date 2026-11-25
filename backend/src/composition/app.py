@@ -16,6 +16,7 @@ from modules.acceso.api.rutas import crear_router
 from shared.config.config import Configuracion
 from shared.http.cors import instalar_cors
 from shared.http.manejadores import instalar_manejadores_base
+from shared.http.origen import crear_resolutor_de_origen
 from shared.logging.logging import configurar_logging
 from shared.supabase.cliente import crear_cliente
 
@@ -56,6 +57,7 @@ def crear_app(config: Configuracion | None = None) -> FastAPI:
             renovar_sesion=acceso.renovar_sesion,
             cerrar_sesion=acceso.cerrar_sesion,
             obtener_cuenta_actual=acceso.obtener_cuenta_actual,
+            origen_de=crear_resolutor_de_origen(config.secreto_interno.get_secret_value()),
         )
     )
     # Después de los manejadores, para que las respuestas de error también lleven las cabeceras de CORS

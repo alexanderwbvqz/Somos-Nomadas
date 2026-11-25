@@ -5,6 +5,7 @@ from modules.acceso.application.registrar_cuenta import RegistrarCuenta
 from modules.acceso.domain.cuenta import DatosRegistro
 from modules.acceso.domain.intentos import REGISTRO_POR_ORIGEN, SESION_POR_CORREO_Y_ORIGEN
 from modules.acceso.domain.sesion import TOLERANCIA_REUSO_SEGUNDOS
+from shared.http.origen import CABECERA_ORIGEN, CABECERA_SECRETO
 
 
 def registro(**cambios: object) -> dict[str, object]:
@@ -393,3 +394,59 @@ def test_las_rutas_estan_documentadas_en_openapi(cliente: TestClient) -> None:
     assert "200" not in rutas["/acceso/registro"]["post"]["responses"]
     assert "204" in rutas["/acceso/cierre"]["post"]["responses"]
     assert "200" not in rutas["/acceso/cierre"]["post"]["responses"]
+
+
+# --- Origen: la IP real la reenvía el servidor de Next, con un secreto ---
+
+SECRETO_INTERNO = "interno-secreto-" + "n" * 30
+
+
+def desde_next(ip: str, secreto: str = SECRETO_INTERNO) -> dict[str, str]:
+    return {CABECERA_ORIGEN: ip, CABECERA_SECRETO: secreto}
+
+
+def test_el_limite_de_registro_cuenta_por_la_ip_reenviada_y_no_por_la_del_servidor_de_next(fabrica: Fabrica) -> None:
+    # Todas las peticiones llegan desde el mismo servidor (la conexión de Next), pero de personas distintas
+    next_ = fabrica(origen="10.0.0.1", secreto_interno=SECRETO_INTERNO)
+    for i in range(REGISTRO_POR_ORIGEN.maximo):
+        r = next_.post("/acceso/registro", json=registro(correo=f"p{i}@correo.com"), headers=desde_next("203.0.113.7"))
+        assert r.status_code == 202
+    agotada = next_.post("/acceso/registro", json=registro(correo="x@correo.com"), headers=desde_next("203.0.113.7"))
+
+    otra_persona = next_.post(
+        "/acceso/registro", json=registro(correo="y@correo.com"), headers=desde_next("198.51.100.9")
+    )
+
+    assert agotada.status_code == 429
+    assert otra_persona.status_code == 202
+
+
+def test_el_limite_de_inicio_de_sesion_tambien_cuenta_por_la_ip_reenviada(fabrica: Fabrica, entorno: Entorno) -> None:
+    entorno.crear_cuenta()
+    next_ = fabrica(origen="10.0.0.1", secreto_interno=SECRETO_INTERNO)
+    mala = {"correo": "ana@correo.com", "clave": "Mala-clave9"}
+    for _ in range(SESION_POR_CORREO_Y_ORIGEN.maximo):
+        next_.post("/acceso/sesion", json=mala, headers=desde_next("203.0.113.66"))
+    atacante = next_.post(
+        "/acceso/sesion", json={"correo": "ana@correo.com", "clave": CLAVE}, headers=desde_next("203.0.113.66")
+    )
+
+    titular = next_.post(
+        "/acceso/sesion", json={"correo": "ana@correo.com", "clave": CLAVE}, headers=desde_next("198.51.100.7")
+    )
+
+    assert atacante.status_code == 429
+    assert titular.status_code == 200
+
+
+def test_sin_el_secreto_correcto_la_ip_reenviada_no_sirve_para_esquivar_el_limite(fabrica: Fabrica) -> None:
+    # Un navegador cualquiera manda una IP distinta en cada petición: no debe poder elegir con cuál lo cuentan
+    cliente = fabrica(origen="203.0.113.7", secreto_interno=SECRETO_INTERNO)
+    for i in range(REGISTRO_POR_ORIGEN.maximo):
+        cliente.post(
+            "/acceso/registro", json=registro(correo=f"p{i}@correo.com"), headers=desde_next(f"192.0.2.{i}", "malo")
+        )
+
+    r = cliente.post("/acceso/registro", json=registro(correo="x@correo.com"), headers=desde_next("192.0.2.99", "malo"))
+
+    assert r.status_code == 429

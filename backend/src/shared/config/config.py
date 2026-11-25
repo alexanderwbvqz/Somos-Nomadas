@@ -33,6 +33,8 @@ class Configuracion(BaseSettings):
 
     jwt_secreto: SecretStr = SecretStr("")
     huellas_secreto: SecretStr = SecretStr("")
+    # Secreto compartido con el servidor de Next, para que reenvíe la IP real de cada persona (shared/http/origen.py)
+    secreto_interno: SecretStr = SecretStr("")
 
     # Orígenes del frontend permitidos por CORS, separados por comas
     origenes_permitidos: str = "http://localhost:3000"
@@ -53,8 +55,12 @@ class Configuracion(BaseSettings):
             raise ValueError(f"JWT_SECRETO debe tener al menos {LARGO_MINIMO_SECRETO} caracteres")
 
         huellas = self.huellas_secreto.get_secret_value()
-        if huellas and huellas == self.jwt_secreto.get_secret_value():
-            raise ValueError("JWT_SECRETO y HUELLAS_SECRETO deben ser distintos")
+        interno = self.secreto_interno.get_secret_value()
+        if interno and len(interno) < LARGO_MINIMO_SECRETO:
+            raise ValueError(f"SECRETO_INTERNO debe tener al menos {LARGO_MINIMO_SECRETO} caracteres")
+        secretos = [s for s in (self.jwt_secreto.get_secret_value(), huellas, interno) if s]
+        if len(set(secretos)) != len(secretos):
+            raise ValueError("JWT_SECRETO, HUELLAS_SECRETO y SECRETO_INTERNO deben ser distintos entre sí")
 
         if "*" in self.lista_de_origenes:
             raise ValueError("ORIGENES_PERMITIDOS no admite el comodín *: hay que listar los orígenes uno por uno")
@@ -75,4 +81,8 @@ class Configuracion(BaseSettings):
             origenes = self.lista_de_origenes
             if not origenes or not all(origen.startswith("https://") for origen in origenes):
                 raise ValueError("En producción ORIGENES_PERMITIDOS debe tener solo orígenes https")
+            if not interno:
+                raise ValueError(
+                    "En producción falta SECRETO_INTERNO: sin él no se puede saber la IP real de cada persona"
+                )
         return self

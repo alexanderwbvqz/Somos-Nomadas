@@ -13,6 +13,7 @@ from shared.config.config import Configuracion
 
 JWT = "jwt-secreto-" + "j" * 30
 HUELLAS = "huellas-secreto-" + "h" * 30
+INTERNO = "interno-secreto-" + "n" * 30
 LLAVE = "llave-de-servidor-" + "k" * 30
 CLAVE = "Clave-segura1"
 VARIABLES = [
@@ -22,6 +23,7 @@ VARIABLES = [
     "SUPABASE_SERVICE_ROLE_KEY",
     "JWT_SECRETO",
     "HUELLAS_SECRETO",
+    "SECRETO_INTERNO",
     "ORIGENES_PERMITIDOS",
     "EXIGIR_CORREO_CONFIRMADO",
     "POLITICA_VERSION",
@@ -155,6 +157,7 @@ def test_en_produccion_la_documentacion_esta_desactivada(monkeypatch: pytest.Mon
         supabase_url="https://abcdefgh.supabase.co",
         supabase_service_role_key=LLAVE,
         huellas_secreto=HUELLAS,
+        secreto_interno=INTERNO,
         exigir_correo_confirmado=True,
     )
     cliente = cliente_http(produccion)
@@ -170,6 +173,33 @@ def test_la_documentacion_describe_la_api_y_no_contiene_secretos() -> None:
 
     assert "Somos Nómadas" in contenido
     assert JWT not in contenido and HUELLAS not in contenido
+
+
+# --- Origen: la IP real que reenvía Next ---
+
+
+def test_la_app_cuenta_los_intentos_por_la_ip_que_reenvia_next_cuando_el_secreto_es_correcto() -> None:
+    cliente = cliente_http(config(secreto_interno=INTERNO), origen="10.0.0.1")
+    desde_next = {"x-origen-cliente": "203.0.113.7", "x-secreto-interno": INTERNO}
+    invalido = {"correo": "x", "clave": "corta", "acepta_politica": True}  # se rechaza rápido, pero cuenta el intento
+    for _ in range(5):
+        assert cliente.post("/acceso/registro", json=invalido, headers=desde_next).status_code == 422
+
+    agotada = cliente.post("/acceso/registro", json=invalido, headers=desde_next)
+    otra = cliente.post("/acceso/registro", json=invalido, headers={**desde_next, "x-origen-cliente": "198.51.100.9"})
+
+    assert agotada.status_code == 429
+    assert otra.status_code == 422
+
+
+def test_sin_secreto_interno_configurado_la_app_ignora_la_ip_reenviada() -> None:
+    cliente = cliente_http(config(), origen="10.0.0.1")
+    reenviada = {"x-origen-cliente": "203.0.113.7", "x-secreto-interno": "cualquiera"}
+    invalido = {"correo": "x", "clave": "corta", "acepta_politica": True}
+    for i in range(5):
+        cliente.post("/acceso/registro", json=invalido, headers={**reenviada, "x-origen-cliente": f"192.0.2.{i}"})
+
+    assert cliente.post("/acceso/registro", json=invalido, headers=reenviada).status_code == 429
 
 
 # --- Cliente de Supabase ---

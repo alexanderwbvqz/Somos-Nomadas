@@ -180,6 +180,14 @@ Los mensajes que ve la persona **no** vienen de la API: son del frontend (`langu
 
   Se aplican en ese orden y un intento bloqueado por uno **no gasta** el cupo de los siguientes: quien ya está bloqueado no puede seguir llenando el techo ni alargar su propio bloqueo.
 - **Nadie puede bloquear la entrada de otra persona.** El bloqueo rápido es por pareja (correo, origen), no por correo: quien gasta los cinco intentos con el correo ajeno solo se bloquea a sí mismo, y la titular entra desde su propio origen. El techo por correo (100 por hora) es lo bastante holgado para que no sirva de arma, y evita que alguien pruebe claves contra una cuenta repartiendo los intentos entre muchas IPs. Riesgos que se aceptan: (a) quien comparte origen con el atacante (la misma red o el mismo equipo) sí queda bloqueado con él; (b) un atacante con muchos orígenes puede agotar el techo de un correo (hacen falta al menos 5 orígenes y 100 intentos en una hora) y bloquear a esa persona hasta una hora. Si eso ocurre, la defensa siguiente es un captcha. La clave de la pareja usa un espacio como separador, porque un correo válido no puede llevarlo.
+- **Origen de la petición (IP) y cabeceras internas.** Los límites de intentos cuentan por IP, pero la API no la llama el navegador de la persona sino el servidor de Next: sin más, el backend vería siempre la IP de Next y todo el sitio compartiría un único cupo. Por eso Next reenvía la IP real en dos cabeceras:
+
+  | Cabecera | Valor |
+  |---|---|
+  | `X-Origen-Cliente` | La IP real de la persona (una sola; IPv4 o IPv6) |
+  | `X-Secreto-Interno` | El secreto compartido (`SECRETO_INTERNO`, 32 caracteres o más) |
+
+  El backend **solo usa la IP reenviada si el secreto es correcto** (comparado en tiempo constante). Sin secreto, con uno incorrecto, o con una IP mal formada, ignora la cabecera en silencio y usa la IP de la conexión; así nadie puede elegir con qué IP lo cuentan. Una IPv4 escrita como IPv6 vale como la IPv4, y las IPv6 se agrupan por su prefijo de **/64**, porque una sola persona controla 2^64 direcciones y si se contara cada una el límite no valdría nada. Sin `SECRETO_INTERNO` (solo desarrollo) nunca se confía en la cabecera. En producción el secreto es obligatorio y debe ser distinto de `JWT_SECRETO` y `HUELLAS_SECRETO`. Si se filtra, quien lo tenga puede falsificar la IP: se rota como los demás secretos. Estas cabeceras no forman parte del `openapi.json`: son un acuerdo entre Next y la API, no de la API pública.
 - **CORS:** restringido a los orígenes propios. Recordatorio: protege al navegador, no sustituye la autenticación.
 - **HTTPS** siempre (Render y Vercel lo dan).
 - **Logs:** sin correo ni clave. Se loguea el id de la cuenta, no el correo.

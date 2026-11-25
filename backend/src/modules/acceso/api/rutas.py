@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from typing import Any
 
 from fastapi import APIRouter, Depends, Request, Response
@@ -31,15 +32,6 @@ def _texto_de_la_trampa(valor: object) -> str:
     return valor if isinstance(valor, str) else "no-es-texto"
 
 
-def _origen(peticion: Request) -> str:
-    """La IP del cliente, para el límite de intentos.
-
-    Detrás del proxy de Render, uvicorn debe arrancar con `--proxy-headers` y `--forwarded-allow-ips`; si no,
-    esto sería la IP del proxy (ver «Pendientes» en backend/CLAUDE.md).
-    """
-    return peticion.client.host if peticion.client else "desconocido"
-
-
 def _token_bearer(peticion: Request) -> str:
     esquema, _, token = peticion.headers.get("authorization", "").partition(" ")
     if esquema.lower() != "bearer" or not token.strip():
@@ -54,8 +46,13 @@ def crear_router(
     renovar_sesion: RenovarSesion,
     cerrar_sesion: CerrarSesion,
     obtener_cuenta_actual: ObtenerCuentaActual,
+    origen_de: Callable[[Request], str],
 ) -> APIRouter:
-    """Las rutas de `acceso`. Recibe los casos de uso ya armados: quien los arma es `composition/`."""
+    """Las rutas de `acceso`. Recibe los casos de uso ya armados: quien los arma es `composition/`.
+
+    `origen_de` dice de dónde viene cada petición (para los límites de intentos): la IP real que reenvía Next o la de la
+    conexión. Lo decide `shared/http/origen.py`; las rutas no saben cómo.
+    """
     router = APIRouter(prefix="/acceso", tags=["acceso"])
 
     @router.post(
@@ -72,7 +69,7 @@ def crear_router(
                 acepta_politica=cuerpo.acepta_politica,
                 sitio_secundario=_texto_de_la_trampa(cuerpo.sitio_secundario),
             ),
-            _origen(peticion),
+            origen_de(peticion),
         )
         return Response(status_code=202)
 
@@ -87,7 +84,7 @@ def crear_router(
         },
     )
     def sesion(cuerpo: SesionEntrada, peticion: Request) -> SesionSalida:
-        iniciada = iniciar_sesion.ejecutar(DatosInicioSesion(cuerpo.correo, cuerpo.clave), _origen(peticion))
+        iniciada = iniciar_sesion.ejecutar(DatosInicioSesion(cuerpo.correo, cuerpo.clave), origen_de(peticion))
         tokens = iniciada.tokens
         return SesionSalida(
             token_acceso=tokens.token_acceso,
