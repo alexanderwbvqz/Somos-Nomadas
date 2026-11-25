@@ -51,6 +51,17 @@ uv run python scripts/probar_migraciones.py
 
 No prueba la API REST de Supabase ni el cliente de Python: para eso, un proyecto de pruebas (ver `test_contrato_repositorios.py`).
 
+## Aplicar las migraciones a una base
+
+Con `DATABASE_URL` (la cadena de conexión de Postgres) en el entorno, por ejemplo en un `.env.pruebas` que Git ignora. Por defecto solo lista lo que falta; `--aplicar` lo aplica. Hace falta Docker (usa `psql` de la imagen `postgres:17`):
+
+```
+uv run --env-file .env.pruebas python scripts/aplicar_migraciones.py
+uv run --env-file .env.pruebas python scripts/aplicar_migraciones.py --aplicar
+```
+
+Las migraciones ya aplicadas no se editan: se añade una nueva.
+
 ## Exportar el contrato
 
 El `openapi.json` no se escribe a mano. Si cambia la API:

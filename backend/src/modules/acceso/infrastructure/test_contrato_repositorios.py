@@ -7,12 +7,15 @@ Supabase SOLO corre si se configura una base DESECHABLE, con estas variables de 
     SUPABASE_PRUEBAS_CLAVE                      su clave de servidor
     SUPABASE_PRUEBAS_CONFIRMO_BASE_DESECHABLE   debe valer «si»: confirma que no es la base real
 
-con las tres migraciones de migraciones/ ya aplicadas. Las pruebas solo insertan datos con identificadores
-únicos (no borran nada), pero dejan filas de prueba: no se apuntan a la base real.
+con las migraciones de migraciones/ ya aplicadas (scripts/aplicar_migraciones.py). Los datos de prueba llevan
+correos @pruebas.invalid (un dominio reservado que no existe) y, al terminar cada prueba, se borran SOLO esas cuentas
+(con sus sesiones, por la cascada) y los contadores de intentos que la propia prueba creó. Aun así, no se apuntan a
+una base con datos reales.
 Mientras no haya base de pruebas, la parte de Supabase aparece como «skipped», NO como verificada.
 """
 
 import os
+from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
@@ -21,7 +24,7 @@ import pytest
 
 from modules.acceso.domain.cuenta import Cuenta
 from modules.acceso.domain.cuenta_repository import CuentaRepository
-from modules.acceso.domain.limitador_intentos import LimitadorIntentos
+from modules.acceso.domain.limitador_intentos import AccionLimitada, LimitadorIntentos
 from modules.acceso.domain.sesion import Sesion
 from modules.acceso.domain.sesion_repository import SesionRepository
 from modules.acceso.infrastructure.memoria.memoria_cuenta_repository import MemoriaCuentaRepository
@@ -31,8 +34,11 @@ from modules.acceso.infrastructure.supabase.supabase_cuenta_repository import Su
 from modules.acceso.infrastructure.supabase.supabase_limitador_intentos import SupabaseLimitadorIntentos
 from modules.acceso.infrastructure.supabase.supabase_sesion_repository import SupabaseSesionRepository
 from shared.supabase.cliente import crear_cliente
+from shared.supabase.errores import traducir_errores
 
 AHORA = datetime(2026, 11, 24, 12, 0, tzinfo=UTC)
+# Dominio reservado (RFC 2606): nunca existe. Es lo que permite borrar solo las cuentas de las pruebas
+DOMINIO_DE_PRUEBA = "@pruebas.invalid"
 
 
 @dataclass
@@ -42,21 +48,40 @@ class Repos:
     limitador: LimitadorIntentos
 
 
+class LimitadorQueRecuerda(SupabaseLimitadorIntentos):
+    """Anota las huellas que crea, para borrar luego solo los contadores de la propia prueba."""
+
+    huellas: list[str]
+
+    def consumir(
+        self, accion: AccionLimitada, clave: str, maximo: int, ventana_segundos: int, ahora: datetime
+    ) -> int | None:
+        if not hasattr(self, "huellas"):
+            self.huellas = []
+        self.huellas.append(self._huella(accion, clave))
+        return super().consumir(accion, clave, maximo, ventana_segundos, ahora)
+
+
 @pytest.fixture(params=["memoria", "supabase"])
-def repos(request: pytest.FixtureRequest) -> Repos:
+def repos(request: pytest.FixtureRequest) -> Iterator[Repos]:
     if request.param == "memoria":
-        return Repos(MemoriaCuentaRepository(), MemoriaSesionRepository(), MemoriaLimitadorIntentos())
+        yield Repos(MemoriaCuentaRepository(), MemoriaSesionRepository(), MemoriaLimitadorIntentos())
+        return
 
     url = os.environ.get("SUPABASE_PRUEBAS_URL")
     clave = os.environ.get("SUPABASE_PRUEBAS_CLAVE")
     if not url or not clave or os.environ.get("SUPABASE_PRUEBAS_CONFIRMO_BASE_DESECHABLE") != "si":
         pytest.skip("Sin base de pruebas de Supabase: ver el encabezado de test_contrato_repositorios.py")
     cliente = crear_cliente(url, clave)
-    return Repos(
-        SupabaseCuentaRepository(cliente),
-        SupabaseSesionRepository(cliente),
-        SupabaseLimitadorIntentos(cliente, "h" * 32),
-    )
+    limitador = LimitadorQueRecuerda(cliente, "h" * 32)
+    yield Repos(SupabaseCuentaRepository(cliente), SupabaseSesionRepository(cliente), limitador)
+
+    # Limpieza: solo lo de las pruebas. Las sesiones se borran solas con su cuenta (on delete cascade)
+    with traducir_errores():
+        cliente.table("cuentas").delete().like("correo", f"%{DOMINIO_DE_PRUEBA}").execute()
+        huellas = getattr(limitador, "huellas", [])
+        if huellas:
+            cliente.table("intentos_acceso").delete().in_("huella", huellas).execute()
 
 
 def unico() -> str:
@@ -64,7 +89,7 @@ def unico() -> str:
 
 
 def cuenta(correo: str | None = None) -> Cuenta:
-    return Cuenta(uuid4(), correo or f"{unico()}@correo.com", "hash", False, AHORA, "2026-11", AHORA)
+    return Cuenta(uuid4(), correo or f"{unico()}{DOMINIO_DE_PRUEBA}", "hash", False, AHORA, "2026-11", AHORA)
 
 
 def sesion_de(cuenta_id: UUID, token_hash: str | None = None) -> Sesion:
@@ -102,7 +127,7 @@ def test_crear_con_un_correo_repetido_devuelve_false_y_no_cambia_nada(repos: Rep
 
 
 def test_una_cuenta_que_no_existe_devuelve_none(repos: Repos) -> None:
-    assert repos.cuentas.obtener_por_correo(f"{unico()}@correo.com") is None
+    assert repos.cuentas.obtener_por_correo(f"{unico()}{DOMINIO_DE_PRUEBA}") is None
     assert repos.cuentas.obtener_por_id(uuid4()) is None
 
 
