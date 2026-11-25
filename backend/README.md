@@ -28,7 +28,7 @@ uv run uvicorn composition.app:crear_app --factory --app-dir src --port 8100
 
 El puerto 3000 es el del frontend. Con la app en marcha, la documentación está en `http://localhost:8100/docs` (solo en desarrollo).
 
-Con Supabase (`ALMACEN_DE_DATOS=supabase`) hacen falta `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `HUELLAS_SECRETO`, y las migraciones de `migraciones/` aplicadas. Ver «Pendientes» en el `CLAUDE.md`: el SQL aún no se ha verificado contra una base real.
+Con Supabase (`ALMACEN_DE_DATOS=supabase`) hacen falta `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `HUELLAS_SECRETO`, y las migraciones de `migraciones/` aplicadas. Las migraciones ya están verificadas y aplicadas en el proyecto de Supabase (ver «Pendientes» en el `CLAUDE.md` lo que falta).
 
 ## Comprobar
 
