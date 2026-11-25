@@ -38,3 +38,14 @@ def test_cerrar_una_sesion_no_toca_las_otras_de_la_misma_cuenta(entorno: Entorno
     entorno.cerrar_sesion().ejecutar(token)
 
     assert entorno.renovar_sesion().ejecutar(otra.tokens.token_renovacion).token_renovacion
+
+
+def test_la_fecha_de_cierre_es_la_del_reloj_de_la_aplicacion(entorno: Entorno) -> None:
+    token = entrar(entorno)
+    entorno.reloj.avanzar(minutes=3)
+
+    entorno.cerrar_sesion().ejecutar(token)
+
+    sesion = entorno.sesiones.obtener_por_token_hash(entorno.emisor.hash_de_token_renovacion(token))
+    assert sesion is not None
+    assert sesion.revocada_en == entorno.reloj() and sesion.motivo_revocacion == "cerrada"

@@ -113,6 +113,8 @@ def test_reusar_un_token_rotado_pasada_la_tolerancia_se_toma_por_robo_y_cierra_t
 
     assert activas(entorno, cuenta_id) == 0
     assert sesion_de(entorno, ganadora.token_renovacion).motivo_revocacion == "robo"
+    # La fecha del robo es la del reloj de la aplicación
+    assert sesion_de(entorno, ganadora.token_renovacion).revocada_en == entorno.reloj()
     assert sesion_de(entorno, otro_dispositivo).motivo_revocacion == "robo"
     # La rotada conserva su motivo: el robo solo cierra lo que seguía abierto
     assert sesion_de(entorno, token).motivo_revocacion == "rotada"
@@ -138,7 +140,7 @@ def test_una_rotacion_que_se_pierde_en_una_carrera_solo_rechaza_y_no_cierra_nada
 
     token = iniciar(entorno, "10.0.0.1").token_renovacion
     otro_dispositivo = iniciar(entorno, "10.0.0.2").token_renovacion
-    perdedor = RotacionPerdida(ahora=entorno.reloj)
+    perdedor = RotacionPerdida()
     for s in entorno.sesiones.de_cuenta(cuenta_id):
         perdedor.guardar(s)
 
@@ -179,7 +181,7 @@ def test_un_token_cerrado_nunca_se_toma_por_robo_aunque_pase_mucho_tiempo(entorn
 
 def test_un_token_ya_cerrado_por_robo_solo_se_rechaza(entorno: Entorno, cuenta_id: UUID) -> None:
     token = iniciar(entorno, "10.0.0.1").token_renovacion
-    entorno.sesiones.revocar_todas_de_cuenta(cuenta_id, "robo")
+    entorno.sesiones.revocar_todas_de_cuenta(cuenta_id, "robo", entorno.reloj())
     nueva = iniciar(entorno, "10.0.0.2").token_renovacion  # la persona vuelve a entrar con su clave
 
     with pytest.raises(NoAutenticado):

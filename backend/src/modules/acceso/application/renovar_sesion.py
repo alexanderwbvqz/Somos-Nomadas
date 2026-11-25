@@ -54,4 +54,4 @@ class RenovarSesion:
             return  # cerrada por la persona, ya cerrada por robo, o sin motivo: no es señal de robo
         if ahora - sesion.revocada_en <= timedelta(seconds=TOLERANCIA_REUSO_SEGUNDOS):
             return  # carrera legítima entre dos peticiones casi simultáneas
-        self._sesiones.revocar_todas_de_cuenta(sesion.cuenta_id, "robo")
+        self._sesiones.revocar_todas_de_cuenta(sesion.cuenta_id, "robo", ahora)

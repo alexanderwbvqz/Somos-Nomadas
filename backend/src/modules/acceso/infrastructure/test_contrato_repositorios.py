@@ -92,8 +92,8 @@ def cuenta(correo: str | None = None) -> Cuenta:
     return Cuenta(uuid4(), correo or f"{unico()}{DOMINIO_DE_PRUEBA}", "hash", False, AHORA, "2026-11", AHORA)
 
 
-def sesion_de(cuenta_id: UUID, token_hash: str | None = None) -> Sesion:
-    return Sesion(uuid4(), cuenta_id, token_hash or unico(), AHORA + timedelta(days=30), AHORA)
+def sesion_de(cuenta_id: UUID, token_hash: str | None = None, creada_en: datetime = AHORA) -> Sesion:
+    return Sesion(uuid4(), cuenta_id, token_hash or unico(), AHORA + timedelta(days=30), creada_en)
 
 
 def con_cuenta(repos: Repos) -> Cuenta:
@@ -146,13 +146,14 @@ def test_una_sesion_guardada_se_lee_igual_por_el_hash_de_su_token(repos: Repos) 
 def test_rotar_revoca_la_anterior_y_guarda_la_nueva(repos: Repos) -> None:
     anterior = sesion_de(con_cuenta(repos).id)
     repos.sesiones.guardar(anterior)
-    nueva = sesion_de(anterior.cuenta_id)
+    nueva = sesion_de(anterior.cuenta_id, creada_en=AHORA + timedelta(minutes=7))
 
     assert repos.sesiones.rotar(anterior, nueva)
 
     revocada = repos.sesiones.obtener_por_token_hash(anterior.token_hash)
-    assert revocada is not None and revocada.revocada_en is not None
-    assert revocada.motivo_revocacion == "rotada"
+    assert revocada is not None and revocada.motivo_revocacion == "rotada"
+    # La revocación se hace en el instante en que nace la nueva (la hora de la aplicación), no con el reloj de la base
+    assert revocada.revocada_en == nueva.creada_en
     assert repos.sesiones.obtener_por_token_hash(nueva.token_hash) == nueva
 
 
@@ -178,12 +179,12 @@ def test_revocar_marca_la_sesion_y_es_idempotente(repos: Repos) -> None:
     s = sesion_de(con_cuenta(repos).id)
     repos.sesiones.guardar(s)
 
-    repos.sesiones.revocar(s.id)
-    repos.sesiones.revocar(s.id)  # no falla ni cambia nada
+    repos.sesiones.revocar(s.id, AHORA)
+    repos.sesiones.revocar(s.id, AHORA + timedelta(hours=1))  # no falla ni cambia nada
 
     revocada = repos.sesiones.obtener_por_token_hash(s.token_hash)
-    assert revocada is not None and revocada.revocada_en is not None
-    assert revocada.motivo_revocacion == "cerrada"
+    assert revocada is not None and revocada.motivo_revocacion == "cerrada"
+    assert revocada.revocada_en == AHORA  # la fecha de la primera revocación, la que puso la aplicación
 
 
 def test_revocar_todas_de_una_cuenta_no_toca_las_de_otra(repos: Repos) -> None:
@@ -192,13 +193,13 @@ def test_revocar_todas_de_una_cuenta_no_toca_las_de_otra(repos: Repos) -> None:
     repos.sesiones.guardar(suya)
     repos.sesiones.guardar(de_otra)
 
-    repos.sesiones.revocar_todas_de_cuenta(mia.id, "robo")
+    repos.sesiones.revocar_todas_de_cuenta(mia.id, "robo", AHORA)
 
     revocada, intacta = (
         repos.sesiones.obtener_por_token_hash(suya.token_hash),
         repos.sesiones.obtener_por_token_hash(de_otra.token_hash),
     )
-    assert revocada is not None and revocada.revocada_en is not None and revocada.motivo_revocacion == "robo"
+    assert revocada is not None and revocada.revocada_en == AHORA and revocada.motivo_revocacion == "robo"
     assert intacta is not None and intacta.revocada_en is None and intacta.motivo_revocacion is None
 
 
@@ -239,10 +240,27 @@ def test_un_motivo_ya_registrado_no_se_pisa_al_revocar_otra_vez(repos: Repos) ->
     antes = repos.sesiones.obtener_por_token_hash(anterior.token_hash)
     assert antes is not None
 
-    repos.sesiones.revocar(anterior.id)
-    repos.sesiones.revocar_todas_de_cuenta(anterior.cuenta_id, "robo")
+    repos.sesiones.revocar(anterior.id, AHORA + timedelta(hours=1))
+    repos.sesiones.revocar_todas_de_cuenta(anterior.cuenta_id, "robo", AHORA + timedelta(hours=2))
 
     despues = repos.sesiones.obtener_por_token_hash(anterior.token_hash)
     assert despues is not None
     # Sigue siendo «rotada», con la fecha original: de lo contrario no se podría distinguir un robo de una carrera
     assert despues.motivo_revocacion == "rotada" and despues.revocada_en == antes.revocada_en
+
+
+def test_la_fecha_de_revocacion_es_siempre_la_de_la_aplicacion_aunque_sea_muy_antigua(repos: Repos) -> None:
+    # Si la base usara su propio reloj (now()), guardaría la fecha de hoy y no esta: así se detecta
+    antigua = AHORA - timedelta(days=400)
+    cuenta = con_cuenta(repos)
+    cerrada, rotada, del_robo = (sesion_de(cuenta.id) for _ in range(3))
+    for s in (cerrada, rotada, del_robo):
+        repos.sesiones.guardar(s)
+
+    repos.sesiones.revocar(cerrada.id, antigua)
+    assert repos.sesiones.rotar(rotada, sesion_de(cuenta.id, creada_en=antigua))
+    repos.sesiones.revocar_todas_de_cuenta(cuenta.id, "robo", antigua)
+
+    for s in (cerrada, rotada, del_robo):
+        guardada = repos.sesiones.obtener_por_token_hash(s.token_hash)
+        assert guardada is not None and guardada.revocada_en == antigua, s.token_hash

@@ -156,6 +156,7 @@ Los mensajes que ve la persona **no** vienen de la API: son del frontend (`langu
   carrera exacta con la víctima; entonces la víctima recibe `401` y debe volver a iniciar sesión. Es el equilibrio
   habitual de esta técnica. La tolerancia es la constante `TOLERANCIA_REUSO_SEGUNDOS` del dominio.
 - Una revocación conserva su fecha y su motivo originales: revocar otra vez no los cambia.
+- **Un solo reloj:** todas las fechas de una sesión (`creada_en`, `expira_en` y `revocada_en`) las pone la **aplicación**, nunca el reloj de la base de datos. La tolerancia de 10 segundos compara la hora de la aplicación con `revocada_en`; si la revocación usara el reloj de la base, unos segundos de diferencia entre ambos relojes (medidos ~2,6 s con la base de Supabase) acortarían o alargarían la tolerancia. Al rotar, la anterior se revoca en el instante en que nace la nueva (`creada_en` de la nueva). Migración `0005`.
 - `POST /acceso/renovar` recibe el token de renovación y devuelve un par nuevo. `POST /acceso/cierre` revoca la sesión actual.
 
 **Cookies en Next** (el navegador nunca ve los tokens):

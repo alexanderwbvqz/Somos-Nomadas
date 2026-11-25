@@ -75,6 +75,6 @@ def armar_acceso(config: Configuracion, cliente: Client | None, ahora: Callable[
             exigir_correo_confirmado=config.exigir_correo_confirmado,
         ),
         renovar_sesion=RenovarSesion(sesiones=sesiones, emisor=emisor, ahora=ahora),
-        cerrar_sesion=CerrarSesion(sesiones=sesiones, emisor=emisor),
+        cerrar_sesion=CerrarSesion(sesiones=sesiones, emisor=emisor, ahora=ahora),
         obtener_cuenta_actual=ObtenerCuentaActual(cuentas=cuentas, emisor=emisor, ahora=ahora),
     )

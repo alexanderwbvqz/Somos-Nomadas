@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from supabase import Client
@@ -37,11 +38,12 @@ class SupabaseSesionRepository:
             raise ErrorDeBaseDeDatos("respuesta_inesperada")
         return respuesta.data
 
-    def revocar(self, sesion_id: UUID) -> None:
+    def revocar(self, sesion_id: UUID, ahora: datetime) -> None:
+        parametros = {"p_sesion_id": str(sesion_id), "p_ahora": ahora.isoformat()}
         with traducir_errores():
-            self._cliente.rpc("revocar_sesion", {"p_sesion_id": str(sesion_id)}).execute()
+            self._cliente.rpc("revocar_sesion", parametros).execute()
 
-    def revocar_todas_de_cuenta(self, cuenta_id: UUID, motivo: MotivoRevocacion) -> None:
+    def revocar_todas_de_cuenta(self, cuenta_id: UUID, motivo: MotivoRevocacion, ahora: datetime) -> None:
+        parametros = {"p_cuenta_id": str(cuenta_id), "p_motivo": motivo, "p_ahora": ahora.isoformat()}
         with traducir_errores():
-            parametros = {"p_cuenta_id": str(cuenta_id), "p_motivo": motivo}
             self._cliente.rpc("revocar_sesiones_de_cuenta", parametros).execute()

@@ -303,13 +303,17 @@ def principal() -> None:
         "y la perdedora no deja sesión guardada",
         valor("select count(*) from sesiones where token_hash in ('h8','h9');") == "1",
     )
-    psql(f"select revocar_sesion('{s(1)}');", rol="service_role")
-    antes = valor("select revocada_en from sesiones where token_hash='h1';")
-    time.sleep(1.1)
-    psql(f"select revocar_sesion('{s(1)}');", rol="service_role")
+    comprobar(
+        "al rotar, la anterior se revoca en p_creada_en (la hora de la aplicación), no en now()",
+        valor("select revocada_en = '2026-11-24T12:00:00+00:00'::timestamptz from sesiones where token_hash='h1';")
+        == "t",
+    )
+    psql(f"select revocar_sesion('{s(1)}', '2030-01-01T00:00:00+00:00');", rol="service_role")
+    psql(f"select revocar_sesion('{s(1)}', '2031-01-01T00:00:00+00:00');", rol="service_role")
     comprobar(
         "revocar es idempotente: no cambia la fecha de una ya revocada",
-        valor("select revocada_en from sesiones where token_hash='h1';") == antes,
+        valor("select revocada_en = '2026-11-24T12:00:00+00:00'::timestamptz from sesiones where token_hash='h1';")
+        == "t",
     )
     comprobar(
         "revocar no pisa el motivo de una ya rotada: sigue siendo rotada",
@@ -325,21 +329,26 @@ def principal() -> None:
     )
     cerrada_id, abierta_id = "aaaaaaaa-0000-4000-8000-0000000000b1", "aaaaaaaa-0000-4000-8000-0000000000b2"
     psql(insertar(cerrada_id, "h10"), parar=True)
-    psql(f"select revocar_sesion('{cerrada_id}');", rol="service_role")
+    psql(f"select revocar_sesion('{cerrada_id}', '2020-03-04T05:06:07+00:00');", rol="service_role")
     comprobar(
-        "revocar_sesion deja el motivo cerrada",
-        valor("select motivo_revocacion from sesiones where token_hash='h10';") == "cerrada",
+        "revocar_sesion deja el motivo cerrada y la fecha que se le pasa (una de 2020, no la de hoy)",
+        valor(
+            "select motivo_revocacion || ':' || (revocada_en = '2020-03-04T05:06:07+00:00'::timestamptz)::text "
+            "from sesiones where token_hash='h10';"
+        )
+        == "cerrada:true",
     )
     psql(insertar(abierta_id, "h11"), parar=True)
     comprobar(
         "un motivo que no existe se rechaza (restricción)",
-        "check" in psql(f"select revocar_sesiones_de_cuenta('{uno}', 'otro');", rol="service_role").stderr.lower(),
+        "check"
+        in psql(f"select revocar_sesiones_de_cuenta('{uno}', 'otro', now());", rol="service_role").stderr.lower(),
     )
     comprobar(
         "y esa llamada fallida no revocó nada",
         valor("select count(*) from sesiones where token_hash='h11' and revocada_en is null;") == "1",
     )
-    psql(f"select revocar_sesion('{abierta_id}');", rol="service_role")
+    psql(f"select revocar_sesion('{abierta_id}', now());", rol="service_role")
     comprobar(
         "una sesión no puede tener motivo sin estar revocada",
         "check" in psql("update sesiones set revocada_en = null where token_hash='h1';").stderr.lower(),
@@ -349,7 +358,15 @@ def principal() -> None:
         "check" in psql("update sesiones set motivo_revocacion = null where token_hash='h1';").stderr.lower(),
     )
     psql(insertar("aaaaaaaa-0000-4000-8000-0000000000b3", "h12"), parar=True)
-    psql(f"select revocar_sesiones_de_cuenta('{uno}', 'robo');", rol="service_role")
+    psql(f"select revocar_sesiones_de_cuenta('{uno}', 'robo', '2022-02-02T02:02:02+00:00');", rol="service_role")
+    comprobar(
+        "revocar_sesiones_de_cuenta pone la fecha que se le pasa en las que cierra",
+        valor(
+            f"select count(*) from sesiones where cuenta_id='{uno}' and motivo_revocacion = 'robo' "
+            "and revocada_en <> '2022-02-02T02:02:02+00:00'::timestamptz;"
+        )
+        == "0",
+    )
     comprobar(
         "revocar_sesiones_de_cuenta revoca todas las de la cuenta",
         valor(f"select count(*) from sesiones where cuenta_id='{uno}' and revocada_en is null;") == "0",
@@ -441,7 +458,7 @@ def actualizacion() -> None:
         comprobar("existe la migración 0004", False, "no se encuentra")
         return
     docker("exec", CONTENEDOR, "psql", "-U", "postgres", "-c", f"create database {BASE_ANTIGUA};", ok=False)
-    for m in [m for m in MIGRACIONES if not m.name.startswith("0004")]:
+    for m in [m for m in MIGRACIONES if m.name < "0004"]:
         r = psql(m.read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
         comprobar(f"se aplica {m.name} en la base antigua", r.returncode == 0, r.stderr.strip()[:300])
     cuenta = "cccccccc-0000-4000-8000-000000000001"
@@ -521,6 +538,100 @@ def actualizacion() -> None:
         )
         == "t"
         and v("select motivo_revocacion from sesiones where token_hash='abierta';") == "rotada",
+    )
+    convenciones(BASE_ANTIGUA)
+    actualizacion_reloj()
+
+
+def actualizacion_reloj() -> None:
+    """La 0005 se aplica sobre la base que ya tiene la 0004 y datos: las fechas de revocación pasan a la aplicación."""
+    print("\n[8] Actualización: la 0005 (reloj de la aplicación) sobre esa misma base")
+    nueva = [m for m in MIGRACIONES if m.name.startswith("0005")]
+    if not nueva:
+        comprobar("existe la migración 0005", False, "no se encuentra")
+        return
+
+    def v(sql: str) -> str:
+        return valor(sql, base=BASE_ANTIGUA)
+
+    antes = v(
+        "select string_agg(token_hash || ':' || revocada_en::text || ':' || coalesce(motivo_revocacion, '-'), ',' "
+        "order by token_hash) from sesiones;"
+    )
+    r = psql(nueva[0].read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
+    comprobar(f"se aplica {nueva[0].name} sobre esos datos", r.returncode == 0, r.stderr.strip()[:300])
+    comprobar(
+        "las sesiones que ya había conservan su fecha y su motivo",
+        v(
+            "select string_agg(token_hash || ':' || revocada_en::text || ':' || coalesce(motivo_revocacion, '-'), ',' "
+            "order by token_hash) from sesiones;"
+        )
+        == antes,
+    )
+    comprobar(
+        "solo queda cada función con la firma nueva (las antiguas se eliminaron)",
+        v(
+            "select string_agg(proname || '(' || pg_get_function_identity_arguments(oid) || ')', ' | ' "
+            "order by proname) from pg_proc where pronamespace = 'public'::regnamespace "
+            "and proname in ('revocar_sesion', 'revocar_sesiones_de_cuenta');"
+        )
+        == "revocar_sesion(p_sesion_id uuid, p_ahora timestamp with time zone) | "
+        "revocar_sesiones_de_cuenta(p_cuenta_id uuid, p_motivo text, p_ahora timestamp with time zone)",
+    )
+    comprobar(
+        "anon, authenticated y PUBLIC siguen sin poder ejecutar ninguna función",
+        v(
+            f"select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace "
+            f"and p.proname in ({FUNCIONES}) "
+            "and (has_function_privilege('anon', p.oid, 'execute') "
+            "or has_function_privilege('authenticated', p.oid, 'execute') "
+            "or exists (select 1 from aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a "
+            "where a.grantee = 0 and a.privilege_type = 'EXECUTE'));"
+        )
+        == "0",
+    )
+    comprobar(
+        "service_role puede ejecutar las 6",
+        v(
+            f"select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace "
+            f"and p.proname in ({FUNCIONES}) "
+            "and has_function_privilege('service_role', p.oid, 'execute');"
+        )
+        == "6",
+    )
+    cuenta = "cccccccc-0000-4000-8000-000000000001"
+    psql(
+        "insert into sesiones(id,cuenta_id,token_hash,expira_en,creada_en) values "
+        f"('cccccccc-0000-4000-8000-0000000000b1','{cuenta}','n1','2030-01-01','2026-11-01'),"
+        f"('cccccccc-0000-4000-8000-0000000000b2','{cuenta}','n2','2030-01-01','2026-11-01'),"
+        f"('cccccccc-0000-4000-8000-0000000000b3','{cuenta}','n3','2030-01-01','2026-11-01');",
+        parar=True,
+        base=BASE_ANTIGUA,
+    )
+    valor(
+        "select revocar_sesion('cccccccc-0000-4000-8000-0000000000b1', '2019-01-02T03:04:05+00:00');",
+        rol="service_role",
+        base=BASE_ANTIGUA,
+    )
+    valor(
+        "select rotar_sesion('cccccccc-0000-4000-8000-0000000000b2','cccccccc-0000-4000-8000-0000000000b4',"
+        f"'{cuenta}','n4','2030-01-01','2019-06-07T08:09:10+00:00');",
+        rol="service_role",
+        base=BASE_ANTIGUA,
+    )
+    valor(
+        f"select revocar_sesiones_de_cuenta('{cuenta}', 'robo', '2018-11-12T13:14:15+00:00');",
+        rol="service_role",
+        base=BASE_ANTIGUA,
+    )
+    comprobar(
+        "las tres funciones guardan la fecha de la aplicación (de 2018 y 2019, no la de hoy)",
+        v(
+            "select string_agg(token_hash || ':' || motivo_revocacion || ':' "
+            "|| to_char(revocada_en at time zone 'utc', 'YYYY-MM-DD'), ',' order by token_hash) "
+            "from sesiones where token_hash in ('n1', 'n2', 'n3', 'n4');"
+        )
+        == "n1:cerrada:2019-01-02,n2:rotada:2019-06-07,n3:robo:2018-11-12,n4:robo:2018-11-12",
     )
     convenciones(BASE_ANTIGUA)
 

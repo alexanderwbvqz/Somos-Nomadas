@@ -203,12 +203,16 @@ def test_revocar_y_revocar_todas_llaman_a_sus_funciones() -> None:
     repositorio = SupabaseSesionRepository(como_cliente(falso))
     sesion_id, cuenta_id = uuid4(), uuid4()
 
-    repositorio.revocar(sesion_id)
-    repositorio.revocar_todas_de_cuenta(cuenta_id, "robo")
+    repositorio.revocar(sesion_id, AHORA)
+    repositorio.revocar_todas_de_cuenta(cuenta_id, "robo", AHORA)
 
     assert [(c.tipo, c.nombre, c.parametros) for c in falso.llamadas] == [
-        ("rpc", "revocar_sesion", {"p_sesion_id": str(sesion_id)}),
-        ("rpc", "revocar_sesiones_de_cuenta", {"p_cuenta_id": str(cuenta_id), "p_motivo": "robo"}),
+        ("rpc", "revocar_sesion", {"p_sesion_id": str(sesion_id), "p_ahora": AHORA.isoformat()}),
+        (
+            "rpc",
+            "revocar_sesiones_de_cuenta",
+            {"p_cuenta_id": str(cuenta_id), "p_motivo": "robo", "p_ahora": AHORA.isoformat()},
+        ),
     ]
 
 
@@ -217,9 +221,13 @@ def test_revocar_todas_envia_el_motivo_que_se_le_da(motivo: str) -> None:
     falso = ClienteFalso()
     cuenta_id = uuid4()
 
-    SupabaseSesionRepository(como_cliente(falso)).revocar_todas_de_cuenta(cuenta_id, motivo)  # type: ignore[arg-type]
+    SupabaseSesionRepository(como_cliente(falso)).revocar_todas_de_cuenta(cuenta_id, motivo, AHORA)  # type: ignore[arg-type]
 
-    assert falso.llamadas[0].parametros == {"p_cuenta_id": str(cuenta_id), "p_motivo": motivo}
+    assert falso.llamadas[0].parametros == {
+        "p_cuenta_id": str(cuenta_id),
+        "p_motivo": motivo,
+        "p_ahora": AHORA.isoformat(),
+    }
 
 
 def test_los_errores_de_la_base_en_sesiones_se_traducen() -> None:
@@ -229,8 +237,8 @@ def test_los_errores_de_la_base_en_sesiones_se_traducen() -> None:
         lambda: repositorio.guardar(sesion()),
         lambda: repositorio.obtener_por_token_hash("h1"),
         lambda: repositorio.rotar(sesion(), sesion()),
-        lambda: repositorio.revocar(uuid4()),
-        lambda: repositorio.revocar_todas_de_cuenta(uuid4(), "robo"),
+        lambda: repositorio.revocar(uuid4(), AHORA),
+        lambda: repositorio.revocar_todas_de_cuenta(uuid4(), "robo", AHORA),
     ):
         with pytest.raises(ErrorDeBaseDeDatos):
             accion()

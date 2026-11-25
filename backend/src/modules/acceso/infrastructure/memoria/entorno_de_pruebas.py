@@ -40,14 +40,10 @@ class RelojDePrueba:
 class Entorno:
     reloj: RelojDePrueba = field(default_factory=RelojDePrueba)
     cuentas: MemoriaCuentaRepository = field(default_factory=MemoriaCuentaRepository)
-    sesiones: MemoriaSesionRepository = field(init=False)
+    sesiones: MemoriaSesionRepository = field(default_factory=MemoriaSesionRepository)
     limitador: MemoriaLimitadorIntentos = field(default_factory=MemoriaLimitadorIntentos)
     hasheador: HasheadorFalso = field(default_factory=HasheadorFalso)
     emisor: EmisorTokensFalso = field(default_factory=EmisorTokensFalso)
-
-    def __post_init__(self) -> None:
-        # La fecha de revocación sale del reloj de prueba, no del del sistema
-        self.sesiones = MemoriaSesionRepository(ahora=self.reloj)
 
     def registrar_cuenta(self) -> RegistrarCuenta:
         return RegistrarCuenta(
@@ -73,7 +69,7 @@ class Entorno:
         return RenovarSesion(sesiones=sesiones or self.sesiones, emisor=self.emisor, ahora=self.reloj)
 
     def cerrar_sesion(self) -> CerrarSesion:
-        return CerrarSesion(sesiones=self.sesiones, emisor=self.emisor)
+        return CerrarSesion(sesiones=self.sesiones, emisor=self.emisor, ahora=self.reloj)
 
     def obtener_cuenta_actual(self) -> ObtenerCuentaActual:
         return ObtenerCuentaActual(cuentas=self.cuentas, emisor=self.emisor, ahora=self.reloj)

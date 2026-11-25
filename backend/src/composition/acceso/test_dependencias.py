@@ -111,6 +111,7 @@ def test_los_casos_de_uso_usan_el_reloj_recibido() -> None:
     assert casos.iniciar_sesion._ahora is reloj
     assert casos.renovar_sesion._ahora is reloj
     assert casos.obtener_cuenta_actual._ahora is reloj
+    assert casos.cerrar_sesion._ahora is reloj
 
 
 # --- Almacén en Supabase ---
