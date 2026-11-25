@@ -390,12 +390,17 @@ def test_las_rutas_estan_documentadas_en_openapi(cliente: TestClient) -> None:
         "/acceso/renovar",
         "/acceso/cierre",
         "/acceso/yo",
+        "/acceso/confirmacion",
+        "/acceso/confirmacion/reenvio",
     }
     # El código de éxito documentado es el real, no el 200 por defecto
     assert "202" in rutas["/acceso/registro"]["post"]["responses"]
     assert "200" not in rutas["/acceso/registro"]["post"]["responses"]
     assert "204" in rutas["/acceso/cierre"]["post"]["responses"]
     assert "200" not in rutas["/acceso/cierre"]["post"]["responses"]
+    assert "202" in rutas["/acceso/confirmacion/reenvio"]["post"]["responses"]
+    assert "200" not in rutas["/acceso/confirmacion/reenvio"]["post"]["responses"]
+    assert "400" in rutas["/acceso/confirmacion"]["post"]["responses"]
 
 
 # --- Origen: la IP real la reenvía el servidor de Next, con un secreto ---

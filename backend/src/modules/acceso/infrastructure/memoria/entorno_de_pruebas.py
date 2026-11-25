@@ -17,6 +17,7 @@ from modules.acceso.application.registrar_cuenta import RegistrarCuenta
 from modules.acceso.application.renovar_sesion import RenovarSesion
 from modules.acceso.domain.cuenta import Cuenta, normalizar_correo
 from modules.acceso.domain.sesion_repository import SesionRepository
+from modules.acceso.infrastructure.memoria.correos_en_memoria import CorreosEnMemoria
 from modules.acceso.infrastructure.memoria.emisor_tokens_falso import EmisorTokensFalso
 from modules.acceso.infrastructure.memoria.hasheador_falso import HasheadorFalso
 from modules.acceso.infrastructure.memoria.memoria_confirmacion_repository import MemoriaConfirmacionRepository
@@ -59,6 +60,7 @@ class Entorno:
     limitador: MemoriaLimitadorIntentos = field(default_factory=MemoriaLimitadorIntentos)
     hasheador: HasheadorFalso = field(default_factory=HasheadorFalso)
     emisor: EmisorTokensFalso = field(default_factory=EmisorTokensFalso)
+    correos: CorreosEnMemoria = field(default_factory=CorreosEnMemoria)
     # Comparte las cuentas con `cuentas`, como en la base
     confirmaciones: MemoriaConfirmacionRepository = field(init=False)
 

@@ -1,5 +1,7 @@
 """La app armada de punta a punta, con la criptografía real y los datos en memoria (o Supabase con un cliente falso)."""
 
+import json
+from pathlib import Path
 from typing import Any, cast
 
 import pytest
@@ -270,3 +272,19 @@ def test_una_configuracion_insegura_impide_arrancar(monkeypatch: pytest.MonkeyPa
 
     with pytest.raises(ValueError):
         crear_app()
+
+
+def test_el_registro_envia_el_correo_con_el_enviador_de_la_configuracion(tmp_path: Path) -> None:
+    carpeta = tmp_path / "correos"
+    cliente = cliente_http(config(carpeta_de_correos=str(carpeta), url_web="http://localhost:3001"))
+
+    r = cliente.post(
+        "/acceso/registro",
+        json={"correo": "ana@correo.com", "clave": "Clave-segura1", "acepta_politica": True, "idioma": "en"},
+    )
+
+    assert r.status_code == 202
+    (archivo,) = carpeta.glob("*.json")
+    correo = json.loads(archivo.read_text(encoding="utf-8"))
+    assert correo["para"] == "ana@correo.com"
+    assert correo["enlace"].startswith("http://localhost:3001/en/confirmar-correo#token=")

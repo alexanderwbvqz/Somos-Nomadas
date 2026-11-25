@@ -49,6 +49,111 @@
         }
       }
     },
+    "/acceso/confirmacion": {
+      "post": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Confirmacion",
+        "operationId": "confirmacion_acceso_confirmacion_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmacionEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmacionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiados intentos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El enlace no existe, ya se usó, caducó o se anuló (no dice cuál)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/acceso/confirmacion/reenvio": {
+      "post": {
+        "tags": [
+          "acceso"
+        ],
+        "summary": "Reenvio",
+        "operationId": "reenvio_acceso_confirmacion_reenvio_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReenvioEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Aceptado. No dice si el correo tiene cuenta ni si ya está confirmado"
+          },
+          "422": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiados intentos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSalida"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/acceso/sesion": {
       "post": {
         "tags": [
@@ -239,6 +344,33 @@
   },
   "components": {
     "schemas": {
+      "ConfirmacionEntrada": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "ConfirmacionEntrada"
+      },
+      "ConfirmacionSalida": {
+        "properties": {
+          "correo": {
+            "type": "string",
+            "title": "Correo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "correo"
+        ],
+        "title": "ConfirmacionSalida"
+      },
       "CuentaSalida": {
         "properties": {
           "id": {
@@ -291,6 +423,30 @@
         ],
         "title": "ErrorSalida"
       },
+      "ReenvioEntrada": {
+        "properties": {
+          "correo": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Correo"
+          },
+          "idioma": {
+            "type": "string",
+            "enum": [
+              "es",
+              "en",
+              "pt"
+            ],
+            "title": "Idioma",
+            "default": "es"
+          }
+        },
+        "type": "object",
+        "required": [
+          "correo"
+        ],
+        "title": "ReenvioEntrada"
+      },
       "RegistroEntrada": {
         "properties": {
           "correo": {
@@ -310,6 +466,16 @@
           "sitio_secundario": {
             "title": "Sitio Secundario",
             "default": ""
+          },
+          "idioma": {
+            "type": "string",
+            "enum": [
+              "es",
+              "en",
+              "pt"
+            ],
+            "title": "Idioma",
+            "default": "es"
           }
         },
         "type": "object",

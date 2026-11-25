@@ -38,6 +38,9 @@ def fabrica(entorno: Entorno) -> Fabrica:
                     "renovar_sesion": entorno.renovar_sesion(),
                     "cerrar_sesion": entorno.cerrar_sesion(),
                     "obtener_cuenta_actual": entorno.obtener_cuenta_actual(),
+                    "confirmar_correo": entorno.confirmar_correo(),
+                    "reenviar_confirmacion": entorno.reenviar_confirmacion(),
+                    "correos": entorno.correos,
                     "origen_de": crear_resolutor_de_origen(secreto_interno),
                     **casos,
                 }

@@ -4,7 +4,7 @@ Aquí solo se comprueba la forma (tipos y tamaños máximos). Las reglas de corr
 aplica una sola vez; los tamaños de aquí son holgados y solo impiden que lleguen cuerpos enormes.
 """
 
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,11 +22,27 @@ class RegistroEntrada(_Entrada):
     # Campo trampa (honeypot): una persona no lo ve; si trae algo, es un robot. Acepta cualquier valor y sin tope:
     # un 422 que señalara este campo le diría al robot que es una trampa. Decide la ruta, no pydantic.
     sitio_secundario: Any = ""
+    # Idioma de la web desde la que se registra: en él se escribe el correo de confirmación
+    idioma: Literal["es", "en", "pt"] = "es"
 
 
 class SesionEntrada(_Entrada):
     correo: str = Field(max_length=500)
     clave: str = Field(max_length=1000)
+
+
+class ConfirmacionEntrada(_Entrada):
+    # El token del enlace del correo. Su forma la comprueba el dominio; aquí solo el tamaño
+    token: str = Field(max_length=500)
+
+
+class ConfirmacionSalida(BaseModel):
+    correo: str
+
+
+class ReenvioEntrada(_Entrada):
+    correo: str = Field(max_length=500)
+    idioma: Literal["es", "en", "pt"] = "es"
 
 
 class TokenRenovacionEntrada(_Entrada):

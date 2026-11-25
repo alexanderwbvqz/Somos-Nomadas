@@ -20,6 +20,7 @@ Es el contrato entre `frontend/` y `backend/` para entrar con correo y contrase�
 | Quién soy | `GET /acceso/yo` (ruta privada; prueba que el JWT funciona de punta a punta) |
 | Renovar sesión | `POST /acceso/renovar` |
 | Cerrar sesión | `POST /acceso/cierre` |
+| Confirmar el correo y reenviar el enlace | `POST /acceso/confirmacion` y `POST /acceso/confirmacion/reenvio` (segunda entrega: `confirmacion-correo.md`) |
 
 ## 3. La cuenta
 
@@ -64,8 +65,10 @@ Los campos de la API van en `snake_case`. El frontend los traduce a su dominio e
 
 Petición:
 ```json
-{ "correo": "ana@correo.com", "clave": "…", "acepta_politica": true, "sitio_secundario": "" }
+{ "correo": "ana@correo.com", "clave": "…", "acepta_politica": true, "sitio_secundario": "", "idioma": "es" }
 ```
+
+`idioma` (`es`, `en` o `pt`; opcional, `es` por defecto) es el del correo de confirmación que se envía a una cuenta nueva, después de responder. El detalle está en `confirmacion-correo.md`.
 
 Respuesta: **`202 Accepted`** con cuerpo vacío, siempre que los datos sean válidos. No dice si el correo ya tenía cuenta, para que quien lo escribió no pueda averiguar quién está registrado (el puerto `CuentaRepository.registrar` del frontend ya exige esto).
 
@@ -120,6 +123,7 @@ Un solo formato en toda la API (lo produce `shared/http/`):
 | 401 | `credenciales_invalidas` | Inicio de sesión fallido |
 | 401 | `no_autenticado` | Ruta privada sin token válido |
 | 403 | `correo_sin_confirmar` | Clave correcta, pero el correo aún no se confirmó |
+| 400 | `enlace_invalido` | El enlace de confirmación no existe, ya se usó, caducó o se anuló (no dice cuál) |
 | 429 | `limite_excedido` | Demasiados intentos |
 | 404 | `no_encontrado` | La ruta no existe |
 | 405 | `metodo_no_permitido` | La ruta existe, pero no con ese método |
@@ -196,15 +200,9 @@ Los mensajes que ve la persona **no** vienen de la API: son del frontend (`langu
 
 ## 9. Correo sin confirmar
 
-La pantalla de registro hoy promete «Te enviaremos un enlace al correo para confirmarlo», y la siguiente pantalla se llama «Confirma tu correo». Sin proveedor de correo, **esta primera entrega no envía nada**.
+**Decidido:** el correo confirmado es **obligatorio** para iniciar sesión. Una variable del backend, `EXIGIR_CORREO_CONFIRMADO`, vale `true` por defecto; solo se pone en `false` en desarrollo.
 
-**Decidido:** el correo confirmado es **obligatorio** para iniciar sesión. Una variable del backend, `EXIGIR_CORREO_CONFIRMADO`, vale `true` por defecto.
-
-Consecuencia que hay que tener presente: **mientras no exista el envío de correos, nadie puede iniciar sesión con una cuenta nueva** (se crea con `correo_confirmado = false`). Para probar en local hay dos caminos:
-- Poner `EXIGIR_CORREO_CONFIRMADO=false` en el `.env` de desarrollo. Nunca en producción.
-- Construir la confirmación de correo antes de conectar el frontend al backend.
-
-El frontend puede seguir mostrando la pantalla «Confirma tu correo» (hoy lo hace con los mocks), pero sin proveedor de correo no llegará ningún enlace.
+Desde la segunda entrega el registro **envía** el enlace de confirmación (Resend en producción; en desarrollo, un archivo por correo en `backend/correos-de-prueba/`). Confirmar y reenviar el enlace tienen sus propias rutas. Todo está en `confirmacion-correo.md`.
 
 ## 10. Cómo encaja con el frontend
 
@@ -218,7 +216,7 @@ El frontend puede seguir mostrando la pantalla «Confirma tu correo» (hoy lo ha
 
 ## 11. Fuera de alcance (después)
 
-1. Confirmación de correo y reenvío (necesita proveedor de correo; el enlace caduca en 15 minutos según la pantalla actual).
+1. ~~Confirmación de correo y reenvío~~ (hecho: `confirmacion-correo.md`).
 2. Recuperar clave y nueva clave (mismo proveedor).
 3. Google.
 4. Cambiar correo o clave dentro de la cuenta.

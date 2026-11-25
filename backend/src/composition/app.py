@@ -57,6 +57,9 @@ def crear_app(config: Configuracion | None = None) -> FastAPI:
             renovar_sesion=acceso.renovar_sesion,
             cerrar_sesion=acceso.cerrar_sesion,
             obtener_cuenta_actual=acceso.obtener_cuenta_actual,
+            confirmar_correo=acceso.confirmar_correo,
+            reenviar_confirmacion=acceso.reenviar_confirmacion,
+            correos=acceso.correos,
             origen_de=crear_resolutor_de_origen(config.secreto_interno.get_secret_value()),
         )
     )

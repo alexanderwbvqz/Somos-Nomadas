@@ -59,6 +59,8 @@ def test_la_exportacion_es_determinista_y_describe_las_rutas_de_acceso(tmp_path:
         "/acceso/renovar",
         "/acceso/cierre",
         "/acceso/yo",
+        "/acceso/confirmacion",
+        "/acceso/confirmacion/reenvio",
     }
     assert descripcion["info"]["title"] == "Somos Nómadas API"
 
