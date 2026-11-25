@@ -20,6 +20,7 @@ export const es: TextosAcceso = {
     limite: 'Hiciste demasiados intentos seguidos. Inténtalo de nuevo en unos minutos.',
     fallo: 'No pudimos completar la acción. Inténtalo de nuevo en un momento.',
     google: 'No pudimos entrar con Google. Inténtalo de nuevo.',
+    sinConfirmar: 'Todavía no confirmaste tu correo. Abre el enlace que te enviamos y vuelve a entrar.',
   },
   google: {
     continuar: 'Continuar con Google',

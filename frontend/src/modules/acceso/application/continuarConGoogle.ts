@@ -1,4 +1,5 @@
 import type { CuentaRepository } from '../domain/CuentaRepository'
+import { ErrorDeLimite } from '../domain/errores'
 
 export type ResultadoGoogle =
   | { ok: true; correo: string }
@@ -13,7 +14,7 @@ export async function continuarConGoogle(repositorio: CuentaRepository, credenci
   try {
     const cuenta = await repositorio.iniciarConGoogle(credencial)
     return cuenta ? { ok: true, correo: cuenta.correo } : { ok: false, motivo: 'rechazada' }
-  } catch {
-    return { ok: false, motivo: 'fallo' }
+  } catch (error) {
+    return { ok: false, motivo: error instanceof ErrorDeLimite ? 'limite' : 'fallo' }
   }
 }

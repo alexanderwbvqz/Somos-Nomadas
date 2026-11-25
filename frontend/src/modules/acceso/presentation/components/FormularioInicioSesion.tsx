@@ -14,7 +14,7 @@ type Props = {
   datos: DatosInicioSesion
   errores: ErroresInicioSesion
   enviando: boolean
-  aviso?: 'credenciales' | 'limite' | 'fallo'
+  aviso?: 'credenciales' | 'limite' | 'sinConfirmar' | 'fallo'
   cambiar: (clave: keyof DatosInicioSesion, valor: string) => void
   alEnviar: () => void
   google: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }

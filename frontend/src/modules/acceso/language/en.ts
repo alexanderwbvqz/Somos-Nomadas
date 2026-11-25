@@ -20,6 +20,7 @@ export const en: TextosAcceso = {
     limite: 'You made too many attempts in a row. Please try again in a few minutes.',
     fallo: 'We could not complete the action. Please try again in a moment.',
     google: 'We could not log you in with Google. Please try again.',
+    sinConfirmar: 'You have not confirmed your email yet. Open the link we sent you and log in again.',
   },
   google: {
     continuar: 'Continue with Google',

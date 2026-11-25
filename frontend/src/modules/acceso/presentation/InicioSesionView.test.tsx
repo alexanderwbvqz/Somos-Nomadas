@@ -60,6 +60,17 @@ describe('InicioSesionView', () => {
     expect(screen.getByLabelText('Correo')).toHaveValue('ana@correo.com')
   })
 
+  it('si la clave es correcta pero el correo no está confirmado, lo dice y no borra la contraseña', async () => {
+    const { usuario } = montar({ ok: false, errores: {}, motivo: 'sinConfirmar' })
+    await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'clave-segura-9')
+    await usuario.click(iniciar())
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.sinConfirmar)
+    // La contraseña era buena: no hace falta volver a escribirla
+    expect(screen.getByLabelText('Contraseña')).toHaveValue('clave-segura-9')
+  })
+
   it('avisa si hubo demasiados intentos', async () => {
     const { usuario } = montar({ ok: false, errores: {}, motivo: 'limite' })
     await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')

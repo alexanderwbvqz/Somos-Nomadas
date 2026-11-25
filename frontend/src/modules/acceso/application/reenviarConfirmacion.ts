@@ -1,4 +1,5 @@
 import type { CuentaRepository } from '../domain/CuentaRepository'
+import { ErrorDeLimite } from '../domain/errores'
 import { LIMITES_CUENTA } from '../domain/cuenta'
 import { esCorreoValido } from '@/modules/aliados/domain/postulacion'
 
@@ -12,7 +13,7 @@ export async function reenviarConfirmacion(repositorio: CuentaRepository, correo
   try {
     await repositorio.reenviarConfirmacion(limpio)
     return { ok: true }
-  } catch {
-    return { ok: false, motivo: 'fallo' }
+  } catch (error) {
+    return { ok: false, motivo: error instanceof ErrorDeLimite ? 'limite' : 'fallo' }
   }
 }

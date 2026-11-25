@@ -1,4 +1,6 @@
 import type { CuentaRepository } from '../domain/CuentaRepository'
+import { ErrorDeCamposInvalidos, ErrorDeLimite } from '../domain/errores'
+import { camposRechazados } from './camposRechazados'
 import {
   esRobotRegistro,
   hayErroresCuenta,
@@ -7,6 +9,9 @@ import {
   type DatosRegistro,
   type ErroresRegistro,
 } from '../domain/cuenta'
+
+// Los campos del formulario de registro (el campo trampa no se muestra)
+const CAMPOS_DEL_REGISTRO = ['correo', 'clave', 'aceptaPolitica'] as const
 
 export type ResultadoRegistro =
   | { ok: true; correo: string }
@@ -30,7 +35,13 @@ export async function registrarCuenta(repositorio: CuentaRepository, datos: Dato
   try {
     await repositorio.registrar(cuenta)
     return { ok: true, correo: cuenta.correo }
-  } catch {
+  } catch (error) {
+    if (error instanceof ErrorDeLimite) return { ok: false, errores: {}, motivo: 'limite' }
+    if (error instanceof ErrorDeCamposInvalidos) {
+      const errores = camposRechazados(error, CAMPOS_DEL_REGISTRO)
+      // Si ninguno es de este formulario no habría nada que mostrar: es un fallo
+      if (hayErroresCuenta(errores)) return { ok: false, errores }
+    }
     return { ok: false, errores: {}, motivo: 'fallo' }
   }
 }

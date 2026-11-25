@@ -15,7 +15,7 @@ export function useInicioSesion(alIniciar: AccionIniciarSesion) {
   const [datos, setDatos] = useState<DatosInicioSesion>({ correo: '', clave: '' })
   const [errores, setErrores] = useState<ErroresInicioSesion>({})
   const [enviando, setEnviando] = useState(false)
-  const [aviso, setAviso] = useState<'credenciales' | 'limite' | 'fallo' | undefined>()
+  const [aviso, setAviso] = useState<'credenciales' | 'limite' | 'sinConfirmar' | 'fallo' | undefined>()
   /** El correo de la cuenta con la que se entró; mientras no exista el panel, es lo único que se muestra */
   const [correoDentro, setCorreoDentro] = useState<string | undefined>()
   const [enfoque, setEnfoque] = useState<{ id: string } | undefined>()

@@ -4,9 +4,14 @@ export interface CuentaRepository {
   /**
    * Crea la cuenta y manda el enlace para confirmar el correo. Si el correo ya tenía cuenta no falla ni lo dice:
    * quien lo escribió no debe poder averiguar quién está registrado.
+   * Falla con `ErrorDeLimite` (demasiados intentos) o `ErrorDeCamposInvalidos` (datos que el servidor no acepta).
    */
   registrar(cuenta: CuentaNueva): Promise<void>
-  /** La cuenta de ese correo y contraseña, o undefined si no corresponden (sin decir cuál de los dos falla) */
+  /**
+   * La cuenta de ese correo y contraseña, o undefined si no corresponden (sin decir cuál de los dos falla).
+   * Falla con `ErrorDeLimite`, `ErrorDeCamposInvalidos` o `ErrorDeCorreoSinConfirmar` (la contraseña es correcta, pero
+   * el correo aún no se confirmó).
+   */
   iniciarSesion(correo: string, clave: string): Promise<{ correo: string } | undefined>
   /**
    * Entra con la identidad que Google ya verificó, creando la cuenta si es la primera vez. `credencial` es lo que

@@ -19,7 +19,7 @@ export type TextosAcceso = {
     politicaRequerida: string
   }
   /** Avisos cuando el servidor no puede completar lo pedido */
-  avisos: { limite: string; fallo: string; google: string }
+  avisos: { limite: string; fallo: string; google: string; sinConfirmar: string }
   /** Entrar con Google */
   google: {
     continuar: string
