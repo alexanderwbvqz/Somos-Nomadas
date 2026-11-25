@@ -5,6 +5,8 @@ const PUERTO = 3100
 
 export default defineConfig({
   testDir: './e2e',
+  // El acceso contra el backend de verdad tiene su propia configuración: playwright.acceso.config.ts
+  testIgnore: 'acceso-real/**',
   use: { baseURL: `http://localhost:${PUERTO}` },
   webServer: {
     command: `pnpm build && pnpm start -p ${PUERTO}`,

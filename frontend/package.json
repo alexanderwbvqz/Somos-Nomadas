@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run --passWithNoTests",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "e2e:acceso": "playwright test -c playwright.acceso.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.7",

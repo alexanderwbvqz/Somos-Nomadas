@@ -209,9 +209,12 @@ El frontend puede seguir mostrando la pantalla «Confirma tu correo» (hoy lo ha
 ## 10. Cómo encaja con el frontend
 
 - `CuentaRepository.registrar(cuenta)` → `POST /acceso/registro`. Un `202` es éxito; un `422` o un fallo se traducen a los motivos del caso de uso.
-- `CuentaRepository.iniciarSesion(correo, clave)` → `POST /acceso/sesion`. Un `200` devuelve `{ correo }`; un `401` devuelve `undefined`; un `429` y los fallos se traducen a `limite` y `fallo`.
+- `CuentaRepository.iniciarSesion(correo, clave)` → `POST /acceso/sesion`. Un `200` devuelve el correo y la credencial de la sesión (`{ correo, credencial }`); un `401` devuelve `undefined`; un `429` y los fallos se traducen a `limite` y `fallo`.
 - `iniciarConGoogle` y `reenviarConfirmacion`: **no existen todavía** en la API. El adaptador `Http` no los implementa en esta entrega; el botón de Google queda oculto o desactivado.
-- El token y la cookie los maneja `composition/acceso/acciones/` (acciones de servidor), no el dominio. El dominio no sabe qué es un token.
+- `renovarSesion(renovacion)` → `POST /acceso/renovar` (un `401 no_autenticado` es `undefined`; cualquier otro fallo se deja pasar, para no tirar una sesión buena por una caída). `cerrarSesion(renovacion)` → `POST /acceso/cierre`. `obtenerCuenta(acceso)` → `GET /acceso/yo` con `Authorization: Bearer`.
+- La credencial (acceso + renovación) se guarda en el servidor de Next, en cookies `httpOnly` (`infrastructure/cookies/`, detrás del puerto `AlmacenDeSesion`), y nunca vuelve al navegador: el caso de uso `iniciarSesion` la guarda y devuelve solo el correo. El `proxy` renueva el acceso caducado antes de pintar la página (`composition/acceso/sesion/mantenerSesion.ts`): juntando las renovaciones simultáneas con el mismo token en una; un rechazo borra las cookies; una caída del backend no toca nada.
+- Cookies: `__Host-nomadas_acceso` (dura lo que el acceso menos 30 s) y `__Host-nomadas_renovacion` (30 días), `httpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, sin `Domain`. En desarrollo (http) sin prefijo ni `Secure`.
+- Riesgo que se acepta: si dos instancias de Next renuevan a la vez el mismo token, una recibe `401` y borra las cookies; la persona tendría que volver a entrar.
 
 ## 11. Fuera de alcance (después)
 
