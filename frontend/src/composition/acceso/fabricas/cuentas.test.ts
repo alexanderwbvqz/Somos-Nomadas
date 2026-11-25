@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { HttpCuentaRepository } from '@/modules/acceso/infrastructure/http/HttpCuentaRepository'
 import { MockCuentaRepository } from '@/modules/acceso/infrastructure/mock/MockCuentaRepository'
-import { crearCuentaRepository } from './cuentas'
+import { crearCuentaRepository, googleDisponible } from './cuentas'
 
 afterEach(() => {
   vi.unstubAllEnvs()
@@ -58,6 +58,17 @@ describe('crearCuentaRepository', () => {
     vi.stubEnv('URL_API', 'http://localhost:8100')
 
     expect(crearCuentaRepository()).toBeInstanceOf(HttpCuentaRepository)
+  })
+})
+
+describe('googleDisponible', () => {
+  it('solo con los simulados activos: la API del backend todavía no sabe entrar con Google', () => {
+    vi.stubEnv('NEXT_PUBLIC_USAR_MOCKS_ACCESO', 'true')
+    expect(googleDisponible()).toBe(true)
+    for (const valor of ['false', '', 'TRUE', '1']) {
+      vi.stubEnv('NEXT_PUBLIC_USAR_MOCKS_ACCESO', valor)
+      expect(googleDisponible()).toBe(false)
+    }
   })
 })
 

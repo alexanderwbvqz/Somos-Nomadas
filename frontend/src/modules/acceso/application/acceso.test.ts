@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { MockAlmacenDeSesion } from '../infrastructure/mock/MockAlmacenDeSesion'
 import type { CuentaRepository } from '../domain/CuentaRepository'
 import { datosRegistroVacios, type DatosRegistro } from '../domain/cuenta'
 import { CORREO_GOOGLE_SIMULADO, MockCuentaRepository } from '../infrastructure/mock/MockCuentaRepository'
@@ -16,6 +17,9 @@ const roto: CuentaRepository = {
   iniciarSesion: async () => { throw new Error('x') },
   iniciarConGoogle: async () => { throw new Error('x') },
   reenviarConfirmacion: async () => { throw new Error('x') },
+  renovarSesion: async () => { throw new Error('x') },
+  cerrarSesion: async () => { throw new Error('x') },
+  obtenerCuenta: async () => { throw new Error('x') },
 }
 
 describe('registrarCuenta', () => {
@@ -57,22 +61,22 @@ describe('iniciarSesion', () => {
   })
 
   it('entra con el correo y la contraseña correctos (sin importar mayúsculas del correo)', async () => {
-    expect(await iniciarSesion(new MockCuentaRepository(), { correo: ' ANA@correo.com ', clave: 'Clave-segura-9' })).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await iniciarSesion(new MockCuentaRepository(), new MockAlmacenDeSesion(), { correo: ' ANA@correo.com ', clave: 'Clave-segura-9' })).toEqual({ ok: true, correo: 'ana@correo.com' })
   })
 
   it('con una contraseña mal o una cuenta que no existe responde lo mismo', async () => {
-    const mala = await iniciarSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Otra-clave-1' })
-    const inexistente = await iniciarSesion(new MockCuentaRepository(), { correo: 'nadie@correo.com', clave: 'Clave-segura-9' })
+    const mala = await iniciarSesion(new MockCuentaRepository(), new MockAlmacenDeSesion(), { correo: 'ana@correo.com', clave: 'Otra-clave-1' })
+    const inexistente = await iniciarSesion(new MockCuentaRepository(), new MockAlmacenDeSesion(), { correo: 'nadie@correo.com', clave: 'Clave-segura-9' })
     expect(mala).toEqual({ ok: false, errores: {}, motivo: 'credenciales' })
     expect(inexistente).toEqual(mala)
   })
 
   it('pide los datos que faltan sin consultar nada', async () => {
-    expect(await iniciarSesion(roto, { correo: '', clave: '' })).toEqual({ ok: false, errores: { correo: 'obligatorio', clave: 'obligatorio' } })
+    expect(await iniciarSesion(roto, new MockAlmacenDeSesion(), { correo: '', clave: '' })).toEqual({ ok: false, errores: { correo: 'obligatorio', clave: 'obligatorio' } })
   })
 
   it('si el repositorio falla responde motivo fallo', async () => {
-    expect(await iniciarSesion(roto, { correo: 'ana@correo.com', clave: 'x' })).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
+    expect(await iniciarSesion(roto, new MockAlmacenDeSesion(), { correo: 'ana@correo.com', clave: 'x' })).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
   })
 })
 
@@ -93,7 +97,7 @@ describe('continuarConGoogle', () => {
 
   it('una cuenta que solo existe por Google no deja entrar con contraseña', async () => {
     await continuarConGoogle(new MockCuentaRepository(), 'credencial')
-    const resultado = await iniciarSesion(new MockCuentaRepository(), { correo: CORREO_GOOGLE_SIMULADO, clave: 'cualquier-clave-1' })
+    const resultado = await iniciarSesion(new MockCuentaRepository(), new MockAlmacenDeSesion(), { correo: CORREO_GOOGLE_SIMULADO, clave: 'cualquier-clave-1' })
     expect(resultado).toEqual({ ok: false, errores: {}, motivo: 'credenciales' })
   })
 

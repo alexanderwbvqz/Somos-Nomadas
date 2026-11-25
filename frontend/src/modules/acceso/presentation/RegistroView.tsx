@@ -13,7 +13,8 @@ export type RegistroViewProps = {
   textos: TextosAcceso
   alRegistrar: AccionRegistrar
   alReenviar: AccionReenviar
-  alContinuarConGoogle: AccionGoogle
+  /** Sin esta acción no se muestra «Continuar con Google» */
+  alContinuarConGoogle?: AccionGoogle
   hrefInicioSesion: string
   hrefPolitica: string
   /** Adónde lleva "Completar mi perfil" una vez dentro */
@@ -70,7 +71,7 @@ export function RegistroView({ textos, alRegistrar, alReenviar, alContinuarConGo
         aviso={aviso}
         cambiar={cambiar}
         alEnviar={enviar}
-        google={{ cargando: google.cargando, aviso: google.aviso, alPulsar: google.continuar }}
+        google={alContinuarConGoogle ? { cargando: google.cargando, aviso: google.aviso, alPulsar: google.continuar } : undefined}
         hrefInicioSesion={hrefInicioSesion}
         hrefPolitica={hrefPolitica}
       />

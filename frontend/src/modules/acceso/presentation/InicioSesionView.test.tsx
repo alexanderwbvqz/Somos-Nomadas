@@ -18,6 +18,17 @@ function montar(resultado: ResultadoInicioSesion = { ok: true, correo: 'ana@corr
 
 const iniciar = () => screen.getByRole('button', { name: t.inicio.enviar })
 
+describe('InicioSesionView sin Google', () => {
+  it('si no hay acción de Google no muestra el botón ni el separador, y el formulario sigue completo', () => {
+    render(<InicioSesionView textos={t} alIniciar={vi.fn()} hrefRegistro="/es/registro" hrefContinuar="/es/bienvenida" />)
+
+    expect(screen.queryByRole('button', { name: t.google.continuar })).not.toBeInTheDocument()
+    expect(screen.queryByText(t.google.separador)).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Correo')).toBeInTheDocument()
+    expect(iniciar()).toBeInTheDocument()
+  })
+})
+
 describe('InicioSesionView', () => {
   it('muestra el título, Google y el enlace para registrarse, sin opción de enlace por correo', () => {
     montar()

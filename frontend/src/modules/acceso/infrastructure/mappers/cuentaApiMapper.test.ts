@@ -6,8 +6,30 @@ import {
   cuerpoDeInicioSesion,
   cuerpoDeRegistro,
   esCredencialesInvalidas,
+  esNoAutenticado,
   traducirErrorDeApi,
 } from './cuentaApiMapper'
+
+describe('esNoAutenticado', () => {
+  it('solo es un 401 con el código no_autenticado: la sesión no vale', () => {
+    expect(esNoAutenticado(new ErrorDeApi(401, 'no_autenticado'))).toBe(true)
+  })
+
+  it('un 401 con otro código (un proxy, otra cosa) no tira la sesión', () => {
+    expect(esNoAutenticado(new ErrorDeApi(401, 'fallo'))).toBe(false)
+    expect(esNoAutenticado(new ErrorDeApi(401, 'credenciales_invalidas'))).toBe(false)
+  })
+
+  it('el código sin el estado 401 tampoco', () => {
+    expect(esNoAutenticado(new ErrorDeApi(403, 'no_autenticado'))).toBe(false)
+    expect(esNoAutenticado(new ErrorDeApi(500, 'no_autenticado'))).toBe(false)
+  })
+
+  it('lo que no es un error de la API no lo es', () => {
+    expect(esNoAutenticado(new Error('x'))).toBe(false)
+    expect(esNoAutenticado(undefined)).toBe(false)
+  })
+})
 
 describe('cuerpoDeRegistro', () => {
   it('usa los nombres de campo de la API y manda el campo trampa vacío', () => {

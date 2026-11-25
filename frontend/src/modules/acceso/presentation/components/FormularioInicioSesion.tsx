@@ -17,7 +17,8 @@ type Props = {
   aviso?: 'credenciales' | 'limite' | 'sinConfirmar' | 'fallo'
   cambiar: (clave: keyof DatosInicioSesion, valor: string) => void
   alEnviar: () => void
-  google: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
+  /** Sin esto no se muestra «Continuar con Google» */
+  google?: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
   hrefRegistro: string
 }
 
@@ -37,7 +38,7 @@ export function FormularioInicioSesion({ textos, datos, errores, enviando, aviso
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
       <p className="text-parrafo mt-2 text-texto-suave">{t.tarjeta.intro}</p>
 
-      <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />
+      {google && <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />}
 
       {aviso && (
         <p role="alert" className="text-cuerpo mt-6 flex items-start gap-2.5 rounded-xl border-2 border-primario px-4 py-3 font-medium">

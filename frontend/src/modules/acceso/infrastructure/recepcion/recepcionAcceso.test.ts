@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { datosRegistroVacios } from '../../domain/cuenta'
+import { MockAlmacenDeSesion } from '../mock/MockAlmacenDeSesion'
 import { CORREO_GOOGLE_SIMULADO, MockCuentaRepository } from '../mock/MockCuentaRepository'
 import { recibirGoogle, recibirInicioSesion, recibirRegistro, recibirReenvio } from './recepcionAcceso'
 
@@ -9,8 +10,8 @@ describe('recepcionAcceso', () => {
   beforeEach(() => MockCuentaRepository.vaciar())
 
   it('registra y luego deja iniciar sesión', async () => {
-    expect(await recibirRegistro(new MockCuentaRepository(), validos, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
-    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Clave-segura-9' }, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await recibirRegistro(new MockCuentaRepository(), validos)).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await recibirInicioSesion(new MockCuentaRepository(), new MockAlmacenDeSesion(), { correo: 'ana@correo.com', clave: 'Clave-segura-9' })).toEqual({ ok: true, correo: 'ana@correo.com' })
   })
 
   it('entra con Google', async () => {
@@ -18,30 +19,34 @@ describe('recepcionAcceso', () => {
   })
 
   it('rechaza lo que no tiene la forma esperada', async () => {
-    expect(await recibirRegistro(new MockCuentaRepository(), { cualquier: 'cosa' }, 'c-forma')).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
-    expect(await recibirInicioSesion(new MockCuentaRepository(), 'hola', 'c-forma')).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
+    expect(await recibirRegistro(new MockCuentaRepository(), { cualquier: 'cosa' })).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
+    expect(await recibirInicioSesion(new MockCuentaRepository(), new MockAlmacenDeSesion(), 'hola')).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
     expect(await recibirGoogle(new MockCuentaRepository(), { token: 1 }, 'c-forma')).toEqual({ ok: false, motivo: 'rechazada' })
     expect(await recibirReenvio(new MockCuentaRepository(), 42, 'c-forma')).toEqual({ ok: false, motivo: 'fallo' })
   })
 
   it('devuelve los errores de validación del servidor', async () => {
-    const resultado = await recibirRegistro(new MockCuentaRepository(), { ...validos, correo: 'mal' }, 'c-errores')
+    const resultado = await recibirRegistro(new MockCuentaRepository(), { ...validos, correo: 'mal' })
     expect(resultado.ok).toBe(false)
     if (!resultado.ok) expect(resultado.errores.correo).toBe('correoInvalido')
   })
 
-  it('limita los registros seguidos de un mismo cliente', async () => {
-    const resultados = []
-    for (let i = 0; i < 6; i++) resultados.push(await recibirRegistro(new MockCuentaRepository(), { ...validos, correo: `a${i}@correo.com` }, 'c-limite-registro'))
-    expect(resultados.slice(0, 5).every((r) => r.ok)).toBe(true)
-    expect(resultados[5]).toEqual({ ok: false, errores: {}, motivo: 'limite' })
-    expect((await recibirRegistro(new MockCuentaRepository(), validos, 'otro-cliente')).ok).toBe(true)
+  it('al iniciar sesión guarda la sesión en el almacén y no devuelve ningún token', async () => {
+    await recibirRegistro(new MockCuentaRepository(), validos)
+    const almacen = new MockAlmacenDeSesion()
+
+    const resultado = await recibirInicioSesion(new MockCuentaRepository(), almacen, { correo: 'ana@correo.com', clave: 'Clave-segura-9' })
+
+    expect(Object.keys(resultado)).toEqual(['ok', 'correo'])
+    expect(almacen.guardada.renovacion).toBeTruthy()
   })
 
-  it('limita los intentos de iniciar sesión, aunque la contraseña sea correcta', async () => {
-    await recibirRegistro(new MockCuentaRepository(), validos, 'c-alta')
-    for (let i = 0; i < 10; i++) await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Incorrecta-1' }, 'c-limite-sesion')
-    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Clave-segura-9' }, 'c-limite-sesion')).toEqual({ ok: false, errores: {}, motivo: 'limite' })
+  it('con un cuerpo que no es de inicio de sesión no guarda nada', async () => {
+    const almacen = new MockAlmacenDeSesion()
+
+    await recibirInicioSesion(new MockCuentaRepository(), almacen, { correo: 1 })
+
+    expect(almacen.guardados).toBe(0)
   })
 
   it('limita los intentos con Google', async () => {

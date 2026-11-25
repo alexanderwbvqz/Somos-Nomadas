@@ -10,14 +10,15 @@ export type AccionGoogle = (credencial: string) => Promise<ResultadoGoogle>
 export const CREDENCIAL_SIMULADA = 'credencial-simulada'
 
 /** Estado del flujo "Continuar con Google": lo comparten crear cuenta e iniciar sesión */
-export function useGoogle(alContinuar: AccionGoogle) {
+/** Sin acción (todavía no hay Google detrás), `continuar` no hace nada: la pantalla ni siquiera muestra el botón */
+export function useGoogle(alContinuar: AccionGoogle | undefined) {
   const [cargando, setCargando] = useState(false)
   const [aviso, setAviso] = useState<'limite' | 'fallo' | 'rechazada' | undefined>()
   /** El correo de la cuenta de Google con la que se entró */
   const [correo, setCorreo] = useState<string | undefined>()
 
   async function continuar() {
-    if (cargando) return
+    if (cargando || alContinuar === undefined) return
     setCargando(true)
     setAviso(undefined)
     try {

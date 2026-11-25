@@ -19,7 +19,8 @@ type Props = {
   aviso?: 'limite' | 'fallo'
   cambiar: <K extends keyof DatosRegistro>(clave: K, valor: DatosRegistro[K]) => void
   alEnviar: () => void
-  google: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
+  /** Sin esto no se muestra «Continuar con Google» */
+  google?: { cargando: boolean; aviso?: 'limite' | 'fallo' | 'rechazada'; alPulsar: () => void }
   hrefInicioSesion: string
   hrefPolitica: string
 }
@@ -41,7 +42,7 @@ export function FormularioRegistro({ textos, datos, errores, enviando, aviso, ca
       <h2 className="text-titulo-seccion">{t.tarjeta.titulo}</h2>
       <p className="text-parrafo mt-2 text-texto-suave">{t.tarjeta.intro}</p>
 
-      <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />
+      {google && <AccesoGoogle textos={textos} cargando={google.cargando} aviso={google.aviso} alPulsar={google.alPulsar} />}
 
       <form noValidate onSubmit={alEnviarFormulario} className="relative mt-6 grid gap-6">
         <CampoTexto

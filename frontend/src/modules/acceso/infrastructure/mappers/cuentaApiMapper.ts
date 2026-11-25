@@ -58,6 +58,11 @@ export function esCredencialesInvalidas(error: unknown): boolean {
   return error instanceof ErrorDeApi && error.codigo === 'credenciales_invalidas'
 }
 
+/** La API dice que la sesión no vale (token falso, caducado o de una sesión cerrada) */
+export function esNoAutenticado(error: unknown): boolean {
+  return error instanceof ErrorDeApi && error.estado === 401 && error.codigo === 'no_autenticado'
+}
+
 /**
  * El error del dominio que corresponde a un error de la API, si lo hay. Los demás se devuelven sin tocar: el caso de
  * uso los trata como un fallo.

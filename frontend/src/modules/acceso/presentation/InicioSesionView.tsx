@@ -11,7 +11,8 @@ import { PaginaAcceso } from './components/PaginaAcceso'
 export type InicioSesionViewProps = {
   textos: TextosAcceso
   alIniciar: AccionIniciarSesion
-  alContinuarConGoogle: AccionGoogle
+  /** Sin esta acción no se muestra «Continuar con Google» */
+  alContinuarConGoogle?: AccionGoogle
   hrefRegistro: string
   /** Adónde lleva "Completar mi perfil" una vez dentro */
   hrefContinuar: string
@@ -41,7 +42,7 @@ export function InicioSesionView({ textos, alIniciar, alContinuarConGoogle, href
         aviso={aviso}
         cambiar={cambiar}
         alEnviar={enviar}
-        google={{ cargando: google.cargando, aviso: google.aviso, alPulsar: google.continuar }}
+        google={alContinuarConGoogle ? { cargando: google.cargando, aviso: google.aviso, alPulsar: google.continuar } : undefined}
         hrefRegistro={hrefRegistro}
       />
     </PaginaAcceso>

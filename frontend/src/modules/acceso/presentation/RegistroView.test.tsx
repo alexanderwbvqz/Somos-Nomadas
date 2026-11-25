@@ -176,6 +176,26 @@ describe('RegistroView', () => {
   })
 })
 
+describe('RegistroView sin Google', () => {
+  it('si no hay acción de Google no muestra el botón ni el separador, y el formulario sigue completo', () => {
+    render(
+      <RegistroView
+        textos={t}
+        alRegistrar={vi.fn()}
+        alReenviar={vi.fn()}
+        hrefInicioSesion="/es/iniciar-sesion"
+        hrefPolitica="/es/politica-de-datos"
+        hrefContinuar="/es/bienvenida"
+      />,
+    )
+
+    expect(screen.queryByRole('button', { name: t.google.continuar })).not.toBeInTheDocument()
+    expect(screen.queryByText(t.google.separador)).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Correo')).toBeInTheDocument()
+    expect(crearCuenta()).toBeInTheDocument()
+  })
+})
+
 describe('RegistroView con Google', () => {
   it('Google no se apaga ni pide la casilla, y bajo su botón no hay nota de aceptación', () => {
     montar()

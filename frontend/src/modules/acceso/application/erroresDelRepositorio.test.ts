@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { MockAlmacenDeSesion } from '../infrastructure/mock/MockAlmacenDeSesion'
 import type { CuentaRepository } from '../domain/CuentaRepository'
 import { datosRegistroVacios, type DatosRegistro } from '../domain/cuenta'
 import { ErrorDeCamposInvalidos, ErrorDeCorreoSinConfirmar, ErrorDeLimite } from '../domain/errores'
@@ -18,7 +19,15 @@ function fallaCon(error: unknown): CuentaRepository {
   const fallar = async (): Promise<never> => {
     throw error
   }
-  return { registrar: fallar, iniciarSesion: fallar, iniciarConGoogle: fallar, reenviarConfirmacion: fallar }
+  return {
+    registrar: fallar,
+    iniciarSesion: fallar,
+    iniciarConGoogle: fallar,
+    reenviarConfirmacion: fallar,
+    renovarSesion: fallar,
+    cerrarSesion: fallar,
+    obtenerCuenta: fallar,
+  }
 }
 
 describe('registrarCuenta cuando el repositorio rechaza', () => {
@@ -69,28 +78,28 @@ describe('iniciarSesion cuando el repositorio rechaza', () => {
   const datos = { correo: 'ana@correo.com', clave: 'Clave-segura-9' }
 
   it('por demasiados intentos, responde motivo limite', async () => {
-    expect(await iniciarSesion(fallaCon(new ErrorDeLimite()), datos)).toEqual({ ok: false, errores: {}, motivo: 'limite' })
+    expect(await iniciarSesion(fallaCon(new ErrorDeLimite()), new MockAlmacenDeSesion(), datos)).toEqual({ ok: false, errores: {}, motivo: 'limite' })
   })
 
   it('con la clave correcta pero el correo sin confirmar, responde motivo sinConfirmar', async () => {
-    expect(await iniciarSesion(fallaCon(new ErrorDeCorreoSinConfirmar()), datos)).toEqual({ ok: false, errores: {}, motivo: 'sinConfirmar' })
+    expect(await iniciarSesion(fallaCon(new ErrorDeCorreoSinConfirmar()), new MockAlmacenDeSesion(), datos)).toEqual({ ok: false, errores: {}, motivo: 'sinConfirmar' })
   })
 
   it('por datos que el servidor no acepta, devuelve esos errores por campo', async () => {
     const error = new ErrorDeCamposInvalidos({ correo: 'correoInvalido', clave: 'claveLarga', aceptaPolitica: 'politicaRequerida' })
 
     // Un inicio de sesión no tiene política: ese campo no se muestra
-    expect(await iniciarSesion(fallaCon(error), datos)).toEqual({ ok: false, errores: { correo: 'correoInvalido', clave: 'claveLarga' } })
+    expect(await iniciarSesion(fallaCon(error), new MockAlmacenDeSesion(), datos)).toEqual({ ok: false, errores: { correo: 'correoInvalido', clave: 'claveLarga' } })
   })
 
   it('si ninguno de los campos es del formulario, responde fallo', async () => {
     const error = new ErrorDeCamposInvalidos({ aceptaPolitica: 'politicaRequerida' })
 
-    expect(await iniciarSesion(fallaCon(error), datos)).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
+    expect(await iniciarSesion(fallaCon(error), new MockAlmacenDeSesion(), datos)).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
   })
 
   it('por cualquier otro error, responde fallo', async () => {
-    expect(await iniciarSesion(fallaCon(new Error('x')), datos)).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
+    expect(await iniciarSesion(fallaCon(new Error('x')), new MockAlmacenDeSesion(), datos)).toEqual({ ok: false, errores: {}, motivo: 'fallo' })
   })
 })
 
