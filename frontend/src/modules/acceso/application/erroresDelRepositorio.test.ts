@@ -10,7 +10,7 @@ import { registrarCuenta } from './registrarCuenta'
 // Lo que hace cada caso de uso cuando el repositorio (que puede ser el backend) rechaza algo.
 
 function completos(): DatosRegistro {
-  return { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'clave-segura-9', aceptaPolitica: true }
+  return { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'Clave-segura-9', aceptaPolitica: true }
 }
 
 /** Un repositorio que falla siempre con el error dado */
@@ -66,7 +66,7 @@ describe('registrarCuenta cuando el repositorio rechaza', () => {
 })
 
 describe('iniciarSesion cuando el repositorio rechaza', () => {
-  const datos = { correo: 'ana@correo.com', clave: 'clave-segura-9' }
+  const datos = { correo: 'ana@correo.com', clave: 'Clave-segura-9' }
 
   it('por demasiados intentos, responde motivo limite', async () => {
     expect(await iniciarSesion(fallaCon(new ErrorDeLimite()), datos)).toEqual({ ok: false, errores: {}, motivo: 'limite' })

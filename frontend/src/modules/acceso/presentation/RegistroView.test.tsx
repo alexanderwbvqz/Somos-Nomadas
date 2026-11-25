@@ -30,7 +30,7 @@ function montar(resultado: ResultadoRegistro = { ok: true, correo: 'ana@correo.c
 
 type Usuario = ReturnType<typeof userEvent.setup>
 
-async function rellenar(usuario: Usuario, clave = 'clave-segura-9') {
+async function rellenar(usuario: Usuario, clave = 'Clave-segura-9') {
   await usuario.type(screen.getByLabelText('Correo'), 'Ana@Correo.com')
   await usuario.type(screen.getByLabelText('Contraseña'), clave)
   await usuario.click(screen.getByRole('checkbox', { name: /política de datos/ }))
@@ -103,7 +103,22 @@ describe('RegistroView', () => {
     expect(screen.getByText(t.registro.fuerza.muyCorta)).toBeInTheDocument()
     await usuario.clear(screen.getByLabelText('Contraseña'))
     await usuario.type(screen.getByLabelText('Contraseña'), 'letras123')
+    // Larga pero sin mayúscula ni símbolo: sigue incompleta
+    expect(screen.getByText(t.registro.fuerza.muyCorta)).toBeInTheDocument()
+    await usuario.clear(screen.getByLabelText('Contraseña'))
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Letras-123')
+    expect(screen.getByText(t.registro.fuerza.aceptable)).toBeInTheDocument()
+    await usuario.clear(screen.getByLabelText('Contraseña'))
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Letras-123456')
     expect(screen.getByText(t.registro.fuerza.buena)).toBeInTheDocument()
+  })
+
+  it('dice qué regla falta en la contraseña, en el idioma de la persona', async () => {
+    const { usuario, alRegistrar } = montar()
+    await rellenar(usuario, 'clave-segura-9')
+    await usuario.click(crearCuenta())
+    expect(alRegistrar).not.toHaveBeenCalled()
+    expect(screen.getByText(t.errores.claveSinMayuscula)).toBeInTheDocument()
   })
 
   it('"Mostrar" deja ver la contraseña y "Ocultar" la esconde', async () => {
@@ -122,7 +137,7 @@ describe('RegistroView', () => {
     await usuario.click(crearCuenta())
 
     await waitFor(() => expect(alRegistrar).toHaveBeenCalledTimes(1))
-    expect(alRegistrar.mock.calls[0]?.[0]).toEqual({ correo: 'Ana@Correo.com', clave: 'clave-segura-9', aceptaPolitica: true, sitioSecundario: '' })
+    expect(alRegistrar.mock.calls[0]?.[0]).toEqual({ correo: 'Ana@Correo.com', clave: 'Clave-segura-9', aceptaPolitica: true, sitioSecundario: '' })
     expect(await screen.findByRole('heading', { level: 1, name: t.confirmacion.titulo })).toBeInTheDocument()
     expect(screen.getByText('ana@correo.com')).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: t.confirmacion.tarjetaTitulo })).toHaveFocus()

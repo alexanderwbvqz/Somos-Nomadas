@@ -1,0 +1,817 @@
+{
+  "descripcion": "Generado por backend/scripts/exportar_reglas_de_cuenta.py: no se edita a mano.",
+  "limites": {
+    "correo": 120,
+    "parte_local": 64,
+    "clave_min": 8,
+    "clave_max": 128
+  },
+  "correos": [
+    {
+      "valor": "ana@correo.com",
+      "error": null
+    },
+    {
+      "valor": "  Ana@Correo.COM  ",
+      "error": null
+    },
+    {
+      "valor": "",
+      "error": "obligatorio"
+    },
+    {
+      "valor": "   ",
+      "error": "obligatorio"
+    },
+    {
+      "valor": "\t\n",
+      "error": "obligatorio"
+    },
+    {
+      "valor": "ana",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo..com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@b@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana @correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@cor reo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana\u00a0@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.com\u00a0",
+      "error": null
+    },
+    {
+      "valor": "\u00a0ana@correo.com",
+      "error": null
+    },
+    {
+      "valor": "ana\u2003@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana\u3000@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "\u3000Ana@Correo.com\u3000",
+      "error": null
+    },
+    {
+      "valor": "\u001cana@correo.com\u001f",
+      "error": null
+    },
+    {
+      "valor": "\u001fana@correo.com",
+      "error": null
+    },
+    {
+      "valor": "\ufeffana@correo.com",
+      "error": null
+    },
+    {
+      "valor": "\u0085ana@correo.com\u0085",
+      "error": null
+    },
+    {
+      "valor": "\u1680ana@correo.com\u1680",
+      "error": null
+    },
+    {
+      "valor": "\u2028ana@correo.com\u2028",
+      "error": null
+    },
+    {
+      "valor": "\u2029ana@correo.com\u2029",
+      "error": null
+    },
+    {
+      "valor": "\u202fana@correo.com\u202f",
+      "error": null
+    },
+    {
+      "valor": "\u205fana@correo.com\u205f",
+      "error": null
+    },
+    {
+      "valor": "\u2000ana@correo.com\u2000",
+      "error": null
+    },
+    {
+      "valor": "\u200aana@correo.com\u200a",
+      "error": null
+    },
+    {
+      "valor": "ana@correo.com@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.com@",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana\u200b@correo.com",
+      "error": null
+    },
+    {
+      "valor": "ana\u0000@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana\u0007@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana\u007f@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana\u0085@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.c",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.co",
+      "error": null
+    },
+    {
+      "valor": "ana@correo.c0m",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.123",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.com1",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana+etiqueta@correo.com",
+      "error": null
+    },
+    {
+      "valor": "ana.perez@sub.correo.com",
+      "error": null
+    },
+    {
+      "valor": "ana@correo.espa\u00f1a",
+      "error": null
+    },
+    {
+      "valor": "a\u00f1a@correo.com",
+      "error": null
+    },
+    {
+      "valor": "ana@correo.\u0436\u0436",
+      "error": null
+    },
+    {
+      "valor": "\ud83d\ude00@correo.com",
+      "error": null
+    },
+    {
+      "valor": "ana@\ud83d\ude00.com",
+      "error": null
+    },
+    {
+      "valor": "ana@correo.\ud83d\ude00\ud83d\ude00",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "\u0130@correo.com",
+      "error": null
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@correo.com",
+      "error": null
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com",
+      "error": null
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com",
+      "error": null
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com",
+      "error": null
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130@correo.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130@a.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com",
+      "error": null
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": "ana@correo.com.",
+      "error": "correo_invalido"
+    },
+    {
+      "valor": ".ana@correo.com",
+      "error": null
+    },
+    {
+      "valor": "an a@correo.com",
+      "error": "correo_invalido"
+    }
+  ],
+  "correos_normalizados": [
+    {
+      "valor": "ana@correo.com",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "  Ana@Correo.COM  ",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "",
+      "normalizado": ""
+    },
+    {
+      "valor": "   ",
+      "normalizado": ""
+    },
+    {
+      "valor": "\t\n",
+      "normalizado": ""
+    },
+    {
+      "valor": "ana",
+      "normalizado": "ana"
+    },
+    {
+      "valor": "ana@",
+      "normalizado": "ana@"
+    },
+    {
+      "valor": "@correo.com",
+      "normalizado": "@correo.com"
+    },
+    {
+      "valor": "ana@correo",
+      "normalizado": "ana@correo"
+    },
+    {
+      "valor": "ana@correo.",
+      "normalizado": "ana@correo."
+    },
+    {
+      "valor": "ana@.com",
+      "normalizado": "ana@.com"
+    },
+    {
+      "valor": "ana@correo..com",
+      "normalizado": "ana@correo..com"
+    },
+    {
+      "valor": "ana@@correo.com",
+      "normalizado": "ana@@correo.com"
+    },
+    {
+      "valor": "ana@b@correo.com",
+      "normalizado": "ana@b@correo.com"
+    },
+    {
+      "valor": "ana @correo.com",
+      "normalizado": "ana @correo.com"
+    },
+    {
+      "valor": "ana@cor reo.com",
+      "normalizado": "ana@cor reo.com"
+    },
+    {
+      "valor": "ana\u00a0@correo.com",
+      "normalizado": "ana\u00a0@correo.com"
+    },
+    {
+      "valor": "ana@correo.com\u00a0",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u00a0ana@correo.com",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "ana\u2003@correo.com",
+      "normalizado": "ana\u2003@correo.com"
+    },
+    {
+      "valor": "ana\u3000@correo.com",
+      "normalizado": "ana\u3000@correo.com"
+    },
+    {
+      "valor": "\u3000Ana@Correo.com\u3000",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u001cana@correo.com\u001f",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u001fana@correo.com",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\ufeffana@correo.com",
+      "normalizado": "\ufeffana@correo.com"
+    },
+    {
+      "valor": "\u0085ana@correo.com\u0085",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u1680ana@correo.com\u1680",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u2028ana@correo.com\u2028",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u2029ana@correo.com\u2029",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u202fana@correo.com\u202f",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u205fana@correo.com\u205f",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u2000ana@correo.com\u2000",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "\u200aana@correo.com\u200a",
+      "normalizado": "ana@correo.com"
+    },
+    {
+      "valor": "ana@correo.com@correo.com",
+      "normalizado": "ana@correo.com@correo.com"
+    },
+    {
+      "valor": "ana@correo.com@",
+      "normalizado": "ana@correo.com@"
+    },
+    {
+      "valor": "ana\u200b@correo.com",
+      "normalizado": "ana\u200b@correo.com"
+    },
+    {
+      "valor": "ana\u0000@correo.com",
+      "normalizado": "ana\u0000@correo.com"
+    },
+    {
+      "valor": "ana\u0007@correo.com",
+      "normalizado": "ana\u0007@correo.com"
+    },
+    {
+      "valor": "ana\u007f@correo.com",
+      "normalizado": "ana\u007f@correo.com"
+    },
+    {
+      "valor": "ana\u0085@correo.com",
+      "normalizado": "ana\u0085@correo.com"
+    },
+    {
+      "valor": "ana@correo.c",
+      "normalizado": "ana@correo.c"
+    },
+    {
+      "valor": "ana@correo.co",
+      "normalizado": "ana@correo.co"
+    },
+    {
+      "valor": "ana@correo.c0m",
+      "normalizado": "ana@correo.c0m"
+    },
+    {
+      "valor": "ana@correo.123",
+      "normalizado": "ana@correo.123"
+    },
+    {
+      "valor": "ana@correo.com1",
+      "normalizado": "ana@correo.com1"
+    },
+    {
+      "valor": "ana+etiqueta@correo.com",
+      "normalizado": "ana+etiqueta@correo.com"
+    },
+    {
+      "valor": "ana.perez@sub.correo.com",
+      "normalizado": "ana.perez@sub.correo.com"
+    },
+    {
+      "valor": "ana@correo.espa\u00f1a",
+      "normalizado": "ana@correo.espa\u00f1a"
+    },
+    {
+      "valor": "a\u00f1a@correo.com",
+      "normalizado": "a\u00f1a@correo.com"
+    },
+    {
+      "valor": "ana@correo.\u0436\u0436",
+      "normalizado": "ana@correo.\u0436\u0436"
+    },
+    {
+      "valor": "\ud83d\ude00@correo.com",
+      "normalizado": "\ud83d\ude00@correo.com"
+    },
+    {
+      "valor": "ana@\ud83d\ude00.com",
+      "normalizado": "ana@\ud83d\ude00.com"
+    },
+    {
+      "valor": "ana@correo.\ud83d\ude00\ud83d\ude00",
+      "normalizado": "ana@correo.\ud83d\ude00\ud83d\ude00"
+    },
+    {
+      "valor": "\u0130@correo.com",
+      "normalizado": "i\u0307@correo.com"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@correo.com",
+      "normalizado": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@correo.com"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@correo.com",
+      "normalizado": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@correo.com"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com",
+      "normalizado": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com",
+      "normalizado": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com",
+      "normalizado": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com"
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130@correo.com",
+      "normalizado": "i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307@correo.com"
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130@a.com",
+      "normalizado": "i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307i\u0307@a.com"
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com",
+      "normalizado": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com"
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com",
+      "normalizado": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com"
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com",
+      "normalizado": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00@a.com"
+    },
+    {
+      "valor": "ana@correo.com.",
+      "normalizado": "ana@correo.com."
+    },
+    {
+      "valor": ".ana@correo.com",
+      "normalizado": ".ana@correo.com"
+    },
+    {
+      "valor": "an a@correo.com",
+      "normalizado": "an a@correo.com"
+    }
+  ],
+  "claves": [
+    {
+      "valor": "Clave-segura1",
+      "error": null
+    },
+    {
+      "valor": "Aa1!aaaa",
+      "error": null
+    },
+    {
+      "valor": "Aa1!aaa",
+      "error": "clave_corta"
+    },
+    {
+      "valor": "",
+      "error": "clave_corta"
+    },
+    {
+      "valor": "        ",
+      "error": "clave_sin_minuscula"
+    },
+    {
+      "valor": "1234567",
+      "error": "clave_corta"
+    },
+    {
+      "valor": "sololetras",
+      "error": "clave_sin_mayuscula"
+    },
+    {
+      "valor": "SOLOMAYUSCULAS1!",
+      "error": "clave_sin_minuscula"
+    },
+    {
+      "valor": "solominusculas1!",
+      "error": "clave_sin_mayuscula"
+    },
+    {
+      "valor": "Sinnumero!!",
+      "error": "clave_sin_numero"
+    },
+    {
+      "valor": "Sinespecial1",
+      "error": "clave_sin_especial"
+    },
+    {
+      "valor": "Con espacio1",
+      "error": null
+    },
+    {
+      "valor": "Con\u00a0espacio1",
+      "error": null
+    },
+    {
+      "valor": "\u00d1and\u00fa1\u00f1and\u00fa",
+      "error": "clave_sin_especial"
+    },
+    {
+      "valor": "\u00d1and\u00fa1\u00f1and\u00fa!",
+      "error": null
+    },
+    {
+      "valor": "\u00c1rbol1\u00e1rbol",
+      "error": "clave_sin_especial"
+    },
+    {
+      "valor": "\u00c1rbol1\u00e1rbol!",
+      "error": null
+    },
+    {
+      "valor": "Clave\u0661\u0662\u0663\u0664!",
+      "error": null
+    },
+    {
+      "valor": "Clave\u00b2\u00b2\u00b2\u00b2!a",
+      "error": "clave_sin_numero"
+    },
+    {
+      "valor": "Clave\u2160\u2161\u2162\u2163!a",
+      "error": "clave_sin_numero"
+    },
+    {
+      "valor": "Clave\u0436\u0436\u0436\u0436\u0436!1",
+      "error": null
+    },
+    {
+      "valor": "\u0416\u0436\u0436\u0436\u0436\u0436!1",
+      "error": null
+    },
+    {
+      "valor": "\u0416\u0416\u0416\u0416\u0416\u0416!1",
+      "error": "clave_sin_minuscula"
+    },
+    {
+      "valor": "Clave\u00dfss1!",
+      "error": null
+    },
+    {
+      "valor": "CLAVE\u00df1!A",
+      "error": null
+    },
+    {
+      "valor": "\u01c5aaaaaa1!",
+      "error": "clave_sin_mayuscula"
+    },
+    {
+      "valor": "\u0130aaaaaa1!",
+      "error": null
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130",
+      "error": "clave_sin_minuscula"
+    },
+    {
+      "valor": "Clave\u30a2\u30a2\u30a2\u30a21!",
+      "error": null
+    },
+    {
+      "valor": "Clave\u4e2d\u6587\u4e2d\u6587!1",
+      "error": null
+    },
+    {
+      "valor": "Clave\ud83d\ude00aaa1",
+      "error": null
+    },
+    {
+      "valor": "Clave\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00!1",
+      "error": null
+    },
+    {
+      "valor": "Aa1\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": null
+    },
+    {
+      "valor": "Aa1\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": "clave_corta"
+    },
+    {
+      "valor": "Aa1\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": null
+    },
+    {
+      "valor": "A1\u0301\u0301\u0301\u0301\u0301\u0301a",
+      "error": null
+    },
+    {
+      "valor": "Aa1!\u0301\u0301\u0301\u0301",
+      "error": null
+    },
+    {
+      "valor": "Aa1!\u0301\u0301\u0301",
+      "error": "clave_corta"
+    },
+    {
+      "valor": "Aa1!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "error": null
+    },
+    {
+      "valor": "Aa1!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "Aa1!\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": null
+    },
+    {
+      "valor": "Aa1!\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "Aa1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1",
+      "error": "clave_sin_especial"
+    },
+    {
+      "valor": "Aa1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1\u00f1",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "aA1\n!aaa",
+      "error": null
+    },
+    {
+      "valor": "aA1\t!aaa",
+      "error": null
+    },
+    {
+      "valor": "  aA1!aaa",
+      "error": null
+    },
+    {
+      "valor": "aA1!aaa  ",
+      "error": null
+    },
+    {
+      "valor": "\u00aa\u00ba1A\u00aa\u00ba!x",
+      "error": null
+    },
+    {
+      "valor": "A1!\u02b0\u02b0\u02b0\u02b0\u02b0",
+      "error": null
+    }
+  ],
+  "claves_inicio_sesion": [
+    {
+      "valor": "",
+      "error": "obligatorio"
+    },
+    {
+      "valor": " ",
+      "error": null
+    },
+    {
+      "valor": "x",
+      "error": null
+    },
+    {
+      "valor": "a",
+      "error": null
+    },
+    {
+      "valor": "Clave-segura1",
+      "error": null
+    },
+    {
+      "valor": "solominusculas",
+      "error": null
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "error": null
+    },
+    {
+      "valor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": null
+    },
+    {
+      "valor": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130",
+      "error": null
+    },
+    {
+      "valor": "\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130",
+      "error": "clave_larga"
+    },
+    {
+      "valor": "        ",
+      "error": null
+    },
+    {
+      "valor": "1234567",
+      "error": null
+    }
+  ]
+}

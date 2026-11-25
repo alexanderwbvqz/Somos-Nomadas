@@ -16,6 +16,10 @@ export type TextosAcceso = {
     correoInvalido: string
     claveCorta: string
     claveLarga: string
+    claveSinMinuscula: string
+    claveSinMayuscula: string
+    claveSinNumero: string
+    claveSinEspecial: string
     politicaRequerida: string
   }
   /** Avisos cuando el servidor no puede completar lo pedido */

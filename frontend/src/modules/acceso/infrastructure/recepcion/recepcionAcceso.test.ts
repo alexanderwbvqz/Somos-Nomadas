@@ -3,14 +3,14 @@ import { datosRegistroVacios } from '../../domain/cuenta'
 import { CORREO_GOOGLE_SIMULADO, MockCuentaRepository } from '../mock/MockCuentaRepository'
 import { recibirGoogle, recibirInicioSesion, recibirRegistro, recibirReenvio } from './recepcionAcceso'
 
-const validos = { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'clave-segura-9', aceptaPolitica: true }
+const validos = { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'Clave-segura-9', aceptaPolitica: true }
 
 describe('recepcionAcceso', () => {
   beforeEach(() => MockCuentaRepository.vaciar())
 
   it('registra y luego deja iniciar sesión', async () => {
     expect(await recibirRegistro(new MockCuentaRepository(), validos, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
-    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'clave-segura-9' }, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Clave-segura-9' }, 'c-flujo')).toEqual({ ok: true, correo: 'ana@correo.com' })
   })
 
   it('entra con Google', async () => {
@@ -40,8 +40,8 @@ describe('recepcionAcceso', () => {
 
   it('limita los intentos de iniciar sesión, aunque la contraseña sea correcta', async () => {
     await recibirRegistro(new MockCuentaRepository(), validos, 'c-alta')
-    for (let i = 0; i < 10; i++) await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'incorrecta-1' }, 'c-limite-sesion')
-    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'clave-segura-9' }, 'c-limite-sesion')).toEqual({ ok: false, errores: {}, motivo: 'limite' })
+    for (let i = 0; i < 10; i++) await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Incorrecta-1' }, 'c-limite-sesion')
+    expect(await recibirInicioSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Clave-segura-9' }, 'c-limite-sesion')).toEqual({ ok: false, errores: {}, motivo: 'limite' })
   })
 
   it('limita los intentos con Google', async () => {

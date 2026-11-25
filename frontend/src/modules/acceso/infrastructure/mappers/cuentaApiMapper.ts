@@ -33,6 +33,10 @@ const CODIGOS_DEL_DOMINIO: Readonly<Record<string, CodigoErrorCuenta>> = {
   correo_invalido: 'correoInvalido',
   clave_corta: 'claveCorta',
   clave_larga: 'claveLarga',
+  clave_sin_minuscula: 'claveSinMinuscula',
+  clave_sin_mayuscula: 'claveSinMayuscula',
+  clave_sin_numero: 'claveSinNumero',
+  clave_sin_especial: 'claveSinEspecial',
   politica_requerida: 'politicaRequerida',
 }
 

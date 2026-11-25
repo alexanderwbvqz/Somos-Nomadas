@@ -8,7 +8,7 @@ import { reenviarConfirmacion } from './reenviarConfirmacion'
 import { registrarCuenta } from './registrarCuenta'
 
 function completos(): DatosRegistro {
-  return { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'clave-segura-9', aceptaPolitica: true }
+  return { ...datosRegistroVacios(), correo: 'ana@correo.com', clave: 'Clave-segura-9', aceptaPolitica: true }
 }
 
 const roto: CuentaRepository = {
@@ -41,7 +41,7 @@ describe('registrarCuenta', () => {
   it('con un correo ya registrado responde igual y no duplica', async () => {
     const repositorio = new MockCuentaRepository()
     await registrarCuenta(repositorio, completos())
-    expect(await registrarCuenta(repositorio, { ...completos(), clave: 'otra-clave-1' })).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await registrarCuenta(repositorio, { ...completos(), clave: 'Otra-clave-1' })).toEqual({ ok: true, correo: 'ana@correo.com' })
     expect(MockCuentaRepository.cantidad()).toBe(1)
   })
 
@@ -57,12 +57,12 @@ describe('iniciarSesion', () => {
   })
 
   it('entra con el correo y la contraseña correctos (sin importar mayúsculas del correo)', async () => {
-    expect(await iniciarSesion(new MockCuentaRepository(), { correo: ' ANA@correo.com ', clave: 'clave-segura-9' })).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await iniciarSesion(new MockCuentaRepository(), { correo: ' ANA@correo.com ', clave: 'Clave-segura-9' })).toEqual({ ok: true, correo: 'ana@correo.com' })
   })
 
   it('con una contraseña mal o una cuenta que no existe responde lo mismo', async () => {
-    const mala = await iniciarSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'otra-clave-1' })
-    const inexistente = await iniciarSesion(new MockCuentaRepository(), { correo: 'nadie@correo.com', clave: 'clave-segura-9' })
+    const mala = await iniciarSesion(new MockCuentaRepository(), { correo: 'ana@correo.com', clave: 'Otra-clave-1' })
+    const inexistente = await iniciarSesion(new MockCuentaRepository(), { correo: 'nadie@correo.com', clave: 'Clave-segura-9' })
     expect(mala).toEqual({ ok: false, errores: {}, motivo: 'credenciales' })
     expect(inexistente).toEqual(mala)
   })

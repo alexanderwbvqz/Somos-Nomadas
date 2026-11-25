@@ -39,10 +39,10 @@ describe('InicioSesionView', () => {
   it('entra con los datos correctos y dice con qué correo', async () => {
     const { alIniciar, usuario } = montar()
     await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
-    await usuario.type(screen.getByLabelText('Contraseña'), 'clave-segura-9')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
     await usuario.click(iniciar())
 
-    await waitFor(() => expect(alIniciar).toHaveBeenCalledWith({ correo: 'ana@correo.com', clave: 'clave-segura-9' }))
+    await waitFor(() => expect(alIniciar).toHaveBeenCalledWith({ correo: 'ana@correo.com', clave: 'Clave-segura-9' }))
     expect(await screen.findByRole('heading', { level: 1, name: t.dentro.titulo })).toBeInTheDocument()
     expect(screen.getByText('Entraste como ana@correo.com. Tu panel estará disponible muy pronto.')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: t.dentro.continuar })).toHaveAttribute("href", "/es/bienvenida")
@@ -51,7 +51,7 @@ describe('InicioSesionView', () => {
   it('si los datos no corresponden avisa sin decir cuál falla, borra la contraseña y vuelve a ella', async () => {
     const { usuario } = montar({ ok: false, errores: {}, motivo: 'credenciales' })
     await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
-    await usuario.type(screen.getByLabelText('Contraseña'), 'incorrecta-1')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Incorrecta-1')
     await usuario.click(iniciar())
 
     expect(await screen.findByRole('alert')).toHaveTextContent(t.inicio.credenciales)
@@ -63,12 +63,12 @@ describe('InicioSesionView', () => {
   it('si la clave es correcta pero el correo no está confirmado, lo dice y no borra la contraseña', async () => {
     const { usuario } = montar({ ok: false, errores: {}, motivo: 'sinConfirmar' })
     await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
-    await usuario.type(screen.getByLabelText('Contraseña'), 'clave-segura-9')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
     await usuario.click(iniciar())
 
     expect(await screen.findByRole('alert')).toHaveTextContent(t.avisos.sinConfirmar)
     // La contraseña era buena: no hace falta volver a escribirla
-    expect(screen.getByLabelText('Contraseña')).toHaveValue('clave-segura-9')
+    expect(screen.getByLabelText('Contraseña')).toHaveValue('Clave-segura-9')
   })
 
   it('avisa si hubo demasiados intentos', async () => {

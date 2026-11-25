@@ -42,13 +42,17 @@ describe('camposDelDominio', () => {
     ['correo_invalido', 'correoInvalido'],
     ['clave_corta', 'claveCorta'],
     ['clave_larga', 'claveLarga'],
+    ['clave_sin_minuscula', 'claveSinMinuscula'],
+    ['clave_sin_mayuscula', 'claveSinMayuscula'],
+    ['clave_sin_numero', 'claveSinNumero'],
+    ['clave_sin_especial', 'claveSinEspecial'],
     ['politica_requerida', 'politicaRequerida'],
   ])('el código %s es %s', (codigoApi, codigoDominio) => {
     expect(camposDelDominio({ clave: codigoApi })).toEqual({ clave: codigoDominio })
   })
 
   it('descarta los códigos que el dominio todavía no conoce, en vez de inventarles un significado', () => {
-    expect(camposDelDominio({ clave: 'clave_sin_mayuscula', correo: 'invalido', acepta_politica: 'otra_cosa' })).toEqual({})
+    expect(camposDelDominio({ clave: 'clave_muy_rara', correo: 'invalido', acepta_politica: 'otra_cosa' })).toEqual({})
   })
 
   it('descarta los campos que no son del formulario (el campo trampa, o uno nuevo de la API)', () => {

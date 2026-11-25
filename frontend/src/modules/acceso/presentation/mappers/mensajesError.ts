@@ -17,6 +17,14 @@ export function mensajeDeErrorCuenta(textos: TextosAcceso, campo: string, codigo
       return rellenarPlantilla(e.claveCorta, { min: LIMITES_CUENTA.claveMin })
     case 'claveLarga':
       return e.claveLarga
+    case 'claveSinMinuscula':
+      return e.claveSinMinuscula
+    case 'claveSinMayuscula':
+      return e.claveSinMayuscula
+    case 'claveSinNumero':
+      return e.claveSinNumero
+    case 'claveSinEspecial':
+      return e.claveSinEspecial
     case 'politicaRequerida':
       return e.politicaRequerida
   }
