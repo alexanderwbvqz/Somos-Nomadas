@@ -41,6 +41,16 @@ uv run mypy src tests    # tipos
 
 `pytest` también vigila las reglas de capas (`import-linter`) y que `../contrato/openapi.json` esté al día.
 
+## Verificar el SQL
+
+Con Docker Desktop en marcha, un Postgres desechable (puerto 54329, se borra solo) aplica las migraciones y comprueba permisos, restricciones y concurrencia:
+
+```
+uv run python scripts/probar_migraciones.py
+```
+
+No prueba la API REST de Supabase ni el cliente de Python: para eso, un proyecto de pruebas (ver `test_contrato_repositorios.py`).
+
 ## Exportar el contrato
 
 El `openapi.json` no se escribe a mano. Si cambia la API:
