@@ -16,14 +16,24 @@ export function tokenDeLaDireccion(fragmento: string): string | undefined {
   return token ? token : undefined
 }
 
+/** Lee el token que haya tras «#» y lo borra de la barra y del historial: no debe quedar a la vista ni guardado */
+function tomarTokenDeLaDireccion(): string | undefined {
+  const { hash, pathname, search } = window.location
+  const token = tokenDeLaDireccion(hash)
+  if (hash) window.history.replaceState(window.history.state, '', pathname + search)
+  return token
+}
+
 /**
- * Lee el token de la dirección una sola vez, lo borra de la barra (y del historial) y confirma el correo. En
- * desarrollo React ejecuta los efectos dos veces: la confirmación se pide una sola, porque el enlace es de un solo uso.
+ * Lee el token de la dirección, lo borra de la barra y confirma el correo. Cada token se confirma una sola vez (el
+ * enlace es de un solo uso), aunque en desarrollo React ejecute los efectos dos veces. Si con la página ya abierta se
+ * abre otro enlace en la misma pestaña, el navegador no la recarga (solo cambia lo de tras «#»): también se atiende.
  */
 export function useConfirmarCorreo(alConfirmar: AccionConfirmar) {
   const [estado, setEstado] = useState<EstadoConfirmacion>({ tipo: 'confirmando' })
   const token = useRef<string | undefined>(undefined)
   const leido = useRef(false)
+  const atendidos = useRef(new Set<string>())
 
   const confirmar = useCallback(
     async (valor: string) => {
@@ -38,16 +48,30 @@ export function useConfirmarCorreo(alConfirmar: AccionConfirmar) {
     [alConfirmar],
   )
 
+  const atender = useCallback(
+    (valor: string) => {
+      if (atendidos.current.has(valor)) return
+      atendidos.current.add(valor)
+      token.current = valor
+      void confirmar(valor)
+    },
+    [confirmar],
+  )
+
   useEffect(() => {
-    if (leido.current) return
-    leido.current = true
-    const { hash, pathname, search } = window.location
-    token.current = tokenDeLaDireccion(hash)
-    if (hash) window.history.replaceState(window.history.state, '', pathname + search)
-    const valor = token.current
-    // Asíncrono también sin token, para que el cambio de estado no ocurra dentro del propio efecto
-    void Promise.resolve().then(() => (valor === undefined ? setEstado({ tipo: 'sinEnlace' }) : confirmar(valor)))
-  }, [confirmar])
+    if (!leido.current) {
+      leido.current = true
+      const inicial = tomarTokenDeLaDireccion()
+      // Asíncrono también sin token, para que el cambio de estado no ocurra dentro del propio efecto
+      void Promise.resolve().then(() => (inicial === undefined ? setEstado({ tipo: 'sinEnlace' }) : atender(inicial)))
+    }
+    function alCambiarLaDireccion() {
+      const nuevo = tomarTokenDeLaDireccion()
+      if (nuevo !== undefined) atender(nuevo)
+    }
+    window.addEventListener('hashchange', alCambiarLaDireccion)
+    return () => window.removeEventListener('hashchange', alCambiarLaDireccion)
+  }, [atender])
 
   function reintentar() {
     if (token.current !== undefined) void confirmar(token.current)

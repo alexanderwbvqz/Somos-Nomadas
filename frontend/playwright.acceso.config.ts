@@ -1,4 +1,6 @@
+import { rmSync } from 'node:fs'
 import { defineConfig } from '@playwright/test'
+import { CARPETA_DE_CORREOS } from './e2e/acceso-real/correos'
 
 // Prueba de punta a punta del acceso: el Next de verdad (compilado) hablando con el backend de verdad, con los datos
 // en memoria (nada de Supabase ni de internet). Puertos propios de pruebas: ni el 3000 ni el 3100 se tocan.
@@ -8,6 +10,10 @@ const URL_API = `http://127.0.0.1:${PUERTO_API}`
 
 // Secretos de mentira, solo para esta prueba: el backend y Next tienen que compartir el interno
 const SECRETO_INTERNO = 'secreto-interno-solo-para-pruebas-e2e-0123456789'
+
+// Los correos de la ejecución anterior se borran al empezar. Solo en el proceso principal: Playwright vuelve a cargar
+// esta configuración en cada proceso de pruebas, y ahí no se puede borrar lo que ya llegó
+if (process.env.TEST_WORKER_INDEX === undefined) rmSync(CARPETA_DE_CORREOS, { recursive: true, force: true })
 
 export default defineConfig({
   testDir: './e2e/acceso-real',
@@ -25,7 +31,12 @@ export default defineConfig({
         JWT_SECRETO: 'jwt-secreto-solo-para-pruebas-e2e-0123456789',
         HUELLAS_SECRETO: 'huellas-secreto-solo-para-pruebas-e2e-0123456789',
         SECRETO_INTERNO,
-        EXIGIR_CORREO_CONFIRMADO: 'false',
+        // Como en producción: sin confirmar el correo no se entra
+        EXIGIR_CORREO_CONFIRMADO: 'true',
+        // Los correos no se envían: cada uno queda como archivo en la carpeta, de donde los leen las pruebas
+        ENVIADOR_DE_CORREOS: 'carpeta',
+        CARPETA_DE_CORREOS,
+        URL_WEB: `http://localhost:${PUERTO_WEB}`,
       },
       reuseExistingServer: false,
       timeout: 60000,

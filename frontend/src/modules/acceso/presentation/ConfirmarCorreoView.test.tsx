@@ -78,6 +78,30 @@ describe('ConfirmarCorreoView', () => {
     expect(alConfirmar).toHaveBeenLastCalledWith(TOKEN)
   })
 
+  it('con la página ya abierta, un enlace nuevo en la misma pestaña (solo cambia lo de tras «#») también confirma', async () => {
+    abrir('/es/confirmar-correo')
+    const { alConfirmar } = montar()
+    await screen.findByRole('heading', { level: 1, name: t.confirmar.sinEnlace.titulo })
+
+    // El navegador no recarga la página: solo cambia el fragmento y avisa con «hashchange»
+    window.location.hash = `#token=${TOKEN}`
+
+    expect(await screen.findByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })).toBeInTheDocument()
+    expect(alConfirmar).toHaveBeenCalledExactlyOnceWith(TOKEN)
+    await waitFor(() => expect(window.location.hash).toBe(''))
+  })
+
+  it('el mismo token no se confirma dos veces aunque vuelva a aparecer tras «#»', async () => {
+    abrir(`/es/confirmar-correo#token=${TOKEN}`)
+    const { alConfirmar } = montar({ ok: false, motivo: 'invalido' })
+    await screen.findByRole('heading', { level: 1, name: t.confirmar.invalido.titulo })
+
+    window.location.hash = `#token=${TOKEN}`
+    await waitFor(() => expect(window.location.hash).toBe(''))
+
+    expect(alConfirmar).toHaveBeenCalledTimes(1)
+  })
+
   it('mientras confirma, lo dice', async () => {
     abrir(`/es/confirmar-correo#token=${TOKEN}`)
     let terminar: (r: ResultadoConfirmacion) => void = () => undefined

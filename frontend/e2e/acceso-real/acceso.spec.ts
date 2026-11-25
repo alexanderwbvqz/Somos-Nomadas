@@ -1,4 +1,5 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
+import { esperarCorreo } from './correos'
 
 // Acceso de punta a punta: navegador de verdad → Next compilado → backend de verdad (datos en memoria).
 // Cada grupo de pruebas navega «desde» una IP distinta (cabecera x-forwarded-for, que el servidor de Next reenvía al
@@ -14,6 +15,7 @@ const RENOVACION = '__Host-nomadas_renovacion'
 const correoUnico = (prefijo: string) => `${prefijo}-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}@correo.com`
 const desde = (ip: string) => ({ extraHTTPHeaders: { 'x-forwarded-for': ip } })
 
+/** Crea la cuenta y la confirma abriendo el enlace del correo, como haría una persona */
 async function registrar(page: Page, correo: string, clave = CLAVE) {
   await page.goto('/es/registro')
   await page.getByLabel('Correo').fill(correo)
@@ -21,6 +23,9 @@ async function registrar(page: Page, correo: string, clave = CLAVE) {
   await page.getByRole('checkbox', { name: /política de datos/ }).check()
   await page.getByRole('button', { name: 'Crear cuenta' }).click()
   await expect(page.getByRole('heading', { name: 'Te enviamos un enlace' })).toBeVisible()
+  const { enlace } = await esperarCorreo(correo)
+  await page.goto(enlace)
+  await expect(page.getByRole('heading', { level: 1, name: 'Correo confirmado' })).toBeVisible()
 }
 
 async function entrar(page: Page, correo: string, clave = CLAVE) {

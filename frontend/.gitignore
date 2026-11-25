@@ -12,3 +12,5 @@ AGENTS.md
 # Guias para agentes: se quedan en el disco, no se suben
 CLAUDE.md
 docs/
+# Correos que escribe el backend en las pruebas de punta a punta
+.e2e-correos
