@@ -15,6 +15,16 @@
   letter-spacing: -0.02em;
 }
 
+/* Titular de una pantalla corta y centrada (por ejemplo, confirmar el correo): como text-titulo, un poco menor
+   para que un título de dos líneas y su formulario quepan en una pantalla de escritorio */
+@utility text-titulo-medio {
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.05;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
 /* Titular gigante de página interior, en serif */
 @utility text-titulo-gigante {
   font-family: var(--font-serif);

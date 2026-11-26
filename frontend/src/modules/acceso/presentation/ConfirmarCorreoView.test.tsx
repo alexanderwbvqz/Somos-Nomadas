@@ -25,6 +25,44 @@ function montar(resultado: ResultadoConfirmacion = { ok: true, correo: 'ana@corr
 
 afterEach(() => abrir('/'))
 
+/** El fondo del icono decorativo que encabeza la página: dice qué estado se está mostrando */
+const fondoDelIcono = () => document.querySelector('[aria-hidden="true"].rounded-full')?.className.match(/\bbg-[\w-]+/)?.[0]
+
+describe('ConfirmarCorreoView: el icono de cada estado', () => {
+  it('confirmando lleva el reloj, confirmado el ✓ y un enlace que no vale el aviso', async () => {
+    abrir(`/es/confirmar-correo#token=${TOKEN}`)
+    let terminar: (r: ResultadoConfirmacion) => void = () => undefined
+    const alConfirmar = vi.fn(() => new Promise<ResultadoConfirmacion>((resolver) => (terminar = resolver)))
+    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" />)
+
+    expect(fondoDelIcono()).toBe('bg-suave')
+    await waitFor(() => expect(alConfirmar).toHaveBeenCalled())
+    terminar({ ok: true, correo: 'ana@correo.com' })
+    await screen.findByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })
+    expect(fondoDelIcono()).toBe('bg-degradado-amarillo')
+  })
+
+  it.each([
+    ['invalido', t.confirmar.invalido.titulo],
+    ['limite', t.confirmar.error.titulo],
+    ['fallo', t.confirmar.error.titulo],
+  ] as const)('%s lleva el icono de aviso', async (motivo, titulo) => {
+    abrir(`/es/confirmar-correo#token=${TOKEN}`)
+    montar({ ok: false, motivo })
+
+    await screen.findByRole('heading', { level: 1, name: titulo })
+    expect(fondoDelIcono()).toBe('bg-degradado-durazno')
+  })
+
+  it('sin enlace también lleva el icono de aviso', async () => {
+    abrir('/es/confirmar-correo')
+    montar()
+
+    await screen.findByRole('heading', { level: 1, name: t.confirmar.sinEnlace.titulo })
+    expect(fondoDelIcono()).toBe('bg-degradado-durazno')
+  })
+})
+
 describe('tokenDeLaDireccion', () => {
   it('lee el token de lo que va tras «#»', () => {
     expect(tokenDeLaDireccion(`#token=${TOKEN}`)).toBe(TOKEN)

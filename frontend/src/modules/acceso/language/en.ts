@@ -88,7 +88,7 @@ export const en: TextosAcceso = {
     confirmando: 'Confirming your email…',
     confirmado: {
       titulo: 'Email confirmed',
-      texto: 'Done: {correo} is confirmed. You can sign in now.',
+      texto: 'Done: {correo} is confirmed. Sign in with your email and password to complete your profile.',
       boton: 'Sign in',
     },
     invalido: {

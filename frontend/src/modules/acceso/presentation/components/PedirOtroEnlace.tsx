@@ -33,8 +33,8 @@ export function PedirOtroEnlace({ textos, alReenviar }: Props) {
   }
 
   return (
-    <form noValidate onSubmit={enviar} className="grid gap-5">
-      <h2 className="text-titulo-seccion">{t.texto}</h2>
+    // El título de la página ya dice para qué es: aquí, solo el campo y el botón, en un bloque estrecho
+    <form noValidate onSubmit={enviar} aria-label={t.texto} className="grid w-full max-w-[26.25rem] gap-5 text-left">
       <CampoTexto
         clave="correo-otro-enlace"
         etiqueta={textos.campos.correo}

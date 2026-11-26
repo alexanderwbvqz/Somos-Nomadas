@@ -88,7 +88,7 @@ export const es: TextosAcceso = {
     confirmando: 'Confirmando tu correo…',
     confirmado: {
       titulo: 'Correo confirmado',
-      texto: 'Listo: {correo} quedó confirmado. Ya puedes iniciar sesión.',
+      texto: 'Listo: {correo} quedó confirmado. Entra con tu correo y tu contraseña para completar tu perfil.',
       boton: 'Iniciar sesión',
     },
     invalido: {

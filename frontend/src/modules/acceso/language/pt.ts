@@ -88,7 +88,7 @@ export const pt: TextosAcceso = {
     confirmando: 'Confirmando seu e-mail…',
     confirmado: {
       titulo: 'E-mail confirmado',
-      texto: 'Pronto: {correo} foi confirmado. Você já pode entrar.',
+      texto: 'Pronto: {correo} foi confirmado. Entre com seu e-mail e sua senha para completar seu perfil.',
       boton: 'Entrar',
     },
     invalido: {

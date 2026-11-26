@@ -8,7 +8,8 @@ export function ConfirmarCorreoConectado({ idioma }: { idioma: Idioma }) {
   return (
     <>
       <BarraEnfocadaConectado idioma={idioma} />
-      <main className="flex-1">
+      {/* Flexible: la página se centra en el alto que queda bajo la barra */}
+      <main className="flex flex-1 flex-col">
         <ConfirmarCorreoView
           textos={textosAcceso(idioma)}
           alConfirmar={confirmarCorreoAccion}
