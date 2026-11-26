@@ -11,13 +11,12 @@ import {
 
 export type AccionIniciarSesion = (datos: DatosInicioSesion) => Promise<ResultadoInicioSesion>
 
-export function useInicioSesion(alIniciar: AccionIniciarSesion) {
+/** `alEntrar` se llama una vez, cuando el correo y la contraseña valen: es quien lleva a la persona adentro */
+export function useInicioSesion(alIniciar: AccionIniciarSesion, alEntrar: () => void) {
   const [datos, setDatos] = useState<DatosInicioSesion>({ correo: '', clave: '' })
   const [errores, setErrores] = useState<ErroresInicioSesion>({})
   const [enviando, setEnviando] = useState(false)
   const [aviso, setAviso] = useState<'credenciales' | 'limite' | 'sinConfirmar' | 'fallo' | undefined>()
-  /** El correo de la cuenta con la que se entró; mientras no exista el panel, es lo único que se muestra */
-  const [correoDentro, setCorreoDentro] = useState<string | undefined>()
   const [enfoque, setEnfoque] = useState<{ id: string } | undefined>()
 
   function cambiar<K extends keyof DatosInicioSesion>(clave: K, valor: string) {
@@ -43,11 +42,13 @@ export function useInicioSesion(alIniciar: AccionIniciarSesion) {
     if (hayErroresCuenta(encontrados)) return mostrarErrores(encontrados)
 
     setEnviando(true)
+    let dentro = false
     try {
       const resultado = await alIniciar(datos)
       if (resultado.ok) {
+        dentro = true
         setErrores({})
-        setCorreoDentro(resultado.correo)
+        alEntrar()
       } else if (hayErroresCuenta(resultado.errores)) mostrarErrores(resultado.errores)
       else {
         setAviso(resultado.motivo ?? 'fallo')
@@ -60,9 +61,10 @@ export function useInicioSesion(alIniciar: AccionIniciarSesion) {
     } catch {
       setAviso('fallo')
     } finally {
-      setEnviando(false)
+      // Ya dentro, el botón sigue ocupado mientras cambia la página: no se puede enviar otra vez
+      if (!dentro) setEnviando(false)
     }
   }
 
-  return { datos, errores, enviando, aviso, correoDentro, enfoque, cambiar, enviar }
+  return { datos, errores, enviando, aviso, enfoque, cambiar, enviar }
 }

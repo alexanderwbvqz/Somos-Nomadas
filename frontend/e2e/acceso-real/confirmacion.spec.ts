@@ -50,7 +50,8 @@ test.describe('registrarse y confirmar', () => {
     await page.getByLabel('E-mail').fill(correo)
     await page.getByLabel('Senha', { exact: true }).fill(CLAVE)
     await page.getByRole('button', { name: 'Entrar', exact: true }).click()
-    await expect(page.getByRole('heading', { name: 'Login feito' })).toBeVisible()
+    await expect(page).toHaveURL(/\/pt\/bienvenida$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Três coisas e você entra' })).toBeVisible()
   })
 
   test('registrar dos veces el mismo correo muestra lo mismo y solo llega un correo', async ({ page }) => {
@@ -86,7 +87,8 @@ test.describe('sin confirmar', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Correo confirmado' })).toBeVisible()
 
     await entrar(page, correo)
-    await expect(page.getByRole('heading', { name: 'Sesión iniciada' })).toBeVisible()
+    await expect(page).toHaveURL(/\/es\/bienvenida$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Tres cosas y entras' })).toBeVisible()
   })
 })
 

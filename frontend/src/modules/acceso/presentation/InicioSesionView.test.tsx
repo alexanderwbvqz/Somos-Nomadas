@@ -1,12 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ResultadoGoogle } from '../application/continuarConGoogle'
 import type { ResultadoInicioSesion } from '../application/iniciarSesion'
 import type { ResultadoReenvio } from '../application/reenviarConfirmacion'
 import type { DatosInicioSesion } from '../domain/cuenta'
 import { es } from '../language/es'
 import { InicioSesionView } from './InicioSesionView'
+
+// Al entrar, la vista cambia de página con el enrutador de Next: aquí se reemplaza por uno falso
+const enrutador = vi.hoisted(() => ({ replace: vi.fn<(href: string) => void>() }))
+vi.mock('next/navigation', () => ({ useRouter: () => enrutador }))
+beforeEach(() => enrutador.replace.mockClear())
 
 const t = es
 
@@ -62,16 +67,29 @@ describe('InicioSesionView', () => {
     expect(screen.getByLabelText('Correo')).toHaveFocus()
   })
 
-  it('entra con los datos correctos y dice con qué correo', async () => {
+  it('entra con los datos correctos y lleva directo a la bienvenida, sin pantalla intermedia', async () => {
     const { alIniciar, usuario } = montar()
     await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
     await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
     await usuario.click(iniciar())
 
-    await waitFor(() => expect(alIniciar).toHaveBeenCalledWith({ correo: 'ana@correo.com', clave: 'Clave-segura-9' }))
-    expect(await screen.findByRole('heading', { level: 1, name: t.dentro.titulo })).toBeInTheDocument()
-    expect(screen.getByText('Entraste como ana@correo.com. Tu panel estará disponible muy pronto.')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: t.dentro.continuar })).toHaveAttribute("href", "/es/bienvenida")
+    await waitFor(() => expect(enrutador.replace).toHaveBeenCalledWith('/es/bienvenida'))
+    expect(enrutador.replace).toHaveBeenCalledTimes(1)
+    expect(alIniciar).toHaveBeenCalledWith({ correo: 'ana@correo.com', clave: 'Clave-segura-9' })
+    expect(screen.queryByRole('heading', { level: 1, name: t.dentro.titulo })).not.toBeInTheDocument()
+  })
+
+  it('mientras cambia de página el botón sigue ocupado: no se puede enviar otra vez', async () => {
+    const { alIniciar, usuario } = montar()
+    await usuario.type(screen.getByLabelText('Correo'), 'ana@correo.com')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'Clave-segura-9')
+    await usuario.click(iniciar())
+
+    await waitFor(() => expect(enrutador.replace).toHaveBeenCalled())
+    const ocupado = screen.getByRole('button', { name: t.inicio.enviando })
+    expect(ocupado).toBeDisabled()
+    await usuario.click(ocupado)
+    expect(alIniciar).toHaveBeenCalledTimes(1)
   })
 
   it('si los datos no corresponden avisa sin decir cuál falla, borra la contraseña y vuelve a ella', async () => {
@@ -84,6 +102,7 @@ describe('InicioSesionView', () => {
     expect(screen.getByLabelText('Contraseña')).toHaveValue('')
     expect(screen.getByLabelText('Contraseña')).toHaveFocus()
     expect(screen.getByLabelText('Correo')).toHaveValue('ana@correo.com')
+    expect(enrutador.replace).not.toHaveBeenCalled()
   })
 
   it('si la clave es correcta pero el correo no está confirmado, lo dice y no borra la contraseña', async () => {

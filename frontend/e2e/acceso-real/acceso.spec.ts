@@ -51,8 +51,9 @@ test.describe('con la clave correcta', () => {
     await registrar(page, correo)
     await entrar(page, correo)
 
-    await expect(page.getByRole('heading', { name: 'Sesión iniciada' })).toBeVisible()
-    await expect(page.getByText(correo)).toBeVisible()
+    // Con la clave correcta se va directo a los pasos, sin pantalla intermedia
+    await expect(page).toHaveURL(/\/es\/bienvenida$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Tres cosas y entras' })).toBeVisible()
 
     const { acceso, renovacion } = await cookiesDeSesion(context)
     for (const cookie of [acceso, renovacion]) {
@@ -70,7 +71,8 @@ test.describe('con la clave correcta', () => {
     const correo = correoUnico('luis')
     await registrar(page, correo)
     await entrar(page, correo)
-    await expect(page.getByRole('heading', { name: 'Sesión iniciada' })).toBeVisible()
+    await expect(page).toHaveURL(/\/es\/bienvenida$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Tres cosas y entras' })).toBeVisible()
 
     const { acceso } = await cookiesDeSesion(context)
     const respuesta = await request.get(`${API}/acceso/yo`, { headers: { authorization: `Bearer ${acceso?.value ?? ''}` } })
@@ -87,7 +89,8 @@ test.describe('cuando el acceso caduca', () => {
     const correo = correoUnico('marta')
     await registrar(page, correo)
     await entrar(page, correo)
-    await expect(page.getByRole('heading', { name: 'Sesión iniciada' })).toBeVisible()
+    await expect(page).toHaveURL(/\/es\/bienvenida$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Tres cosas y entras' })).toBeVisible()
     const antes = await cookiesDeSesion(context)
 
     // Un JWT lleva la hora en segundos: dentro del mismo segundo el nuevo saldría idéntico al viejo
@@ -172,7 +175,7 @@ test.describe('límite de intentos', () => {
     const otra = await browser.newContext({ baseURL: WEB, ...desde('203.0.113.41') })
     const paginaOtra = await otra.newPage()
     await entrar(paginaOtra, correo)
-    await expect(paginaOtra.getByRole('heading', { name: 'Sesión iniciada' })).toBeVisible()
+    await expect(paginaOtra).toHaveURL(/\/es\/bienvenida$/)
     await otra.close()
   })
 })

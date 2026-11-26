@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import type { AccionReenviar } from './components/ConfirmaCorreo'
 import type { TextosAcceso } from '../language/tipos'
@@ -17,14 +18,15 @@ export type InicioSesionViewProps = {
   /** Sin esta acción no se muestra «Continuar con Google» */
   alContinuarConGoogle?: AccionGoogle
   hrefRegistro: string
-  /** Adónde lleva "Completar mi perfil" una vez dentro */
+  /** Adónde lleva al entrar (los pasos: la bienvenida) */
   hrefContinuar: string
 }
 
-// Pantalla de iniciar sesión (con Google o con correo y contraseña). Al entrar muestra un mensaje provisional:
-// el panel todavía no existe.
+// Pantalla de iniciar sesión (con Google o con correo y contraseña). Al entrar con correo y contraseña lleva directo
+// a `hrefContinuar`. Google (hoy solo simulado) muestra todavía el mensaje provisional de «Sesión iniciada».
 export function InicioSesionView({ textos, alIniciar, alReenviar, alContinuarConGoogle, hrefRegistro, hrefContinuar }: InicioSesionViewProps) {
-  const { datos, errores, enviando, aviso, correoDentro, enfoque, cambiar, enviar } = useInicioSesion(alIniciar)
+  const enrutador = useRouter()
+  const { datos, errores, enviando, aviso, enfoque, cambiar, enviar } = useInicioSesion(alIniciar, () => enrutador.replace(hrefContinuar))
   const google = useGoogle(alContinuarConGoogle)
   const t = textos.inicio
   const [otroEnlace, setOtroEnlace] = useState<'listo' | 'enviando' | 'enviado' | 'limite' | 'fallo'>('listo')
@@ -44,8 +46,7 @@ export function InicioSesionView({ textos, alIniciar, alReenviar, alContinuarCon
     if (enfoque) document.getElementById(enfoque.id)?.focus()
   }, [enfoque])
 
-  const correo = correoDentro ?? google.correo
-  if (correo) return <SesionIniciada textos={textos} correo={correo} hrefContinuar={hrefContinuar} />
+  if (google.correo) return <SesionIniciada textos={textos} correo={google.correo} hrefContinuar={hrefContinuar} />
 
   return (
     <PaginaAcceso etiqueta={t.etiqueta} titulo={t.titulo} parrafo={t.parrafo}>
