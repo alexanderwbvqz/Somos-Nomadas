@@ -110,8 +110,8 @@ def crear_router(
         responses={**_DATOS_INVALIDOS, **_LIMITE, **_ENLACE_INVALIDO},
     )
     def confirmacion(cuerpo: ConfirmacionEntrada, peticion: Request) -> ConfirmacionSalida:
-        # Confirma el correo y nada más: no abre sesión
-        return ConfirmacionSalida(correo=confirmar_correo.ejecutar(cuerpo.token, origen_de(peticion)))
+        # Sin la marca del navegador (llega en el paso siguiente) solo confirma: no abre sesión
+        return ConfirmacionSalida(correo=confirmar_correo.ejecutar(cuerpo.token, origen_de(peticion)).correo)
 
     @router.post(
         "/confirmacion/reenvio",

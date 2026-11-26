@@ -1,7 +1,9 @@
+from datetime import timedelta
+
 import pytest
 
 from modules.acceso.application.conftest import Entorno
-from modules.acceso.domain.confirmacion import CorreoPendiente
+from modules.acceso.domain.confirmacion import MINUTOS_ENLACE_CONFIRMACION, CorreoPendiente
 from modules.acceso.domain.cuenta import DatosRegistro
 from modules.acceso.domain.errores import DatosInvalidos, EnlaceInvalido, LimiteExcedido
 from modules.acceso.domain.intentos import REENVIO_POR_CORREO, REENVIO_POR_ORIGEN
@@ -23,7 +25,49 @@ def test_con_la_cuenta_sin_confirmar_devuelve_un_enlace_nuevo_en_el_idioma_pedid
     assert isinstance(pendiente, CorreoPendiente)
     assert pendiente.destino == "ana@correo.com"
     assert pendiente.idioma == "en"
-    assert entorno.confirmar_correo().ejecutar(pendiente.token, ORIGEN) == "ana@correo.com"
+    assert entorno.confirmar_correo().ejecutar(pendiente.token, ORIGEN).correo == "ana@correo.com"
+
+
+def test_el_enlace_nuevo_queda_atado_al_navegador_que_lo_pide(entorno: Entorno) -> None:
+    # Se registró en un navegador y pide otro enlace desde otro: el enlace nuevo abre sesión solo en el segundo
+    entorno.registrar_cuenta().ejecutar(
+        DatosRegistro("ana@correo.com", "Clave-segura1", True),
+        "198.51.100.1",
+        navegador="marca-del-portatil-0123456789",
+    )
+
+    pendiente = entorno.reenviar_confirmacion().ejecutar(
+        "ana@correo.com", ORIGEN, "es", navegador="marca-del-movil-0123456789"
+    )
+
+    assert pendiente is not None
+    hash_del_token = entorno.emisor.hash_de_token_confirmacion(pendiente.token)
+    usado = entorno.confirmaciones.confirmar(hash_del_token, entorno.reloj())
+    assert usado is not None
+    assert usado.navegador_hash == entorno.emisor.hash_de_marca_navegador("marca-del-movil-0123456789")
+
+
+def test_sin_marca_el_enlace_nuevo_no_queda_atado_a_ningun_navegador(entorno: Entorno) -> None:
+    registrar(entorno)
+
+    pendiente = entorno.reenviar_confirmacion().ejecutar("ana@correo.com", ORIGEN, "es")
+
+    assert pendiente is not None
+    usado = entorno.confirmaciones.confirmar(
+        entorno.emisor.hash_de_token_confirmacion(pendiente.token), entorno.reloj()
+    )
+    assert usado is not None and usado.navegador_hash is None
+
+
+def test_el_enlace_nuevo_dura_15_minutos(entorno: Entorno) -> None:
+    registrar(entorno)
+    pendiente = entorno.reenviar_confirmacion().ejecutar("ana@correo.com", ORIGEN, "es")
+    assert pendiente is not None
+    hash_del_token = entorno.emisor.hash_de_token_confirmacion(pendiente.token)
+    vence = entorno.reloj() + timedelta(minutes=MINUTOS_ENLACE_CONFIRMACION)
+
+    assert entorno.confirmaciones.confirmar(hash_del_token, vence) is None
+    assert entorno.confirmaciones.confirmar(hash_del_token, vence - timedelta(seconds=1)) is not None
 
 
 def test_el_enlace_anterior_deja_de_valer(entorno: Entorno) -> None:

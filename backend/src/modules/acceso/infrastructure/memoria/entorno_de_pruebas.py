@@ -79,7 +79,11 @@ class Entorno:
 
     def confirmar_correo(self) -> ConfirmarCorreo:
         return ConfirmarCorreo(
-            confirmaciones=self.confirmaciones, emisor=self.emisor, limitador=self.limitador, ahora=self.reloj
+            confirmaciones=self.confirmaciones,
+            sesiones=self.sesiones,
+            emisor=self.emisor,
+            limitador=self.limitador,
+            ahora=self.reloj,
         )
 
     def reenviar_confirmacion(self) -> ReenviarConfirmacion:

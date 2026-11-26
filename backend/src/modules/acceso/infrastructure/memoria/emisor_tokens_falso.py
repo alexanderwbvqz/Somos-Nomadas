@@ -41,3 +41,6 @@ class EmisorTokensFalso:
 
     def hash_de_token_confirmacion(self, token: str) -> str:
         return f"hashc({token})"
+
+    def hash_de_marca_navegador(self, marca: str) -> str:
+        return f"hashm({marca})"

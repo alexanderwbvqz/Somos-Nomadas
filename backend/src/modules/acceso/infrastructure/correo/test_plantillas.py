@@ -31,7 +31,8 @@ def test_cada_idioma_tiene_asunto_html_y_texto_con_el_enlace(idioma: Idioma) -> 
     assert mensaje.asunto.strip() != ""
     assert enlace in mensaje.texto
     assert f'href="{enlace}"' in mensaje.html
-    assert "24" in mensaje.texto and "24" in mensaje.html  # dice cuánto dura
+    assert "15" in mensaje.texto and "15" in mensaje.html  # dice cuánto dura
+    assert "24" not in mensaje.texto
     assert f'lang="{idioma}"' in mensaje.html
 
 

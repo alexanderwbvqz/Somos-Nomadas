@@ -22,7 +22,7 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from modules.acceso.domain.confirmacion import EnlaceNuevo
+from modules.acceso.domain.confirmacion import EnlaceNuevo, EnlaceUsado
 from modules.acceso.domain.confirmacion_repository import ConfirmacionRepository
 from modules.acceso.domain.cuenta import Cuenta
 from modules.acceso.domain.cuenta_repository import CuentaRepository
@@ -172,8 +172,12 @@ def test_actualizar_la_clave_hash_de_otra_cuenta_o_de_una_que_no_existe_no_cambi
 # --- Confirmación del correo ---
 
 
-def enlace(dias: int = 1, creada_en: datetime = AHORA) -> EnlaceNuevo:
-    return EnlaceNuevo(uuid4(), unico(), creada_en + timedelta(days=dias), creada_en)
+def enlace(dias: int = 1, creada_en: datetime = AHORA, navegador_hash: str | None = None) -> EnlaceNuevo:
+    return EnlaceNuevo(uuid4(), unico(), creada_en + timedelta(days=dias), creada_en, navegador_hash)
+
+
+def correo_de(usado: EnlaceUsado | None) -> str | None:
+    return None if usado is None else usado.correo
 
 
 def test_crear_cuenta_con_confirmacion_guarda_la_cuenta_sin_confirmar_y_su_enlace_vale(repos: Repos) -> None:
@@ -184,7 +188,7 @@ def test_crear_cuenta_con_confirmacion_guarda_la_cuenta_sin_confirmar_y_su_enlac
 
     guardada = repos.cuentas.obtener_por_correo(c.correo)
     assert guardada == replace(c, correo_confirmado=False)
-    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) == c.correo
+    assert correo_de(repos.confirmaciones.confirmar(e.token_hash, AHORA)) == c.correo
     assert repos.cuentas.obtener_por_id(c.id) == replace(c, correo_confirmado=True)
 
 
@@ -205,7 +209,7 @@ def test_un_enlace_se_usa_una_sola_vez(repos: Repos) -> None:
     c, e = cuenta(), enlace()
     repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
 
-    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) == c.correo
+    assert correo_de(repos.confirmaciones.confirmar(e.token_hash, AHORA)) == c.correo
     assert repos.confirmaciones.confirmar(e.token_hash, AHORA) is None
 
 
@@ -217,7 +221,7 @@ def test_un_enlace_caducado_o_desconocido_no_confirma(repos: Repos) -> None:
     assert repos.confirmaciones.confirmar(unico(), AHORA) is None
     assert repos.cuentas.obtener_por_id(c.id) == replace(c, correo_confirmado=False)
     # Un segundo antes de caducar todavía vale
-    assert repos.confirmaciones.confirmar(e.token_hash, e.expira_en - timedelta(seconds=1)) == c.correo
+    assert correo_de(repos.confirmaciones.confirmar(e.token_hash, e.expira_en - timedelta(seconds=1))) == c.correo
 
 
 def test_renovar_anula_el_enlace_anterior_y_el_nuevo_vale(repos: Repos) -> None:
@@ -228,7 +232,7 @@ def test_renovar_anula_el_enlace_anterior_y_el_nuevo_vale(repos: Repos) -> None:
     assert repos.confirmaciones.renovar(c.correo, nuevo)
 
     assert repos.confirmaciones.confirmar(viejo.token_hash, AHORA + timedelta(minutes=6)) is None
-    assert repos.confirmaciones.confirmar(nuevo.token_hash, AHORA + timedelta(minutes=6)) == c.correo
+    assert correo_de(repos.confirmaciones.confirmar(nuevo.token_hash, AHORA + timedelta(minutes=6))) == c.correo
 
 
 def test_renovar_no_hace_nada_si_la_cuenta_no_existe_o_ya_esta_confirmada(repos: Repos) -> None:
@@ -242,6 +246,31 @@ def test_renovar_no_hace_nada_si_la_cuenta_no_existe_o_ya_esta_confirmada(repos:
 
     assert repos.confirmaciones.confirmar(tras_confirmar.token_hash, AHORA) is None
     assert repos.confirmaciones.confirmar(inexistente.token_hash, AHORA) is None
+
+
+def test_confirmar_devuelve_la_cuenta_y_la_huella_del_navegador_guardada_al_crear(repos: Repos) -> None:
+    c, e = cuenta(), enlace(navegador_hash=f"huella-{unico()}")
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
+
+    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) == EnlaceUsado(c.id, c.correo, e.navegador_hash)
+
+
+def test_renovar_guarda_la_huella_del_navegador_que_pide_el_enlace_nuevo(repos: Repos) -> None:
+    c, viejo = cuenta(), enlace(navegador_hash=f"huella-vieja-{unico()}")
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, viejo)
+    nuevo = enlace(creada_en=AHORA + timedelta(minutes=5), navegador_hash=f"huella-nueva-{unico()}")
+    repos.confirmaciones.renovar(c.correo, nuevo)
+
+    usado = repos.confirmaciones.confirmar(nuevo.token_hash, AHORA + timedelta(minutes=6))
+
+    assert usado == EnlaceUsado(c.id, c.correo, nuevo.navegador_hash)
+
+
+def test_un_enlace_sin_huella_devuelve_la_huella_vacia(repos: Repos) -> None:
+    c, e = cuenta(), enlace(navegador_hash=None)
+    repos.confirmaciones.crear_cuenta_con_confirmacion(c, e)
+
+    assert repos.confirmaciones.confirmar(e.token_hash, AHORA) == EnlaceUsado(c.id, c.correo, None)
 
 
 def test_confirmar_una_cuenta_no_toca_las_demas(repos: Repos) -> None:

@@ -357,7 +357,9 @@ def test_cierre_con_un_token_desconocido_tambien_responde_204(cliente: TestClien
 
 def test_un_fallo_inesperado_responde_500_sin_detalles(fabrica: Fabrica, entorno: Entorno) -> None:
     class Roto(RegistrarCuenta):
-        def ejecutar(self, datos: DatosRegistro, origen: str, idioma: Idioma = "es") -> CorreoPendiente | None:
+        def ejecutar(
+            self, datos: DatosRegistro, origen: str, idioma: Idioma = "es", navegador: str | None = None
+        ) -> CorreoPendiente | None:
             raise RuntimeError("la base dijo: ana@correo.com ya existe, clave-9")
 
     cliente = fabrica(

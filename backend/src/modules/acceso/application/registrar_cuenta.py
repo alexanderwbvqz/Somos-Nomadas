@@ -4,11 +4,12 @@ from uuid import uuid4
 
 from modules.acceso.application.exigir_limite import exigir_limite
 from modules.acceso.domain.confirmacion import (
-    HORAS_ENLACE_CONFIRMACION,
     IDIOMA_POR_DEFECTO,
+    MINUTOS_ENLACE_CONFIRMACION,
     CorreoPendiente,
     EnlaceNuevo,
     Idioma,
+    tiene_forma_de_marca,
 )
 from modules.acceso.domain.confirmacion_repository import ConfirmacionRepository
 from modules.acceso.domain.cuenta import Cuenta, DatosRegistro, es_robot_registro, normalizar_correo, validar_registro
@@ -26,6 +27,9 @@ class RegistrarCuenta:
     Si el correo ya tenía cuenta no falla ni lo dice: quien lo escribió no debe poder averiguar quién está registrado.
     Por eso se hace el mismo trabajo en los dos casos (hashear la clave, generar el token, una sola llamada a la base)
     y no se devuelve nada que enviar. El envío lo hace quien llama, después de responder.
+
+    `navegador` es la marca aleatoria que la web guarda en el navegador de quien se registra: el enlace se ata a ella
+    (solo su huella) para abrir la sesión si se abre en ese mismo navegador.
     """
 
     def __init__(
@@ -46,7 +50,7 @@ class RegistrarCuenta:
         self._politica_version = politica_version
 
     def ejecutar(
-        self, datos: DatosRegistro, origen: str, idioma: Idioma = IDIOMA_POR_DEFECTO
+        self, datos: DatosRegistro, origen: str, idioma: Idioma = IDIOMA_POR_DEFECTO, navegador: str | None = None
     ) -> CorreoPendiente | None:
         # Un robot rellena el campo trampa: se responde como si todo hubiera ido bien, sin crear nada
         if es_robot_registro(datos):
@@ -72,10 +76,18 @@ class RegistrarCuenta:
         enlace = EnlaceNuevo(
             id=uuid4(),
             token_hash=self._emisor.hash_de_token_confirmacion(token),
-            expira_en=ahora + timedelta(hours=HORAS_ENLACE_CONFIRMACION),
+            expira_en=ahora + timedelta(minutes=MINUTOS_ENLACE_CONFIRMACION),
             creada_en=ahora,
+            navegador_hash=huella_del_navegador(self._emisor, navegador),
         )
         # False si el correo ya existía: no se crea nada y no hay nada que enviar
         if not self._confirmaciones.crear_cuenta_con_confirmacion(cuenta, enlace):
             return None
         return CorreoPendiente(destino=cuenta.correo, token=token, idioma=idioma)
+
+
+def huella_del_navegador(emisor: EmisorTokens, navegador: str | None) -> str | None:
+    """La huella que se guarda con el enlace. Una marca sin forma de marca cuenta como si no hubiera: no se guarda."""
+    if navegador is None or not tiene_forma_de_marca(navegador):
+        return None
+    return emisor.hash_de_marca_navegador(navegador)

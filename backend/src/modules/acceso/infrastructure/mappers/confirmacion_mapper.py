@@ -1,8 +1,10 @@
-"""Enlace de confirmación ↔ argumentos de las funciones SQL de la migración 0007. Único sitio con esos nombres."""
+"""Enlace de confirmación ↔ argumentos y respuestas de las funciones SQL (migraciones 0007 y 0008). Único sitio con
+esos nombres."""
 
 from typing import Any
+from uuid import UUID
 
-from modules.acceso.domain.confirmacion import EnlaceNuevo
+from modules.acceso.domain.confirmacion import EnlaceNuevo, EnlaceUsado
 from modules.acceso.domain.cuenta import Cuenta
 from shared.supabase.errores import ErrorDeBaseDeDatos
 
@@ -19,6 +21,7 @@ def parametros_de_cuenta_con_confirmacion(cuenta: Cuenta, enlace: EnlaceNuevo) -
         "p_confirmacion_id": str(enlace.id),
         "p_token_hash": enlace.token_hash,
         "p_expira_en": enlace.expira_en.isoformat(),
+        "p_navegador_hash": enlace.navegador_hash,
     }
 
 
@@ -30,6 +33,7 @@ def parametros_de_renovacion(correo: str, enlace: EnlaceNuevo) -> dict[str, Any]
         "p_token_hash": enlace.token_hash,
         "p_expira_en": enlace.expira_en.isoformat(),
         "p_ahora": enlace.creada_en.isoformat(),
+        "p_navegador_hash": enlace.navegador_hash,
     }
 
 
@@ -39,10 +43,19 @@ def booleano(datos: object) -> bool:
     return datos
 
 
-def correo_confirmado(datos: object) -> str | None:
-    """Lo que devuelve `confirmar_correo`: el correo, o nada si el enlace no vale."""
+def enlace_usado(datos: object) -> EnlaceUsado | None:
+    """Lo que devuelve `confirmar_correo`: la cuenta, su correo y la huella del navegador, o nada si el enlace no vale.
+    Cualquier otra forma es un error: nunca se toma por un enlace válido."""
     if datos is None:
         return None
-    if not isinstance(datos, str) or datos == "":
+    if not isinstance(datos, dict) or set(datos) != {"cuenta_id", "correo", "navegador_hash"}:
         raise ErrorDeBaseDeDatos("respuesta_inesperada")
-    return datos
+    cuenta_id, correo, navegador_hash = datos["cuenta_id"], datos["correo"], datos["navegador_hash"]
+    if not isinstance(correo, str) or correo == "":
+        raise ErrorDeBaseDeDatos("respuesta_inesperada")
+    if navegador_hash is not None and (not isinstance(navegador_hash, str) or navegador_hash == ""):
+        raise ErrorDeBaseDeDatos("respuesta_inesperada")
+    try:
+        return EnlaceUsado(cuenta_id=UUID(str(cuenta_id)), correo=correo, navegador_hash=navegador_hash)
+    except ValueError:
+        raise ErrorDeBaseDeDatos("respuesta_inesperada") from None

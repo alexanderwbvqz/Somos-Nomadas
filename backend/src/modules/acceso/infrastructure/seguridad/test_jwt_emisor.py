@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import json
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
@@ -193,3 +194,14 @@ def test_el_hash_del_token_de_confirmacion_es_sha256_estable_y_distinto_del_toke
     assert len(hash_guardado) == 64
     int(hash_guardado, 16)
     assert e.hash_de_token_confirmacion(token + "x") != hash_guardado
+
+
+def test_la_huella_de_la_marca_del_navegador_es_sha256_estable_y_distinta_de_la_marca() -> None:
+    e = emisor()
+    marca = "kVmM4x6ra2TdRrgU23duyfSBxrvhOwiN71QK2GzTuZ8"
+    huella = e.hash_de_marca_navegador(marca)
+
+    assert huella == e.hash_de_marca_navegador(marca)
+    assert huella == hashlib.sha256(marca.encode()).hexdigest()
+    assert huella != marca
+    assert e.hash_de_marca_navegador(marca + "x") != huella

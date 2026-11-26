@@ -2,7 +2,14 @@ from uuid import uuid4
 
 import pytest
 
-from modules.acceso.domain.confirmacion import CorreoPendiente, tiene_forma_de_token
+from modules.acceso.domain.confirmacion import (
+    MINUTOS_ENLACE_CONFIRMACION,
+    CorreoPendiente,
+    EnlaceUsado,
+    es_el_mismo_navegador,
+    tiene_forma_de_marca,
+    tiene_forma_de_token,
+)
 from modules.acceso.domain.cuenta import validar_correo
 
 
@@ -47,6 +54,39 @@ def test_tienen_forma_de_token_los_textos_de_base64_de_url_de_20_a_200(token: st
 )
 def test_lo_demas_no_tiene_forma_de_token(token: str) -> None:
     assert not tiene_forma_de_token(token)
+
+
+def test_el_enlace_dura_15_minutos() -> None:
+    assert MINUTOS_ENLACE_CONFIRMACION == 15
+
+
+@pytest.mark.parametrize("marca", ["a" * 20, "A" * 200, "kVmM4x6ra2TdRrgU23duyfSBxrvhOwiN71QK2GzTuZ8"])
+def test_la_marca_del_navegador_tiene_la_misma_forma_que_un_token(marca: str) -> None:
+    assert tiene_forma_de_marca(marca)
+
+
+@pytest.mark.parametrize("marca", ["", "a" * 19, "a" * 201, "con espacio aaaaaaaaaaaaaa", "a" * 30 + "\n"])
+def test_lo_demas_no_es_una_marca(marca: str) -> None:
+    assert not tiene_forma_de_marca(marca)
+
+
+def test_es_el_mismo_navegador_solo_si_las_dos_huellas_existen_y_son_iguales() -> None:
+    assert es_el_mismo_navegador("huella-1", "huella-1")
+    assert not es_el_mismo_navegador("huella-1", "huella-2")
+    # Sin huella guardada (enlace de antes, o registro sin marca) o sin marca al confirmar: nunca coincide
+    assert not es_el_mismo_navegador(None, "huella-1")
+    assert not es_el_mismo_navegador("huella-1", None)
+    assert not es_el_mismo_navegador(None, None)
+    assert not es_el_mismo_navegador("", "")
+
+
+def test_el_enlace_usado_no_muestra_ni_el_correo_ni_la_huella_al_imprimirlo() -> None:
+    usado = EnlaceUsado(cuenta_id=uuid4(), correo="ana@correo.com", navegador_hash="huella-secreta")
+
+    texto = repr(usado) + str(usado)
+
+    assert "ana@correo.com" not in texto
+    assert "huella-secreta" not in texto
 
 
 def test_validar_correo_usa_las_mismas_reglas_que_el_registro() -> None:

@@ -10,7 +10,7 @@ import pytest
 from postgrest.exceptions import APIError
 from supabase import Client
 
-from modules.acceso.domain.confirmacion import EnlaceNuevo
+from modules.acceso.domain.confirmacion import EnlaceNuevo, EnlaceUsado
 from modules.acceso.domain.cuenta import Cuenta
 from modules.acceso.domain.sesion import Sesion
 from modules.acceso.infrastructure.supabase.cliente_falso import ClienteFalso
@@ -353,8 +353,8 @@ def test_consumir_traduce_los_errores_de_la_base() -> None:
 # --- Confirmaciones ---
 
 
-def enlace() -> EnlaceNuevo:
-    return EnlaceNuevo(uuid4(), "hash-del-token", AHORA + timedelta(hours=24), AHORA)
+def enlace(navegador_hash: str | None = "huella-del-navegador") -> EnlaceNuevo:
+    return EnlaceNuevo(uuid4(), "hash-del-token", AHORA + timedelta(minutes=15), AHORA, navegador_hash)
 
 
 def test_crear_cuenta_con_confirmacion_manda_la_cuenta_y_el_enlace_en_una_sola_llamada() -> None:
@@ -374,7 +374,8 @@ def test_crear_cuenta_con_confirmacion_manda_la_cuenta_y_el_enlace_en_una_sola_l
         "p_creada_en": AHORA.isoformat(),
         "p_confirmacion_id": str(e.id),
         "p_token_hash": "hash-del-token",
-        "p_expira_en": (AHORA + timedelta(hours=24)).isoformat(),
+        "p_expira_en": (AHORA + timedelta(minutes=15)).isoformat(),
+        "p_navegador_hash": "huella-del-navegador",
     }
 
 
@@ -392,17 +393,43 @@ def test_renovar_manda_el_correo_y_el_enlace_y_anula_en_el_instante_en_que_nace_
         "p_token_hash": "hash-del-token",
         "p_expira_en": e.expira_en.isoformat(),
         "p_ahora": AHORA.isoformat(),
+        "p_navegador_hash": "huella-del-navegador",
     }
 
 
-def test_confirmar_manda_el_hash_y_la_hora_de_la_aplicacion_y_devuelve_el_correo() -> None:
-    falso = ClienteFalso({"confirmar_correo": "ana@correo.com"})
+def test_sin_huella_del_navegador_se_manda_null() -> None:
+    falso = ClienteFalso({"crear_cuenta_con_confirmacion": True, "renovar_confirmacion": True})
+    repositorio = SupabaseConfirmacionRepository(como_cliente(falso))
 
-    assert SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA) == "ana@correo.com"
+    repositorio.crear_cuenta_con_confirmacion(cuenta(), enlace(None))
+    repositorio.renovar("ana@correo.com", enlace(None))
 
+    assert [llamada.parametros["p_navegador_hash"] for llamada in falso.llamadas] == [None, None]
+
+
+def test_confirmar_manda_el_hash_y_la_hora_de_la_aplicacion_y_devuelve_la_cuenta_el_correo_y_la_huella() -> None:
+    cuenta_id = uuid4()
+    falso = ClienteFalso(
+        {"confirmar_correo": {"cuenta_id": str(cuenta_id), "correo": "ana@correo.com", "navegador_hash": "huella"}}
+    )
+
+    usado = SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA)
+
+    assert usado == EnlaceUsado(cuenta_id=cuenta_id, correo="ana@correo.com", navegador_hash="huella")
     (llamada,) = falso.llamadas
     assert (llamada.tipo, llamada.nombre) == ("rpc", "confirmar_correo")
     assert llamada.parametros == {"p_token_hash": "h1", "p_ahora": AHORA.isoformat()}
+
+
+def test_confirmar_un_enlace_pedido_sin_marca_devuelve_la_huella_vacia() -> None:
+    cuenta_id = uuid4()
+    falso = ClienteFalso(
+        {"confirmar_correo": {"cuenta_id": str(cuenta_id), "correo": "ana@correo.com", "navegador_hash": None}}
+    )
+
+    usado = SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA)
+
+    assert usado == EnlaceUsado(cuenta_id=cuenta_id, correo="ana@correo.com", navegador_hash=None)
 
 
 def test_confirmar_sin_correo_es_un_enlace_que_no_vale() -> None:
@@ -411,7 +438,24 @@ def test_confirmar_sin_correo_es_un_enlace_que_no_vale() -> None:
     assert SupabaseConfirmacionRepository(como_cliente(falso)).confirmar("h1", AHORA) is None
 
 
-@pytest.mark.parametrize("respuesta", [True, 1, "", [], {"correo": "ana@correo.com"}])
+@pytest.mark.parametrize(
+    "respuesta",
+    [
+        True,
+        1,
+        "",
+        "ana@correo.com",
+        [],
+        {},
+        {"correo": "ana@correo.com", "navegador_hash": None},
+        {"cuenta_id": "no-es-un-uuid", "correo": "ana@correo.com", "navegador_hash": None},
+        {"cuenta_id": str(uuid4()), "correo": "", "navegador_hash": None},
+        {"cuenta_id": str(uuid4()), "correo": 1, "navegador_hash": None},
+        {"cuenta_id": str(uuid4()), "correo": "ana@correo.com"},
+        {"cuenta_id": str(uuid4()), "correo": "ana@correo.com", "navegador_hash": 1},
+        {"cuenta_id": str(uuid4()), "correo": "ana@correo.com", "navegador_hash": ""},
+    ],
+)
 def test_confirmar_con_una_respuesta_rara_es_un_error_y_no_un_correo(respuesta: object) -> None:
     falso = ClienteFalso({"confirmar_correo": respuesta})
 

@@ -62,6 +62,10 @@ class JwtEmisor:
         # Igual que el de renovación: 256 bits aleatorios, SHA-256 basta
         return hashlib.sha256(token.encode()).hexdigest()
 
+    def hash_de_marca_navegador(self, marca: str) -> str:
+        # La marca la genera la web con 256 bits aleatorios: SHA-256 basta, como con los tokens
+        return hashlib.sha256(marca.encode()).hexdigest()
+
 
 def _es_entero(valor: object) -> bool:
     return isinstance(valor, int) and not isinstance(valor, bool)

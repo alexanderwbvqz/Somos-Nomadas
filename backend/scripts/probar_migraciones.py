@@ -490,10 +490,11 @@ def principal() -> None:
         valor("select count(*) from intentos_acceso where huella='carrera';") == "3",
     )
     confirmaciones()
+    navegador()
 
 
 def confirmaciones() -> None:
-    print("\n[9] Confirmación del correo (migración 0007)")
+    print("\n[9] Confirmación del correo (migraciones 0007 y 0008)")
     cuenta = "c0000000-0000-4000-8000-000000000001"
     hoy = "2026-11-25T12:00:00+00:00"
     manana = "2026-11-26T12:00:00+00:00"
@@ -501,14 +502,14 @@ def confirmaciones() -> None:
     def crear(cuenta_id, correo, confirmacion_id, token):
         return (
             f"select crear_cuenta_con_confirmacion('{cuenta_id}','{correo}','$argon2id$h','{hoy}','v1','{hoy}',"
-            f"'{confirmacion_id}','{token}','{manana}');"
+            f"'{confirmacion_id}','{token}','{manana}',null);"
         )
 
     def renovar(correo, confirmacion_id, token, ahora=hoy, expira=manana):
-        return f"select renovar_confirmacion('{correo}','{confirmacion_id}','{token}','{expira}','{ahora}');"
+        return f"select renovar_confirmacion('{correo}','{confirmacion_id}','{token}','{expira}','{ahora}',null);"
 
     def confirmar(token, ahora=hoy):
-        return f"select coalesce(confirmar_correo('{token}','{ahora}'), '-');"
+        return f"select coalesce(confirmar_correo('{token}','{ahora}')->>'correo', '-');"
 
     def vigentes(cuenta_id):
         return valor(
@@ -630,6 +631,78 @@ def confirmaciones() -> None:
         )
         == "m3",
         str(salidas),
+    )
+
+
+def navegador() -> None:
+    print("\n[11] La huella del navegador (migración 0008)")
+    hoy = "2026-11-26T12:00:00+00:00"
+    vence = "2026-11-26T12:15:00+00:00"
+    cuenta = "c0000000-0000-4000-8000-000000000081"
+
+    def crear(cuenta_id, correo, confirmacion_id, token, huella):
+        return (
+            f"select crear_cuenta_con_confirmacion('{cuenta_id}','{correo}','$argon2id$h','{hoy}','v1','{hoy}',"
+            f"'{confirmacion_id}','{token}','{vence}',{huella});"
+        )
+
+    def confirmar(token):
+        return f"select coalesce(confirmar_correo('{token}','{hoy}')::text, '-');"
+
+    def uuid_n(n):
+        return f"e0000000-0000-4000-8000-{n:012d}"
+
+    comprobar(
+        "confirmaciones_correo tiene navegador_hash, de texto y opcional",
+        valor(
+            "select data_type || ':' || is_nullable from information_schema.columns "
+            "where table_name='confirmaciones_correo' and column_name='navegador_hash';"
+        )
+        == "text:YES",
+    )
+    comprobar(
+        "de cada función queda una sola versión (la de la 0007 se borró)",
+        valor(
+            "select count(*) from pg_proc where pronamespace='public'::regnamespace and proname in "
+            "('crear_cuenta_con_confirmacion','renovar_confirmacion','confirmar_correo');"
+        )
+        == "3",
+    )
+    comprobar(
+        "crear guarda la huella y confirmar devuelve la cuenta, el correo y la huella",
+        valor(crear(cuenta, "nav@correo.com", uuid_n(81), "n1", "'huella-1'"), rol="service_role") == "t"
+        and valor(confirmar("n1"), rol="service_role")
+        == f'{{"correo": "nav@correo.com", "cuenta_id": "{cuenta}", "navegador_hash": "huella-1"}}',
+    )
+    otra = "c0000000-0000-4000-8000-000000000082"
+    comprobar(
+        "sin huella, confirmar la devuelve como null (la clave está, vacía)",
+        valor(crear(otra, "nav2@correo.com", uuid_n(82), "n2", "null"), rol="service_role") == "t"
+        and valor(f"select (confirmar_correo('n2','{hoy}') -> 'navegador_hash') = 'null'::jsonb;", rol="service_role")
+        == "t",
+    )
+    comprobar(
+        "un enlace que no vale devuelve null de SQL, no un objeto",
+        valor(confirmar("n2"), rol="service_role") == "-" and valor(confirmar("no-existe"), rol="service_role") == "-",
+    )
+    tercera = "c0000000-0000-4000-8000-000000000083"
+    valor(crear(tercera, "nav3@correo.com", uuid_n(83), "n3", "'huella-portatil'"), rol="service_role")
+    comprobar(
+        "renovar guarda la huella de quien pide el enlace nuevo; el viejo conserva la suya",
+        valor(
+            f"select renovar_confirmacion('nav3@correo.com','{uuid_n(84)}','n4','{vence}','{hoy}','huella-movil');",
+            rol="service_role",
+        )
+        == "t"
+        and valor("select navegador_hash from confirmaciones_correo where token_hash='n3';") == "huella-portatil"
+        and valor(f"select confirmar_correo('n4','{hoy}')->>'navegador_hash';", rol="service_role") == "huella-movil",
+    )
+    comprobar("anon no puede llamar a confirmar_correo", denegado(f"select confirmar_correo('n9','{hoy}');", "anon"))
+    comprobar(
+        "authenticated no puede llamar a crear_cuenta_con_confirmacion",
+        denegado(
+            crear("c0000000-0000-4000-8000-000000000089", "x9@correo.com", uuid_n(89), "n9", "null"), "authenticated"
+        ),
     )
 
 
@@ -941,9 +1014,26 @@ def actualizacion_resto() -> None:
         base=BASE_ANTIGUA,
     )
     antes = v("select string_agg(accion || ':' || huella, ',' order by huella) from intentos_acceso;")
-    for m in [m for m in MIGRACIONES if m.name >= "0006"]:
+    for m in [m for m in MIGRACIONES if "0006" <= m.name < "0008"]:
         r = psql(m.read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
         comprobar(f"se aplica {m.name} sobre esos datos", r.returncode == 0, r.stderr.strip()[:300])
+    # Un enlace pedido con la 0007, todavía sin huella del navegador, vigente cuando llega la 0008
+    psql(
+        "select crear_cuenta_con_confirmacion('cccccccc-0000-4000-8000-000000000002','previa@correo.com','h',"
+        "'2026-11-25T12:00:00+00:00','v1','2026-11-25T12:00:00+00:00','cccccccc-0000-4000-8000-0000000000e0',"
+        "'previo','2026-11-26T12:00:00+00:00');",
+        parar=True,
+        base=BASE_ANTIGUA,
+    )
+    for m in [m for m in MIGRACIONES if m.name >= "0008"]:
+        r = psql(m.read_text(encoding="utf-8"), parar=True, base=BASE_ANTIGUA)
+        comprobar(f"se aplica {m.name} sobre esos datos", r.returncode == 0, r.stderr.strip()[:300])
+    comprobar(
+        "un enlace pedido antes de la 0008 sigue confirmando, sin huella: nunca abrirá sesión",
+        v("select confirmar_correo('previo','2026-11-25T12:10:00+00:00')::text;")
+        == '{"correo": "previa@correo.com", "cuenta_id": "cccccccc-0000-4000-8000-000000000002", '
+        '"navegador_hash": null}',
+    )
     comprobar(
         "los intentos que ya había siguen ahí y valen con la restricción nueva",
         v("select string_agg(accion || ':' || huella, ',' order by huella) from intentos_acceso;") == antes,
@@ -952,7 +1042,7 @@ def actualizacion_resto() -> None:
         "una cuenta vieja sin confirmar puede pedir su primer enlace",
         v(
             "select renovar_confirmacion('vieja@correo.com','cccccccc-0000-4000-8000-0000000000e1','vh1',"
-            "'2026-11-26T12:00:00+00:00','2026-11-25T12:00:00+00:00');"
+            "'2026-11-26T12:00:00+00:00','2026-11-25T12:00:00+00:00',null);"
         )
         == "t"
         and v(f"select count(*) from confirmaciones_correo where cuenta_id='{cuenta}';") == "1",

@@ -1,9 +1,9 @@
 import contextlib
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from uuid import uuid4
+from datetime import datetime
 
+from modules.acceso.application.abrir_sesion import abrir_sesion
 from modules.acceso.application.exigir_limite import exigir_limite
 from modules.acceso.domain.cuenta import Cuenta, DatosInicioSesion, normalizar_correo, validar_inicio_sesion
 from modules.acceso.domain.cuenta_repository import CuentaRepository
@@ -12,7 +12,7 @@ from modules.acceso.domain.errores import CorreoSinConfirmar, CredencialesInvali
 from modules.acceso.domain.hasheador_claves import HasheadorClaves
 from modules.acceso.domain.intentos import SESION_POR_CORREO_TOTAL, SESION_POR_CORREO_Y_ORIGEN, SESION_POR_ORIGEN
 from modules.acceso.domain.limitador_intentos import LimitadorIntentos
-from modules.acceso.domain.sesion import DIAS_TOKEN_RENOVACION, ParDeTokens, Sesion
+from modules.acceso.domain.sesion import ParDeTokens
 from modules.acceso.domain.sesion_repository import SesionRepository
 
 
@@ -77,18 +77,7 @@ class IniciarSesion:
 
         self._recalcular_hash_si_hace_falta(cuenta, datos.clave)
 
-        acceso = self._emisor.emitir_acceso(cuenta.id, ahora)
-        token_renovacion = self._emisor.nuevo_token_renovacion()
-        self._sesiones.guardar(
-            Sesion(
-                id=uuid4(),
-                cuenta_id=cuenta.id,
-                token_hash=self._emisor.hash_de_token_renovacion(token_renovacion),
-                expira_en=ahora + timedelta(days=DIAS_TOKEN_RENOVACION),
-                creada_en=ahora,
-            )
-        )
-        tokens = ParDeTokens(acceso.valor, acceso.expira_en_segundos, token_renovacion)
+        tokens = abrir_sesion(cuenta.id, sesiones=self._sesiones, emisor=self._emisor, ahora=ahora)
         return SesionIniciada(tokens=tokens, correo=cuenta.correo)
 
     def _recalcular_hash_si_hace_falta(self, cuenta: Cuenta, clave: str) -> None:

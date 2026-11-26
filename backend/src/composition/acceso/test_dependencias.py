@@ -97,6 +97,8 @@ def test_los_casos_de_uso_comparten_los_mismos_repositorios() -> None:
     # El token del enlace lo hashea el mismo emisor al crearlo y al usarlo
     assert casos.registrar_cuenta._emisor is casos.confirmar_correo._emisor is casos.reenviar_confirmacion._emisor
     assert casos.iniciar_sesion._sesiones is casos.renovar_sesion._sesiones is casos.cerrar_sesion._sesiones
+    # Confirmar en el mismo navegador abre la sesión donde luego se renueva y se cierra
+    assert casos.confirmar_correo._sesiones is casos.iniciar_sesion._sesiones
     assert casos.registrar_cuenta._limitador is casos.iniciar_sesion._limitador
     assert casos.iniciar_sesion._emisor is casos.renovar_sesion._emisor is casos.cerrar_sesion._emisor
 

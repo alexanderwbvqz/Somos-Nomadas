@@ -2,11 +2,11 @@ from datetime import datetime
 
 from supabase import Client
 
-from modules.acceso.domain.confirmacion import EnlaceNuevo
+from modules.acceso.domain.confirmacion import EnlaceNuevo, EnlaceUsado
 from modules.acceso.domain.cuenta import Cuenta
 from modules.acceso.infrastructure.mappers.confirmacion_mapper import (
     booleano,
-    correo_confirmado,
+    enlace_usado,
     parametros_de_cuenta_con_confirmacion,
     parametros_de_renovacion,
 )
@@ -32,9 +32,9 @@ class SupabaseConfirmacionRepository:
             respuesta = self._cliente.rpc("renovar_confirmacion", parametros_de_renovacion(correo, enlace)).execute()
         return booleano(respuesta.data)
 
-    def confirmar(self, token_hash: str, ahora: datetime) -> str | None:
+    def confirmar(self, token_hash: str, ahora: datetime) -> EnlaceUsado | None:
         with traducir_errores():
             respuesta = self._cliente.rpc(
                 "confirmar_correo", {"p_token_hash": token_hash, "p_ahora": ahora.isoformat()}
             ).execute()
-        return correo_confirmado(respuesta.data)
+        return enlace_usado(respuesta.data)

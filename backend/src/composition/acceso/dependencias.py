@@ -118,7 +118,7 @@ def armar_acceso(config: Configuracion, cliente: Client | None, ahora: Callable[
         cerrar_sesion=CerrarSesion(sesiones=sesiones, emisor=emisor, ahora=ahora),
         obtener_cuenta_actual=ObtenerCuentaActual(cuentas=cuentas, emisor=emisor, ahora=ahora),
         confirmar_correo=ConfirmarCorreo(
-            confirmaciones=confirmaciones, emisor=emisor, limitador=limitador, ahora=ahora
+            confirmaciones=confirmaciones, sesiones=sesiones, emisor=emisor, limitador=limitador, ahora=ahora
         ),
         reenviar_confirmacion=ReenviarConfirmacion(
             confirmaciones=confirmaciones, emisor=emisor, limitador=limitador, ahora=ahora

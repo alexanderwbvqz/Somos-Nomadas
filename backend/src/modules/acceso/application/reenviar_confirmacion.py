@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 from modules.acceso.application.exigir_limite import exigir_limite
-from modules.acceso.domain.confirmacion import HORAS_ENLACE_CONFIRMACION, CorreoPendiente, EnlaceNuevo, Idioma
+from modules.acceso.application.registrar_cuenta import huella_del_navegador
+from modules.acceso.domain.confirmacion import MINUTOS_ENLACE_CONFIRMACION, CorreoPendiente, EnlaceNuevo, Idioma
 from modules.acceso.domain.confirmacion_repository import ConfirmacionRepository
 from modules.acceso.domain.cuenta import normalizar_correo, validar_correo
 from modules.acceso.domain.emisor_tokens import EmisorTokens
@@ -17,6 +18,8 @@ class ReenviarConfirmacion:
 
     Responde igual exista o no la cuenta, y esté o no confirmada: solo cambia si hay algo que enviar, y eso no sale
     de la API. Se hace el mismo trabajo en todos los casos (generar el token, una sola llamada a la base).
+
+    El enlace nuevo queda atado al navegador que lo pide (`navegador`), no al del registro.
     """
 
     def __init__(
@@ -32,7 +35,9 @@ class ReenviarConfirmacion:
         self._limitador = limitador
         self._ahora = ahora
 
-    def ejecutar(self, correo: str, origen: str, idioma: Idioma) -> CorreoPendiente | None:
+    def ejecutar(
+        self, correo: str, origen: str, idioma: Idioma, navegador: str | None = None
+    ) -> CorreoPendiente | None:
         ahora = self._ahora()
         exigir_limite(self._limitador, "reenvio", origen, REENVIO_POR_ORIGEN, ahora)
 
@@ -49,8 +54,9 @@ class ReenviarConfirmacion:
         enlace = EnlaceNuevo(
             id=uuid4(),
             token_hash=self._emisor.hash_de_token_confirmacion(token),
-            expira_en=ahora + timedelta(hours=HORAS_ENLACE_CONFIRMACION),
+            expira_en=ahora + timedelta(minutes=MINUTOS_ENLACE_CONFIRMACION),
             creada_en=ahora,
+            navegador_hash=huella_del_navegador(self._emisor, navegador),
         )
         if not self._confirmaciones.renovar(limpio, enlace):
             return None

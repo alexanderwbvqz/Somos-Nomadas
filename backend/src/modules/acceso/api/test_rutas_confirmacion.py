@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from httpx import Response
 
 from modules.acceso.api.conftest import CLAVE, Entorno, Fabrica
-from modules.acceso.domain.confirmacion import HORAS_ENLACE_CONFIRMACION
+from modules.acceso.domain.confirmacion import MINUTOS_ENLACE_CONFIRMACION
 from modules.acceso.domain.intentos import CONFIRMACION_POR_ORIGEN, REENVIO_POR_CORREO
 
 REGISTRO: dict[str, Any] = {"correo": "ana@correo.com", "clave": CLAVE, "acepta_politica": True, "sitio_secundario": ""}
@@ -134,7 +134,7 @@ def test_un_enlace_desconocido_usado_o_caducado_da_la_misma_respuesta(fabrica: F
     cliente.post("/acceso/confirmacion", json={"token": usado})
     registrar(fabrica(origen="198.51.100.3"), correo="caduca@correo.com")
     caducado = ultimo_token(entorno)
-    entorno.reloj.avanzar(hours=HORAS_ENLACE_CONFIRMACION)
+    entorno.reloj.avanzar(minutes=MINUTOS_ENLACE_CONFIRMACION)
 
     respuestas = [
         cliente.post("/acceso/confirmacion", json={"token": token})

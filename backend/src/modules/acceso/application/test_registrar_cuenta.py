@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 
 from modules.acceso.application.conftest import CLAVE, POLITICA, Entorno
-from modules.acceso.domain.confirmacion import HORAS_ENLACE_CONFIRMACION, CorreoPendiente
+from modules.acceso.domain.confirmacion import MINUTOS_ENLACE_CONFIRMACION, CorreoPendiente
 from modules.acceso.domain.cuenta import DatosRegistro
 from modules.acceso.domain.errores import DatosInvalidos, LimiteExcedido
 from modules.acceso.domain.intentos import REGISTRO_POR_ORIGEN
@@ -108,7 +108,8 @@ def test_una_cuenta_nueva_devuelve_el_correo_a_enviar_con_el_enlace_y_el_idioma(
     # El token del correo confirma la cuenta: lo guardado es su hash, no el token
     hash_del_token = entorno.emisor.hash_de_token_confirmacion(pendiente.token)
     assert hash_del_token != pendiente.token
-    assert entorno.confirmaciones.confirmar(hash_del_token, entorno.reloj()) == "ana@correo.com"
+    usado = entorno.confirmaciones.confirmar(hash_del_token, entorno.reloj())
+    assert usado is not None and usado.correo == "ana@correo.com"
 
 
 def test_sin_idioma_el_correo_va_en_espanol(entorno: Entorno) -> None:
@@ -117,14 +118,42 @@ def test_sin_idioma_el_correo_va_en_espanol(entorno: Entorno) -> None:
     assert pendiente is not None and pendiente.idioma == "es"
 
 
-def test_el_enlace_dura_24_horas(entorno: Entorno) -> None:
+def test_el_enlace_dura_15_minutos(entorno: Entorno) -> None:
     pendiente = entorno.registrar_cuenta().ejecutar(datos(), ORIGEN)
     assert pendiente is not None
     hash_del_token = entorno.emisor.hash_de_token_confirmacion(pendiente.token)
-    vence = entorno.reloj() + timedelta(hours=HORAS_ENLACE_CONFIRMACION)
+    vence = entorno.reloj() + timedelta(minutes=MINUTOS_ENLACE_CONFIRMACION)
 
     assert entorno.confirmaciones.confirmar(hash_del_token, vence) is None
-    assert entorno.confirmaciones.confirmar(hash_del_token, vence - timedelta(seconds=1)) == "ana@correo.com"
+    assert entorno.confirmaciones.confirmar(hash_del_token, vence - timedelta(seconds=1)) is not None
+
+
+def test_de_la_marca_del_navegador_se_guarda_solo_su_huella(entorno: Entorno) -> None:
+    marca = "marca-del-navegador-0123456789"
+    pendiente = entorno.registrar_cuenta().ejecutar(datos(), ORIGEN, navegador=marca)
+    assert pendiente is not None
+
+    usado = entorno.confirmaciones.confirmar(
+        entorno.emisor.hash_de_token_confirmacion(pendiente.token), entorno.reloj()
+    )
+
+    assert usado is not None
+    assert usado.navegador_hash == entorno.emisor.hash_de_marca_navegador(marca)
+    assert usado.navegador_hash != marca
+
+
+@pytest.mark.parametrize("marca", [None, "", "corta", "con espacios aaaaaaaaaaaaaaaaaaa", "a" * 201])
+def test_sin_marca_o_con_una_marca_sin_forma_el_enlace_no_queda_atado_a_ningun_navegador(
+    entorno: Entorno, marca: str | None
+) -> None:
+    pendiente = entorno.registrar_cuenta().ejecutar(datos(), ORIGEN, navegador=marca)
+    assert pendiente is not None
+
+    usado = entorno.confirmaciones.confirmar(
+        entorno.emisor.hash_de_token_confirmacion(pendiente.token), entorno.reloj()
+    )
+
+    assert usado is not None and usado.navegador_hash is None
 
 
 def test_un_correo_ya_registrado_no_devuelve_nada_que_enviar_ni_crea_otro_enlace(entorno: Entorno) -> None:
