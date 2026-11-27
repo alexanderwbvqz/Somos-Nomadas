@@ -37,7 +37,6 @@ test.describe('canónica e idiomas', () => {
   const publicas = [
     ['', 'en'],
     ['/aliados/postular', 'es'],
-    ['/eventos', 'es'],
     ['/registro', 'pt'],
     ['/iniciar-sesion', 'es'],
   ] as const
@@ -59,8 +58,8 @@ test.describe('canónica e idiomas', () => {
     })
   }
 
-  for (const ruta of ['/es/confirmar-correo', '/pt/aliados', '/en/aliados/cowork-plaza']) {
-    test(`${ruta} no se indexa ni declara canónica ni idiomas (privada, o aliados de ejemplo)`, async ({ page }) => {
+  for (const ruta of ['/es/confirmar-correo', '/pt/aliados', '/en/aliados/cowork-plaza', '/es/eventos']) {
+    test(`${ruta} no se indexa ni declara canónica ni idiomas (privada, o con datos de ejemplo)`, async ({ page }) => {
       await page.goto(ruta)
 
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
@@ -98,5 +97,35 @@ test.describe('mapa del sitio y robots', () => {
     expect(texto).toContain('Allow: /')
     expect(texto).not.toContain('Disallow')
     expect(texto).toContain(`Sitemap: ${SITIO}/sitemap.xml`)
+  })
+})
+
+test.describe('datos estructurados', () => {
+  async function leerDatos(page: import('@playwright/test').Page) {
+    const textos = await page.locator('script[type="application/ld+json"]').allTextContents()
+    return textos.map((texto) => JSON.parse(texto) as { '@graph': Record<string, unknown>[] })
+  }
+
+  test('la portada dice a los buscadores quién es la organización, con su logo, y cuál es su sitio en ese idioma', async ({ page, request }) => {
+    await page.goto('/pt')
+
+    const [datos, ...otros] = await leerDatos(page)
+    expect(otros).toEqual([])
+    const [organizacion, sitio] = datos?.['@graph'] ?? []
+    expect(organizacion).toMatchObject({
+      '@type': 'Organization',
+      name: 'Somos Nómadas',
+      url: `${SITIO}/`,
+      logo: `${SITIO}/logo/logo_isotipo.svg`,
+    })
+    expect(sitio).toMatchObject({ '@type': 'WebSite', url: `${SITIO}/pt`, inLanguage: 'pt' })
+    // El logo que se anuncia existe de verdad
+    expect((await request.get('/logo/logo_isotipo.svg')).status()).toBe(200)
+  })
+
+  test('solo la portada los lleva', async ({ page }) => {
+    await page.goto('/es/registro')
+
+    expect(await leerDatos(page)).toEqual([])
   })
 })

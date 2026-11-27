@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { LandingConectado } from '@/composition/landing/pantallas/LandingConectado'
+import { DatosEstructuradosConectado } from '@/composition/sitio/pantallas/DatosEstructuradosConectado'
 import { esIdioma } from '@/shared/idiomas/idiomas'
 import { enlacesDeIdioma } from '@/shared/seo/direcciones'
 
@@ -16,5 +17,10 @@ export async function generateMetadata({ params }: Parametros): Promise<Metadata
 export default async function PaginaInicio({ params }: Parametros) {
   const { idioma } = await params
   if (!esIdioma(idioma)) notFound()
-  return <LandingConectado idioma={idioma} />
+  return (
+    <>
+      <DatosEstructuradosConectado idioma={idioma} />
+      <LandingConectado idioma={idioma} />
+    </>
+  )
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { DM_Mono, Hanken_Grotesk, Newsreader } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import { ISOTIPO } from '@/composition/sitio/marca'
 import { textosSitio } from '@/modules/sitio/language'
 import { metadatosDelSitio } from '@/modules/sitio/presentation/mappers/metadatosDelSitio'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ idioma: s
   if (!esIdioma(idioma)) return {}
   return metadatosDelSitio(textosSitio(idioma), {
     urlSitio: urlDelSitio(process.env.NEXT_PUBLIC_URL_SITIO),
-    icono: '/logo/logo_isotipo.svg',
+    icono: ISOTIPO,
   })
 }
 

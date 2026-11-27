@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { sonEventosDeEjemplo } from '@/composition/eventos/fabricas/eventos'
 import { EventosConectado } from '@/composition/eventos/pantallas/EventosConectado'
 import { textosEventos } from '@/modules/eventos/language'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
@@ -18,7 +19,10 @@ export async function generateMetadata({ params }: Parametros): Promise<Metadata
   const { idioma } = await params
   if (!esIdioma(idioma)) return {}
   const { metadatos } = textosEventos(idioma)
-  return { title: metadatos.titulo, description: metadatos.descripcion, alternates: enlacesDeIdioma(idioma, '/eventos') }
+  const textos = { title: metadatos.titulo, description: metadatos.descripcion }
+  // Con eventos de ejemplo (inventados), los buscadores no la indexan
+  if (sonEventosDeEjemplo()) return { ...textos, robots: { index: false } }
+  return { ...textos, alternates: enlacesDeIdioma(idioma, '/eventos') }
 }
 
 export default async function PaginaEventos({ params }: Parametros) {
