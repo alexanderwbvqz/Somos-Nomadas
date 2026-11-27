@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { InicioSesionConectado } from '@/composition/acceso/pantallas/InicioSesionConectado'
 import { textosAcceso } from '@/modules/acceso/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
+import { enlacesDeIdioma } from '@/shared/seo/direcciones'
 
 type Parametros = { params: Promise<{ idioma: string }> }
 
@@ -10,7 +11,7 @@ export async function generateMetadata({ params }: Parametros): Promise<Metadata
   const { idioma } = await params
   if (!esIdioma(idioma)) return {}
   const { metadatos } = textosAcceso(idioma).inicio
-  return { title: metadatos.titulo, description: metadatos.descripcion }
+  return { title: metadatos.titulo, description: metadatos.descripcion, alternates: enlacesDeIdioma(idioma, '/iniciar-sesion') }
 }
 
 export default async function PaginaIniciarSesion({ params }: Parametros) {

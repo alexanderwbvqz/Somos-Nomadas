@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { AliadosConectado } from '@/composition/aliados/pantallas/AliadosConectado'
 import { textosAliados } from '@/modules/aliados/language'
 import { esIdioma } from '@/shared/idiomas/idiomas'
+import { enlacesDeIdioma } from '@/shared/seo/direcciones'
 
 type Parametros = {
   params: Promise<{ idioma: string }>
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: Pick<Parametros, 'params'>): 
   const { idioma } = await params
   if (!esIdioma(idioma)) return {}
   const { metadatos } = textosAliados(idioma)
-  return { title: metadatos.titulo, description: metadatos.descripcion }
+  return { title: metadatos.titulo, description: metadatos.descripcion, alternates: enlacesDeIdioma(idioma, '/aliados') }
 }
 
 export default async function PaginaAliados({ params, searchParams }: Parametros) {

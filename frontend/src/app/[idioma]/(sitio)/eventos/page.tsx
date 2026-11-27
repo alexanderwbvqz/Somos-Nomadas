@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { EventosConectado } from '@/composition/eventos/pantallas/EventosConectado'
 import { textosEventos } from '@/modules/eventos/language'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
+import { enlacesDeIdioma } from '@/shared/seo/direcciones'
 
 // La cuenta regresiva depende de la fecha: se regenera cada hora
 export const revalidate = 3600
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Parametros): Promise<Metadata
   const { idioma } = await params
   if (!esIdioma(idioma)) return {}
   const { metadatos } = textosEventos(idioma)
-  return { title: metadatos.titulo, description: metadatos.descripcion }
+  return { title: metadatos.titulo, description: metadatos.descripcion, alternates: enlacesDeIdioma(idioma, '/eventos') }
 }
 
 export default async function PaginaEventos({ params }: Parametros) {

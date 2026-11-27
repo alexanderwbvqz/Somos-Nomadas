@@ -46,6 +46,8 @@ export default defineConfig({
       url: `http://localhost:${PUERTO_WEB}`,
       env: {
         NEXT_DIST_DIR: '.next-pruebas',
+        // Los enlaces absolutos (canónica, idiomas) como en producción: así los comprueba seo.spec.ts
+        NEXT_PUBLIC_URL_SITIO: 'https://somosnomadas.app',
         NEXT_PUBLIC_USAR_MOCKS_ACCESO: 'false',
         NEXT_PUBLIC_USAR_MOCKS_EVENTOS: 'true',
         NEXT_PUBLIC_USAR_MOCKS_ALIADOS: 'true',

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { urlDelSitio } from './direcciones'
+import { enlacesDeIdioma, urlDelSitio } from './direcciones'
 
 describe('urlDelSitio', () => {
   it('usa la dirección configurada, sin la barra final', () => {
@@ -23,4 +23,27 @@ describe('urlDelSitio', () => {
   it('solo se queda con el origen: una ruta en la variable no se cuela en los enlaces', () => {
     expect(urlDelSitio('https://somosnomadas.app/es/algo?x=1').href).toBe('https://somosnomadas.app/')
   })
+})
+
+describe('enlacesDeIdioma', () => {
+  it('la canónica es la página en su idioma y enlaza sus versiones en los tres, con x-default en español', () => {
+    expect(enlacesDeIdioma('en', '/aliados')).toEqual({
+      canonical: '/en/aliados',
+      languages: { es: '/es/aliados', en: '/en/aliados', pt: '/pt/aliados', 'x-default': '/es/aliados' },
+    })
+  })
+
+  it('la portada es la ruta vacía: /es, /en y /pt, sin barra final', () => {
+    expect(enlacesDeIdioma('pt', '')).toEqual({
+      canonical: '/pt',
+      languages: { es: '/es', en: '/en', pt: '/pt', 'x-default': '/es' },
+    })
+  })
+
+  it.each(['aliados', '/aliados/', '/es/aliados', '/aliados?x=1', '/aliados#a', '//otro.com'])(
+    'una ruta mal formada (%j) es un error del programa, no un enlace roto',
+    (ruta) => {
+      expect(() => enlacesDeIdioma('es', ruta)).toThrow('ruta')
+    },
+  )
 })
