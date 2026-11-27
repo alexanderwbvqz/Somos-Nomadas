@@ -1,3 +1,4 @@
+import { writeFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
 
 // Lo que ven los buscadores y el navegador en el <head> de la página compilada: el título con la marca, la
@@ -128,4 +129,35 @@ test.describe('datos estructurados', () => {
 
     expect(await leerDatos(page)).toEqual([])
   })
+})
+
+test.describe('tarjeta al compartir', () => {
+  /** Ancho y alto de un PNG, leídos de su cabecera */
+  const medidasPng = (datos: Buffer) => ({ ancho: datos.readUInt32BE(16), alto: datos.readUInt32BE(20) })
+
+  for (const idioma of ['es', 'en', 'pt'] as const) {
+    test(`/${idioma}: la tarjeta trae título, descripción, idioma y una imagen PNG de 1200 × 630 que existe`, async ({ page, request }) => {
+      await page.goto(`/${idioma}`)
+
+      const propiedad = (nombre: string) => page.locator(`meta[property="${nombre}"]`)
+      await expect(propiedad('og:site_name')).toHaveAttribute('content', 'Somos Nómadas')
+      await expect(propiedad('og:title')).toHaveAttribute('content', 'Somos Nómadas')
+      await expect(propiedad('og:type')).toHaveAttribute('content', 'website')
+      await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image')
+      const imagen = await propiedad('og:image').getAttribute('content')
+      expect(imagen).toMatch(new RegExp(`^${SITIO}/${idioma}/opengraph-image`))
+      // Lo que se anuncia de la imagen coincide con lo que es
+      await expect(propiedad('og:image:type')).toHaveAttribute('content', 'image/png')
+      await expect(propiedad('og:image:width')).toHaveAttribute('content', '1200')
+      await expect(propiedad('og:image:height')).toHaveAttribute('content', '630')
+
+      // La imagen se pide a esta web de pruebas (la dirección anunciada es la de producción)
+      const respuesta = await request.get(new URL(imagen ?? '').pathname + new URL(imagen ?? '').search)
+      expect(respuesta.status()).toBe(200)
+      expect(respuesta.headers()['content-type']).toBe('image/png')
+      const datos = await respuesta.body()
+      expect(medidasPng(datos)).toEqual({ ancho: 1200, alto: 630 })
+      if (idioma === 'es') writeFileSync('e2e/capturas/compartir-real-es.png', datos)
+    })
+  }
 })

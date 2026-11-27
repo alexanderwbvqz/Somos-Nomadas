@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ idioma: s
   return metadatosDelSitio(textosSitio(idioma), {
     urlSitio: urlDelSitio(process.env.NEXT_PUBLIC_URL_SITIO),
     icono: ISOTIPO,
+    idioma,
   })
 }
 
