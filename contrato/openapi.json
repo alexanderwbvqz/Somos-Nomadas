@@ -350,6 +350,19 @@
             "type": "string",
             "maxLength": 500,
             "title": "Token"
+          },
+          "navegador": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Navegador",
+            "description": "Marca aleatoria del navegador que pide o abre el enlace: solo en ese navegador abre la sesión"
           }
         },
         "type": "object",
@@ -363,6 +376,17 @@
           "correo": {
             "type": "string",
             "title": "Correo"
+          },
+          "sesion": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TokensSalida"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Solo si el enlace se abrió en el mismo navegador que lo pidió: la sesión ya abierta"
           }
         },
         "type": "object",
@@ -439,6 +463,19 @@
             ],
             "title": "Idioma",
             "default": "es"
+          },
+          "navegador": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Navegador",
+            "description": "Marca aleatoria del navegador que pide o abre el enlace: solo en ese navegador abre la sesión"
           }
         },
         "type": "object",
@@ -476,6 +513,19 @@
             ],
             "title": "Idioma",
             "default": "es"
+          },
+          "navegador": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Navegador",
+            "description": "Marca aleatoria del navegador que pide o abre el enlace: solo en ese navegador abre la sesión"
           }
         },
         "type": "object",

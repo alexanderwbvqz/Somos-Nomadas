@@ -99,6 +99,7 @@ def crear_router(
             ),
             origen_de(peticion),
             cuerpo.idioma,
+            cuerpo.navegador,
         )
         if pendiente is not None:
             tareas.add_task(_enviar_en_segundo_plano, correos, pendiente)
@@ -107,11 +108,24 @@ def crear_router(
     @router.post(
         "/confirmacion",
         response_model=ConfirmacionSalida,
+        # Sin sesión, la respuesta es solo {"correo"}: la clave `sesion` aparece únicamente cuando hay una
+        response_model_exclude_none=True,
         responses={**_DATOS_INVALIDOS, **_LIMITE, **_ENLACE_INVALIDO},
     )
     def confirmacion(cuerpo: ConfirmacionEntrada, peticion: Request) -> ConfirmacionSalida:
-        # Sin la marca del navegador (llega en el paso siguiente) solo confirma: no abre sesión
-        return ConfirmacionSalida(correo=confirmar_correo.ejecutar(cuerpo.token, origen_de(peticion)).correo)
+        # En el mismo navegador que pidió el enlace, además de confirmar abre la sesión; en otro, solo confirma
+        confirmado = confirmar_correo.ejecutar(cuerpo.token, origen_de(peticion), cuerpo.navegador)
+        tokens = confirmado.tokens
+        sesion = (
+            None
+            if tokens is None
+            else TokensSalida(
+                token_acceso=tokens.token_acceso,
+                expira_en=tokens.expira_en_segundos,
+                token_renovacion=tokens.token_renovacion,
+            )
+        )
+        return ConfirmacionSalida(correo=confirmado.correo, sesion=sesion)
 
     @router.post(
         "/confirmacion/reenvio",
@@ -124,7 +138,7 @@ def crear_router(
         },
     )
     def reenvio(cuerpo: ReenvioEntrada, peticion: Request, tareas: BackgroundTasks) -> Response:
-        pendiente = reenviar_confirmacion.ejecutar(cuerpo.correo, origen_de(peticion), cuerpo.idioma)
+        pendiente = reenviar_confirmacion.ejecutar(cuerpo.correo, origen_de(peticion), cuerpo.idioma, cuerpo.navegador)
         if pendiente is not None:
             tareas.add_task(_enviar_en_segundo_plano, correos, pendiente)
         return Response(status_code=202)

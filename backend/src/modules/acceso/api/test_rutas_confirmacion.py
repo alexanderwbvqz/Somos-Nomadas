@@ -118,7 +118,7 @@ def test_antes_de_confirmar_no_se_puede_entrar_y_despues_si(cliente: TestClient,
     assert despues.status_code == 200
 
 
-def test_confirmar_no_abre_sesion_ni_devuelve_tokens(cliente: TestClient, entorno: Entorno) -> None:
+def test_confirmar_sin_marca_no_abre_sesion_ni_devuelve_tokens(cliente: TestClient, entorno: Entorno) -> None:
     registrar(cliente)
 
     r = cliente.post("/acceso/confirmacion", json={"token": ultimo_token(entorno)})
@@ -267,3 +267,112 @@ def test_si_falla_el_envio_del_reenvio_responde_igual_y_el_log_no_lleva_el_corre
     assert r.status_code == 202
     assert "resend_503" in caplog.text
     assert "ana@correo.com" not in caplog.text
+
+
+# --- La marca del navegador: el mismo navegador entra al confirmar ---
+
+MARCA = "marca-del-navegador-0123456789"
+
+
+def test_confirmar_en_el_mismo_navegador_del_registro_devuelve_la_sesion(cliente: TestClient, entorno: Entorno) -> None:
+    registrar(cliente, navegador=MARCA)
+
+    r = cliente.post("/acceso/confirmacion", json={"token": ultimo_token(entorno), "navegador": MARCA})
+
+    assert r.status_code == 200
+    cuerpo = r.json()
+    assert set(cuerpo) == {"correo", "sesion"}
+    assert cuerpo["correo"] == "ana@correo.com"
+    assert set(cuerpo["sesion"]) == {"token_acceso", "expira_en", "token_renovacion"}
+    # La sesión vale de verdad: con su acceso se sabe quién es, y su renovación se puede usar
+    yo = cliente.get("/acceso/yo", headers={"authorization": f"Bearer {cuerpo['sesion']['token_acceso']}"})
+    assert yo.status_code == 200
+    assert yo.json()["correo"] == "ana@correo.com"
+    assert yo.json()["correo_confirmado"] is True
+    renovada = cliente.post("/acceso/renovar", json={"token_renovacion": cuerpo["sesion"]["token_renovacion"]})
+    assert renovada.status_code == 200
+    assert "set-cookie" not in r.headers
+
+
+@pytest.mark.parametrize("navegador", ["marca-de-otro-navegador-0123456789", None, "corta"])
+def test_confirmar_en_otro_navegador_o_sin_marca_responde_solo_el_correo(
+    cliente: TestClient, entorno: Entorno, navegador: str | None
+) -> None:
+    registrar(cliente, navegador=MARCA)
+    cuerpo = {"token": ultimo_token(entorno)} | ({} if navegador is None else {"navegador": navegador})
+
+    r = cliente.post("/acceso/confirmacion", json=cuerpo)
+
+    assert r.status_code == 200
+    assert r.json() == {"correo": "ana@correo.com"}
+
+
+def test_el_enlace_reenviado_abre_sesion_en_el_navegador_que_lo_pidio(cliente: TestClient, entorno: Entorno) -> None:
+    registrar(cliente, navegador=MARCA)
+    otra = "marca-del-movil-0123456789"
+
+    cliente.post("/acceso/confirmacion/reenvio", json={"correo": "ana@correo.com", "navegador": otra})
+    r = cliente.post("/acceso/confirmacion", json={"token": ultimo_token(entorno), "navegador": otra})
+
+    assert set(r.json()) == {"correo", "sesion"}
+
+
+def test_un_enlace_que_no_vale_responde_igual_con_o_sin_marca(cliente: TestClient, entorno: Entorno) -> None:
+    registrar(cliente, navegador=MARCA)
+    token = ultimo_token(entorno)
+    cliente.post("/acceso/confirmacion", json={"token": token})
+
+    con_marca = cliente.post("/acceso/confirmacion", json={"token": token, "navegador": MARCA})
+    sin_marca = cliente.post("/acceso/confirmacion", json={"token": token})
+
+    assert comparable(con_marca) == comparable(sin_marca)
+    assert con_marca.status_code == 400
+
+
+def test_registrar_con_marca_responde_igual_si_el_correo_ya_existia(fabrica: Fabrica, entorno: Entorno) -> None:
+    nueva = registrar(fabrica(origen="198.51.100.1"), correo="nueva@correo.com", navegador=MARCA)
+    entorno.crear_cuenta("ana@correo.com", confirmada=False)
+
+    repetida = registrar(fabrica(origen="198.51.100.2"), correo="ana@correo.com", navegador=MARCA)
+
+    assert comparable(repetida) == comparable(nueva)
+
+
+@pytest.mark.parametrize(
+    ("ruta", "cuerpo"),
+    [
+        ("/acceso/registro", {**REGISTRO, "navegador": 5}),
+        ("/acceso/registro", {**REGISTRO, "navegador": "a" * 501}),
+        ("/acceso/confirmacion/reenvio", {"correo": "ana@correo.com", "navegador": True}),
+        ("/acceso/confirmacion/reenvio", {"correo": "ana@correo.com", "navegador": "a" * 501}),
+        ("/acceso/confirmacion", {"token": "token-que-no-existe-0123456789", "navegador": ["x"]}),
+        ("/acceso/confirmacion", {"token": "token-que-no-existe-0123456789", "navegador": "a" * 501}),
+    ],
+)
+def test_una_marca_que_no_es_texto_o_es_enorme_es_un_dato_invalido(
+    cliente: TestClient, ruta: str, cuerpo: dict[str, Any]
+) -> None:
+    r = cliente.post(ruta, json=cuerpo)
+
+    assert r.status_code == 422
+    assert r.json() == {"codigo": "datos_invalidos", "campos": {"navegador": "invalido"}}
+
+
+def test_la_marca_nula_es_como_no_mandarla(cliente: TestClient, entorno: Entorno) -> None:
+    assert registrar(cliente, navegador=None).status_code == 202
+
+    r = cliente.post("/acceso/confirmacion", json={"token": ultimo_token(entorno), "navegador": None})
+
+    assert r.json() == {"correo": "ana@correo.com"}
+
+
+def test_el_log_no_lleva_la_marca_ni_los_tokens_de_la_sesion(
+    cliente: TestClient, entorno: Entorno, caplog: pytest.LogCaptureFixture
+) -> None:
+    caplog.set_level(logging.DEBUG)
+    registrar(cliente, navegador=MARCA)
+
+    r = cliente.post("/acceso/confirmacion", json={"token": ultimo_token(entorno), "navegador": MARCA})
+
+    assert MARCA not in caplog.text
+    assert r.json()["sesion"]["token_renovacion"] not in caplog.text
