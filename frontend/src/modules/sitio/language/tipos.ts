@@ -1,5 +1,7 @@
 // Textos de la cabecera y el pie, que se ven en todas las páginas
 export type TextosSitio = {
+  /** El nombre de la marca: título de la portada y final del título de cada página («… | Somos Nómadas») */
+  marca: string
   cabecera: {
     logoAlt: string
     navegacionPrincipal: string

@@ -32,7 +32,7 @@ export const en: TextosAcceso = {
   },
   registro: {
     metadatos: {
-      titulo: 'Create account | Nómadas',
+      titulo: 'Create account',
       descripcion: 'Create your founder account at Nómadas with Google or your email and complete your profile to appear in the directory.',
     },
     etiqueta: 'Founders',
@@ -69,7 +69,7 @@ export const en: TextosAcceso = {
   },
   inicio: {
     metadatos: {
-      titulo: 'Log in | Nómadas',
+      titulo: 'Log in',
       descripcion: 'Log in to your Nómadas account to see your profile and the directory.',
     },
     etiqueta: 'Founders',
@@ -83,7 +83,7 @@ export const en: TextosAcceso = {
     otroEnlace: { boton: 'Send another link', enviando: 'Sending…', enviado: 'We sent you a new link. Check your inbox.' },
   },
   confirmar: {
-    metadatos: { titulo: 'Confirm email | Nómadas', descripcion: 'Confirm your email to sign in to your Nómadas account.' },
+    metadatos: { titulo: 'Confirm email', descripcion: 'Confirm your email to sign in to your Nómadas account.' },
     etiqueta: 'Founders',
     confirmando: 'Confirming your email…',
     confirmado: {

@@ -9,7 +9,7 @@ export const en: TextosHabilidades = {
   },
   tareas: {
     metadatos: {
-      titulo: 'What you have done | Nómadas',
+      titulo: 'What you have done',
       descripcion: 'Tick the tasks you have already done and how many times, so we can learn what you can do.',
     },
     titulo: 'What you have done',
@@ -85,7 +85,7 @@ export const en: TextosHabilidades = {
   },
   forma: {
     metadatos: {
-      titulo: 'Your way of starting up | Nómadas',
+      titulo: 'Your way of starting up',
       descripcion: 'Six quick questions about how much time, when and how you want to start up.',
     },
     titulo: 'Your way of starting up',
@@ -148,7 +148,7 @@ export const en: TextosHabilidades = {
     },
   },
   cierre: {
-    metadatos: { titulo: 'Almost there | Nómadas', descripcion: 'We are putting together your profile proposal.' },
+    metadatos: { titulo: 'Almost there', descripcion: 'We are putting together your profile proposal.' },
     logoAlt: 'Nómadas',
     avatar: 'Your initials',
     esperaTitulo: 'Putting your proposal together…',
@@ -164,7 +164,7 @@ export const en: TextosHabilidades = {
   },
   historias: {
     metadatos: {
-      titulo: 'Your stories | Nómadas',
+      titulo: 'Your stories',
       descripcion: 'Tell us in your own words what you have done and what moves you.',
     },
     titulo: 'Your stories',
@@ -229,7 +229,7 @@ export const en: TextosHabilidades = {
     },
   },
   profundizar: {
-    metadatos: { titulo: 'More about what you do | Nómadas', descripcion: 'Tell us a bit more about the skills where you ticked the most tasks.' },
+    metadatos: { titulo: 'More about what you do', descripcion: 'Tell us a bit more about the skills where you ticked the most tasks.' },
     titulo: 'Tell us more about what you do',
     subtitulo: 'These are the skills where you ticked the most tasks. Tell us a bit more about each one, one at a time.',
     porQue: 'Two people with the same skill can do very different things. With these details, people find you for what you really do.',

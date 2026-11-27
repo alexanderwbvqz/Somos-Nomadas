@@ -67,7 +67,7 @@ describe('DetalleAliadoConectado', () => {
 describe('metadatosDetalleAliado', () => {
   it('el título lleva el nombre del aliado y la descripción es la suya', async () => {
     const metadatos = await metadatosDetalleAliado('es', 'cowork-plaza')
-    expect(metadatos?.titulo).toBe('Cowork Plaza | Nómadas')
+    expect(metadatos?.titulo).toBe('Cowork Plaza')
     expect(metadatos?.descripcion).toContain('Espacio de trabajo y eventos')
   })
 

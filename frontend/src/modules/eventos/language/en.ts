@@ -2,7 +2,7 @@ import type { TextosEventos } from './tipos'
 
 export const en: TextosEventos = {
   metadatos: {
-    titulo: 'Events | Nómadas',
+    titulo: 'Events',
     descripcion:
       'Upcoming Nómadas events: in-person meetups with activities and matching to find your founding team.',
   },

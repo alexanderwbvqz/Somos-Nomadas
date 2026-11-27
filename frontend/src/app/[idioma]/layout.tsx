@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import { DM_Mono, Hanken_Grotesk, Newsreader } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import { textosSitio } from '@/modules/sitio/language'
+import { metadatosDelSitio } from '@/modules/sitio/presentation/mappers/metadatosDelSitio'
 import { esIdioma, idiomas } from '@/shared/idiomas/idiomas'
+import { urlDelSitio } from '@/shared/seo/direcciones'
 import '../globals.css'
 
 // Fuentes (propuesta, parecidas a la referencia): serif para titulares, sans para texto, mono para etiquetas
@@ -9,7 +12,15 @@ const fuenteSerif = Newsreader({ subsets: ['latin'], variable: '--fuente-serif',
 const fuenteSans = Hanken_Grotesk({ subsets: ['latin'], variable: '--fuente-sans' })
 const fuenteMono = DM_Mono({ subsets: ['latin'], variable: '--fuente-mono', weight: ['400', '500'] })
 
-export const metadata: Metadata = { title: 'Nómadas' }
+// La marca en el título de cada página, el icono de la pestaña y la dirección base de los enlaces absolutos
+export async function generateMetadata({ params }: { params: Promise<{ idioma: string }> }): Promise<Metadata> {
+  const { idioma } = await params
+  if (!esIdioma(idioma)) return {}
+  return metadatosDelSitio(textosSitio(idioma), {
+    urlSitio: urlDelSitio(process.env.NEXT_PUBLIC_URL_SITIO),
+    icono: '/logo/logo_isotipo.svg',
+  })
+}
 
 export function generateStaticParams() {
   return idiomas.map((idioma) => ({ idioma }))

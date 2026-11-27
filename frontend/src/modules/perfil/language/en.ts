@@ -1,7 +1,7 @@
 import type { TextosPerfil } from './tipos'
 
 export const en: TextosPerfil = {
-  metadatos: { titulo: 'My profile | Nómadas', descripcion: 'Review what you told us and complete your profile.' },
+  metadatos: { titulo: 'My profile', descripcion: 'Review what you told us and complete your profile.' },
   titulo: 'My profile',
   subtitulo: 'This is what other nomads will read when they discover you. Review it and fix what is needed.',
   errorCarga: 'We could not load your profile. Please try again in a moment.',
@@ -90,7 +90,7 @@ export const en: TextosPerfil = {
   },
   tarjeta: { busca: 'Looking for:' },
   publico: {
-    metadatos: { titulo: 'How others see you | Nómadas', descripcion: 'This is how someone else sees your profile.' },
+    metadatos: { titulo: 'How others see you', descripcion: 'This is how someone else sees your profile.' },
     volver: 'Back to My profile',
     aviso: 'This is how someone else sees your profile. Nothing can be edited here: to change something, go back to My profile.',
     busca: 'Looking for',

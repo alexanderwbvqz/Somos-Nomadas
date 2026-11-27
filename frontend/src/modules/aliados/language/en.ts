@@ -2,7 +2,7 @@ import type { TextosAliados } from './tipos'
 
 export const en: TextosAliados = {
   metadatos: {
-    titulo: 'Ally network | Nómadas',
+    titulo: 'Ally network',
     descripcion:
       'Mentors, organizers and strategic partners who back Nómadas with experience, spaces and capital.',
   },
@@ -32,7 +32,7 @@ export const en: TextosAliados = {
     nota: 'We review every application before publishing it, to keep the network high quality.',
   },
   detalle: {
-    tituloPagina: '{nombre} | Nómadas',
+    tituloPagina: '{nombre}',
     volver: 'Ally network',
     quienEs: 'Who they are',
     datosClave: 'Key facts',
@@ -53,7 +53,7 @@ export const en: TextosAliados = {
   },
   postulacion: {
     metadatos: {
-      titulo: 'Become an ally | Nómadas',
+      titulo: 'Become an ally',
       descripcion:
         'Apply to join the Nómadas ally network as a mentor, organizer or strategic partner. The team reviews every application before it is published.',
     },

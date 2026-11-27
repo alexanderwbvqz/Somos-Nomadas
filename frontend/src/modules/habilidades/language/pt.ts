@@ -9,7 +9,7 @@ export const pt: TextosHabilidades = {
   },
   tareas: {
     metadatos: {
-      titulo: 'O que você já fez | Nómadas',
+      titulo: 'O que você já fez',
       descripcion: 'Marque as tarefas que você já fez e quantas vezes, para conhecermos o que você sabe fazer.',
     },
     titulo: 'O que você já fez',
@@ -85,7 +85,7 @@ export const pt: TextosHabilidades = {
   },
   forma: {
     metadatos: {
-      titulo: 'Seu jeito de empreender | Nómadas',
+      titulo: 'Seu jeito de empreender',
       descripcion: 'Seis perguntas rápidas sobre quanto tempo, quando e como você quer empreender.',
     },
     titulo: 'Seu jeito de empreender',
@@ -148,7 +148,7 @@ export const pt: TextosHabilidades = {
     },
   },
   cierre: {
-    metadatos: { titulo: 'Quase lá | Nómadas', descripcion: 'Estamos montando a proposta do seu perfil.' },
+    metadatos: { titulo: 'Quase lá', descripcion: 'Estamos montando a proposta do seu perfil.' },
     logoAlt: 'Nómadas',
     avatar: 'Suas iniciais',
     esperaTitulo: 'Montando sua proposta…',
@@ -164,7 +164,7 @@ export const pt: TextosHabilidades = {
   },
   historias: {
     metadatos: {
-      titulo: 'Suas histórias | Nómadas',
+      titulo: 'Suas histórias',
       descripcion: 'Conte com suas palavras o que você já fez e o que move você.',
     },
     titulo: 'Suas histórias',
@@ -229,7 +229,7 @@ export const pt: TextosHabilidades = {
     },
   },
   profundizar: {
-    metadatos: { titulo: 'Mais sobre o que você faz | Nómadas', descripcion: 'Conte um pouco mais sobre as habilidades em que você marcou mais tarefas.' },
+    metadatos: { titulo: 'Mais sobre o que você faz', descripcion: 'Conte um pouco mais sobre as habilidades em que você marcou mais tarefas.' },
     titulo: 'Conte mais sobre o que você faz',
     subtitulo: 'Estas são as habilidades em que você marcou mais tarefas. Conte um pouco mais sobre cada uma, uma de cada vez.',
     porQue: 'Duas pessoas com a mesma habilidade podem fazer coisas muito diferentes. Com esses detalhes, encontram você pelo que realmente faz.',

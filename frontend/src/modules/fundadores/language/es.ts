@@ -3,7 +3,7 @@ import type { TextosFundadores } from './tipos'
 export const es: TextosFundadores = {
   bienvenida: {
     metadatos: {
-      titulo: 'Bienvenida | Nómadas',
+      titulo: 'Bienvenida',
       descripcion: 'Cuéntanos quién eres, dónde estás y qué buscas para empezar a ver a otros founders.',
     },
     titulo: 'Tres cosas y entras',

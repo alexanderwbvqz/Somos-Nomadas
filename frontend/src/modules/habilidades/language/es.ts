@@ -9,7 +9,7 @@ export const es: TextosHabilidades = {
   },
   tareas: {
     metadatos: {
-      titulo: 'Qué has hecho | Nómadas',
+      titulo: 'Qué has hecho',
       descripcion: 'Marca las tareas que ya has hecho y cuántas veces, para conocer lo que sabes hacer.',
     },
     titulo: 'Qué has hecho',
@@ -85,7 +85,7 @@ export const es: TextosHabilidades = {
   },
   forma: {
     metadatos: {
-      titulo: 'Tu forma de emprender | Nómadas',
+      titulo: 'Tu forma de emprender',
       descripcion: 'Seis preguntas rápidas sobre cuánto tiempo, cuándo y cómo quieres emprender.',
     },
     titulo: 'Tu forma de emprender',
@@ -148,7 +148,7 @@ export const es: TextosHabilidades = {
     },
   },
   cierre: {
-    metadatos: { titulo: 'Ya casi | Nómadas', descripcion: 'Estamos armando la propuesta de tu perfil.' },
+    metadatos: { titulo: 'Ya casi', descripcion: 'Estamos armando la propuesta de tu perfil.' },
     logoAlt: 'Nómadas',
     avatar: 'Tus iniciales',
     esperaTitulo: 'Armando tu propuesta…',
@@ -164,7 +164,7 @@ export const es: TextosHabilidades = {
   },
   historias: {
     metadatos: {
-      titulo: 'Tus historias | Nómadas',
+      titulo: 'Tus historias',
       descripcion: 'Cuéntanos con tus palabras lo que has hecho y lo que te mueve.',
     },
     titulo: 'Tus historias',
@@ -229,7 +229,7 @@ export const es: TextosHabilidades = {
     },
   },
   profundizar: {
-    metadatos: { titulo: 'Más de lo que haces | Nómadas', descripcion: 'Cuéntanos un poco más de las habilidades en las que marcaste más tareas.' },
+    metadatos: { titulo: 'Más de lo que haces', descripcion: 'Cuéntanos un poco más de las habilidades en las que marcaste más tareas.' },
     titulo: 'Cuéntanos más de lo que haces',
     subtitulo: 'Estas son las habilidades en las que marcaste más tareas. Cuéntanos un poco más de cada una, de una en una.',
     porQue: 'Dos personas con la misma habilidad pueden hacer cosas muy distintas. Con estos detalles te encuentran por lo que de verdad haces.',

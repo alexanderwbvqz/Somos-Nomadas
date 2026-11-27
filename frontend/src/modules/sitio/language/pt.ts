@@ -1,6 +1,7 @@
 import type { TextosSitio } from './tipos'
 
 export const pt: TextosSitio = {
+  marca: 'Somos Nómadas',
   cabecera: {
     logoAlt: 'Nómadas',
     navegacionPrincipal: 'Navegação principal',

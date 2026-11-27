@@ -2,7 +2,7 @@ import type { TextosAliados } from './tipos'
 
 export const es: TextosAliados = {
   metadatos: {
-    titulo: 'Red de aliados | Nómadas',
+    titulo: 'Red de aliados',
     descripcion:
       'Mentores, organizadores y aliados estratégicos que respaldan a Nómadas con experiencia, espacios y capital.',
   },
@@ -32,7 +32,7 @@ export const es: TextosAliados = {
     nota: 'Revisamos cada postulación antes de publicarla, para cuidar la calidad de la red.',
   },
   detalle: {
-    tituloPagina: '{nombre} | Nómadas',
+    tituloPagina: '{nombre}',
     volver: 'Red de aliados',
     quienEs: 'Quién es',
     datosClave: 'Datos clave',
@@ -53,7 +53,7 @@ export const es: TextosAliados = {
   },
   postulacion: {
     metadatos: {
-      titulo: 'Quiero ser aliado | Nómadas',
+      titulo: 'Quiero ser aliado',
       descripcion:
         'Postula para entrar a la red de aliados de Nómadas como mentor, organizador o aliado estratégico. El equipo revisa cada postulación antes de publicarla.',
     },
