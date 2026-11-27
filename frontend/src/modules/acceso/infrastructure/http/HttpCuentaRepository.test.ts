@@ -54,6 +54,14 @@ describe('HttpCuentaRepository.registrar', () => {
     ])
   })
 
+  it('con la marca del navegador la manda en el campo navegador', async () => {
+    const { cliente, llamadas } = clienteFalso(ok(undefined, 202))
+
+    await new HttpCuentaRepository(cliente).registrar(cuenta, 'pt', 'marca-del-navegador-0123456789')
+
+    expect(llamadas[0]?.solicitud?.json).toMatchObject({ idioma: 'pt', navegador: 'marca-del-navegador-0123456789' })
+  })
+
   it('un límite excedido es ErrorDeLimite con los segundos de espera', async () => {
     const { cliente } = clienteFalso(falla(new ErrorDeApi(429, 'limite_excedido', {}, 3600)))
 
@@ -244,6 +252,14 @@ describe('HttpCuentaRepository.reenviarConfirmacion', () => {
     ])
   })
 
+  it('con la marca del navegador la manda en el campo navegador', async () => {
+    const { cliente, llamadas } = clienteFalso(ok(undefined, 202))
+
+    await new HttpCuentaRepository(cliente).reenviarConfirmacion('ana@correo.com', 'es', 'marca-del-navegador-0123456789')
+
+    expect(llamadas[0]?.solicitud?.json).toEqual({ correo: 'ana@correo.com', idioma: 'es', navegador: 'marca-del-navegador-0123456789' })
+  })
+
   it('un límite excedido es ErrorDeLimite y un correo rechazado es ErrorDeCamposInvalidos', async () => {
     const limite = clienteFalso(falla(new ErrorDeApi(429, 'limite_excedido', {}, 3600))).cliente
     const rechazado = clienteFalso(falla(new ErrorDeApi(422, 'datos_invalidos', { correo: 'correo_invalido' }))).cliente
@@ -266,8 +282,27 @@ describe('HttpCuentaRepository.confirmarCorreo', () => {
   it('manda POST /acceso/confirmacion con el token y devuelve el correo confirmado', async () => {
     const { cliente, llamadas } = clienteFalso(ok({ correo: 'ana@correo.com' }))
 
-    expect(await new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN)).toBe('ana@correo.com')
+    expect(await new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN)).toEqual({ correo: 'ana@correo.com' })
     expect(llamadas).toEqual([{ metodo: 'POST', ruta: '/acceso/confirmacion', solicitud: { json: { token: TOKEN } } }])
+  })
+
+  it('con la marca del navegador la manda y, si la API abre la sesión, devuelve también la credencial', async () => {
+    const sesion = { token_acceso: 'a.b.c', expira_en: 900, token_renovacion: 'renovacion-secreta' }
+    const { cliente, llamadas } = clienteFalso(ok({ correo: 'ana@correo.com', sesion }))
+
+    const confirmado = await new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN, 'marca-del-navegador-0123456789')
+
+    expect(confirmado).toEqual({
+      correo: 'ana@correo.com',
+      credencial: { acceso: 'a.b.c', renovacion: 'renovacion-secreta', expiraEnSegundos: 900 },
+    })
+    expect(llamadas[0]?.solicitud?.json).toEqual({ token: TOKEN, navegador: 'marca-del-navegador-0123456789' })
+  })
+
+  it('una sesión a medias es un error, no una confirmación sin sesión', async () => {
+    const { cliente } = clienteFalso(ok({ correo: 'ana@correo.com', sesion: { token_acceso: 'a.b.c' } }))
+
+    await expect(new HttpCuentaRepository(cliente).confirmarCorreo(TOKEN, 'marca-del-navegador-0123456789')).rejects.toThrow('inesperada')
   })
 
   it('un 400 enlace_invalido es undefined: el enlace no vale', async () => {

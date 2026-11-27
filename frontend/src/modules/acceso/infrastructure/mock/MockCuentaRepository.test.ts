@@ -85,8 +85,23 @@ describe('MockCuentaRepository: confirmación del correo', () => {
     const token = MockCuentaRepository.ultimoToken()
 
     expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/)
-    expect(await repositorio.confirmarCorreo(token ?? '')).toBe('ana@correo.com')
+    expect(await repositorio.confirmarCorreo(token ?? '')).toEqual({ correo: 'ana@correo.com' })
     expect(await repositorio.confirmarCorreo(token ?? '')).toBeUndefined()
+  })
+
+  it('en el navegador que pidió el enlace abre la sesión; en otro solo confirma', async () => {
+    const repositorio: CuentaRepository = new MockCuentaRepository()
+    await repositorio.registrar(cuenta, 'es', 'marca-del-portatil-0123456789')
+    const primero = MockCuentaRepository.ultimoToken() ?? ''
+    await repositorio.registrar({ ...cuenta, correo: 'luis@correo.com' }, 'es', 'marca-del-portatil-0123456789')
+    const segundo = MockCuentaRepository.ultimoToken() ?? ''
+
+    const mismo = await repositorio.confirmarCorreo(primero, 'marca-del-portatil-0123456789')
+    const otro = await repositorio.confirmarCorreo(segundo, 'marca-del-movil-0123456789')
+
+    expect(mismo?.credencial).toBeDefined()
+    expect(await repositorio.obtenerCuenta(mismo?.credencial?.acceso ?? '')).toMatchObject({ correo: 'ana@correo.com' })
+    expect(otro).toEqual({ correo: 'luis@correo.com' })
   })
 
   it('un correo ya registrado no genera otro enlace', async () => {
@@ -111,7 +126,7 @@ describe('MockCuentaRepository: confirmación del correo', () => {
     expect(nuevo).not.toBe(anterior)
     expect(MockCuentaRepository.ultimoToken()).toBe(nuevo)
     expect(await repositorio.confirmarCorreo(anterior)).toBeUndefined()
-    expect(await repositorio.confirmarCorreo(nuevo)).toBe('ana@correo.com')
+    expect(await repositorio.confirmarCorreo(nuevo)).toEqual({ correo: 'ana@correo.com' })
   })
 
   it('un token inventado no confirma nada', async () => {

@@ -87,8 +87,14 @@ describe('leerCuentaActual', () => {
 
 describe('leerCorreoConfirmado', () => {
   it('devuelve el correo de la respuesta de la confirmación', () => {
-    expect(leerCorreoConfirmado({ correo: 'ana@correo.com' })).toBe('ana@correo.com')
-    expect(leerCorreoConfirmado({ correo: 'ana@correo.com', algo_nuevo: 1 })).toBe('ana@correo.com')
+    expect(leerCorreoConfirmado({ correo: 'ana@correo.com' })).toEqual({ correo: 'ana@correo.com' })
+    expect(leerCorreoConfirmado({ correo: 'ana@correo.com', algo_nuevo: 1 })).toEqual({ correo: 'ana@correo.com' })
+  })
+
+  it('con la sesión abierta devuelve también la credencial, con los nombres del dominio', () => {
+    const sesion = { token_acceso: 'a.b.c', expira_en: 900, token_renovacion: 'renovacion-1' }
+
+    expect(leerCorreoConfirmado({ correo: 'ana@correo.com', sesion })).toEqual({ correo: 'ana@correo.com', credencial })
   })
 
   it.each([
@@ -96,6 +102,9 @@ describe('leerCorreoConfirmado', () => {
     ['sin correo', {}],
     ['con correo vacío', { correo: '' }],
     ['con correo que no es texto', { correo: 5 }],
+    ['con una sesión a medias', { correo: 'ana@correo.com', sesion: { token_acceso: 'a.b.c' } }],
+    ['con una sesión que no es un objeto', { correo: 'ana@correo.com', sesion: 'a.b.c' }],
+    ['con la sesión nula', { correo: 'ana@correo.com', sesion: null }],
   ])('una respuesta %s no es válida', (_nombre, cuerpo) => {
     expect(leerCorreoConfirmado(cuerpo)).toBeUndefined()
   })

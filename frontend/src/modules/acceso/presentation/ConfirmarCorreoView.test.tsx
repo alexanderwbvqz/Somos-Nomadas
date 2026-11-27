@@ -1,12 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StrictMode } from 'react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ResultadoConfirmacion } from '../application/confirmarCorreo'
 import type { ResultadoReenvio } from '../application/reenviarConfirmacion'
 import { es } from '../language/es'
 import { ConfirmarCorreoView } from './ConfirmarCorreoView'
 import { tokenDeLaDireccion } from './hooks/useConfirmarCorreo'
+
+// Al quedar dentro, la vista cambia de página con el enrutador de Next: aquí se reemplaza por uno falso
+const enrutador = vi.hoisted(() => ({ replace: vi.fn<(href: string) => void>() }))
+vi.mock('next/navigation', () => ({ useRouter: () => enrutador }))
+beforeEach(() => enrutador.replace.mockClear())
 
 const t = es
 const TOKEN = 'kVmM4x6ra2TdRrgU23duyfSBxrvhOwiN71QK2GzTuZ8'
@@ -15,10 +20,10 @@ function abrir(direccion: string) {
   window.history.replaceState(null, '', direccion)
 }
 
-function montar(resultado: ResultadoConfirmacion = { ok: true, correo: 'ana@correo.com' }, { estricto = false } = {}) {
+function montar(resultado: ResultadoConfirmacion = { ok: true, correo: 'ana@correo.com', dentro: false }, { estricto = false } = {}) {
   const alConfirmar = vi.fn<(token: string) => Promise<ResultadoConfirmacion>>(async () => resultado)
   const alReenviar = vi.fn<(correo: string) => Promise<ResultadoReenvio>>(async () => ({ ok: true }))
-  const vista = <ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={alReenviar} hrefInicioSesion="/es/iniciar-sesion" />
+  const vista = <ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={alReenviar} hrefInicioSesion="/es/iniciar-sesion" hrefContinuar="/es/bienvenida" />
   render(estricto ? <StrictMode>{vista}</StrictMode> : vista)
   return { alConfirmar, alReenviar, usuario: userEvent.setup() }
 }
@@ -33,11 +38,11 @@ describe('ConfirmarCorreoView: el icono de cada estado', () => {
     abrir(`/es/confirmar-correo#token=${TOKEN}`)
     let terminar: (r: ResultadoConfirmacion) => void = () => undefined
     const alConfirmar = vi.fn(() => new Promise<ResultadoConfirmacion>((resolver) => (terminar = resolver)))
-    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" />)
+    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" hrefContinuar="/es/bienvenida" />)
 
     expect(fondoDelIcono()).toBe('bg-suave')
     await waitFor(() => expect(alConfirmar).toHaveBeenCalled())
-    terminar({ ok: true, correo: 'ana@correo.com' })
+    terminar({ ok: true, correo: 'ana@correo.com', dentro: false })
     await screen.findByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })
     expect(fondoDelIcono()).toBe('bg-degradado-amarillo')
   })
@@ -86,6 +91,26 @@ describe('ConfirmarCorreoView', () => {
     expect(alConfirmar).toHaveBeenCalledExactlyOnceWith(TOKEN)
     expect(screen.getByText(/ana@correo\.com quedó confirmado/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: t.confirmar.confirmado.boton })).toHaveAttribute('href', '/es/iniciar-sesion')
+    expect(enrutador.replace).not.toHaveBeenCalled()
+  })
+
+  it('si además quedó dentro (mismo navegador), lleva directo a la bienvenida sin pantalla intermedia', async () => {
+    abrir(`/es/confirmar-correo#token=${TOKEN}`)
+    const { alConfirmar } = montar({ ok: true, correo: 'ana@correo.com', dentro: true })
+
+    await waitFor(() => expect(enrutador.replace).toHaveBeenCalledExactlyOnceWith('/es/bienvenida'))
+    expect(alConfirmar).toHaveBeenCalledTimes(1)
+    // Mientras cambia de página sigue el «Confirmando…»: no aparece «Correo confirmado» ni su botón
+    expect(screen.getByRole('heading', { level: 1, name: t.confirmar.confirmando })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })).not.toBeInTheDocument()
+  })
+
+  it('en modo estricto, quedar dentro también cambia de página una sola vez', async () => {
+    abrir(`/es/confirmar-correo#token=${TOKEN}`)
+    montar({ ok: true, correo: 'ana@correo.com', dentro: true }, { estricto: true })
+
+    await waitFor(() => expect(enrutador.replace).toHaveBeenCalled())
+    expect(enrutador.replace).toHaveBeenCalledTimes(1)
   })
 
   it('borra el token de la barra de direcciones en cuanto lo lee', async () => {
@@ -94,6 +119,34 @@ describe('ConfirmarCorreoView', () => {
 
     await waitFor(() => expect(window.location.hash).toBe(''))
     expect(window.location.pathname + window.location.search).toBe('/es/confirmar-correo?x=1')
+  })
+
+  it('si al terminar de montar Next vuelve a escribir la dirección con el token, también se borra', async () => {
+    abrir(`/es/confirmar-correo#token=${TOKEN}`)
+    montar()
+    // Lo que hace el enrutador de Next al montar: sincroniza la barra con la dirección con la que se cargó la página
+    window.history.replaceState(null, '', `/es/confirmar-correo#token=${TOKEN}`)
+
+    await waitFor(() => expect(window.location.hash).toBe(''))
+  })
+
+  it('al final deja la dirección limpia con state nulo: así el enrutador de Next la copia y no vuelve a poner el token', async () => {
+    // Como la deja Next al cargar: con su propio state (con el que tomaría la llamada por suya y la ignoraría)
+    window.history.replaceState({ __NA: true }, '', `/es/confirmar-correo#token=${TOKEN}`)
+    const llamadas: [unknown, string | URL | null | undefined][] = []
+    const original = window.history.replaceState.bind(window.history)
+    const espia = vi.spyOn(window.history, 'replaceState').mockImplementation((estado, titulo, url) => {
+      llamadas.push([estado, url])
+      original(estado, titulo, url)
+    })
+    try {
+      montar()
+      await waitFor(() => expect(llamadas.length).toBeGreaterThanOrEqual(2))
+    } finally {
+      espia.mockRestore()
+    }
+
+    expect(llamadas.at(-1)).toEqual([null, '/es/confirmar-correo'])
   })
 
   it('aunque React ejecute el efecto dos veces (modo estricto), confirma una sola vez', async () => {
@@ -109,7 +162,7 @@ describe('ConfirmarCorreoView', () => {
     const { alConfirmar, usuario } = montar({ ok: false, motivo: 'fallo' }, { estricto: true })
 
     await screen.findByRole('heading', { level: 1, name: t.confirmar.error.titulo })
-    alConfirmar.mockResolvedValueOnce({ ok: true, correo: 'ana@correo.com' })
+    alConfirmar.mockResolvedValueOnce({ ok: true, correo: 'ana@correo.com', dentro: false })
     await usuario.click(screen.getByRole('button', { name: t.confirmar.reintentar }))
 
     expect(await screen.findByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })).toBeInTheDocument()
@@ -144,11 +197,11 @@ describe('ConfirmarCorreoView', () => {
     abrir(`/es/confirmar-correo#token=${TOKEN}`)
     let terminar: (r: ResultadoConfirmacion) => void = () => undefined
     const alConfirmar = vi.fn(() => new Promise<ResultadoConfirmacion>((resolver) => (terminar = resolver)))
-    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" />)
+    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" hrefContinuar="/es/bienvenida" />)
 
     expect(screen.getByRole('heading', { level: 1, name: t.confirmar.confirmando })).toBeInTheDocument()
     await waitFor(() => expect(alConfirmar).toHaveBeenCalled())
-    terminar({ ok: true, correo: 'ana@correo.com' })
+    terminar({ ok: true, correo: 'ana@correo.com', dentro: false })
     expect(await screen.findByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })).toBeInTheDocument()
   })
 
@@ -176,7 +229,7 @@ describe('ConfirmarCorreoView', () => {
   it('al pedir otro enlace, el límite de intentos se avisa', async () => {
     abrir('/es/confirmar-correo')
     const alReenviar = vi.fn(async (): Promise<ResultadoReenvio> => ({ ok: false, motivo: 'limite' }))
-    render(<ConfirmarCorreoView textos={t} alConfirmar={vi.fn()} alReenviar={alReenviar} hrefInicioSesion="/es/iniciar-sesion" />)
+    render(<ConfirmarCorreoView textos={t} alConfirmar={vi.fn()} alReenviar={alReenviar} hrefInicioSesion="/es/iniciar-sesion" hrefContinuar="/es/bienvenida" />)
     const usuario = userEvent.setup()
 
     await usuario.type(await screen.findByLabelText(t.campos.correo), 'ana@correo.com')
@@ -197,7 +250,7 @@ describe('ConfirmarCorreoView', () => {
     const { alConfirmar, usuario } = montar({ ok: false, motivo: 'fallo' })
 
     await screen.findByRole('heading', { level: 1, name: t.confirmar.error.titulo })
-    alConfirmar.mockResolvedValueOnce({ ok: true, correo: 'ana@correo.com' })
+    alConfirmar.mockResolvedValueOnce({ ok: true, correo: 'ana@correo.com', dentro: false })
     await usuario.click(screen.getByRole('button', { name: t.confirmar.reintentar }))
 
     expect(await screen.findByRole('heading', { level: 1, name: t.confirmar.confirmado.titulo })).toBeInTheDocument()
@@ -209,7 +262,7 @@ describe('ConfirmarCorreoView', () => {
     const alConfirmar = vi.fn(async (): Promise<ResultadoConfirmacion> => {
       throw new Error('red')
     })
-    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" />)
+    render(<ConfirmarCorreoView textos={t} alConfirmar={alConfirmar} alReenviar={vi.fn()} hrefInicioSesion="/es/iniciar-sesion" hrefContinuar="/es/bienvenida" />)
 
     expect(await screen.findByRole('heading', { level: 1, name: t.confirmar.error.titulo })).toBeInTheDocument()
   })

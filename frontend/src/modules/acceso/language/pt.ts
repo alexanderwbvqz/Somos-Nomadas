@@ -59,7 +59,7 @@ export const pt: TextosAcceso = {
     parrafo: 'Enviamos um link para comprovar que o e-mail é seu e continuar com seu perfil.',
     tarjetaTitulo: 'Enviamos um link',
     loEnviamosA: 'Enviamos para',
-    nota: 'Abra-o para continuar. Expira em 24 horas.',
+    nota: 'Abra-o para continuar. Expira em 15 minutos.',
     reenviar: 'Reenviar link',
     cambiarCorreo: 'Trocar e-mail',
     espera: 'Você poderá reenviá-lo em {tiempo}.',

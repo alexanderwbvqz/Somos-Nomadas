@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { CorreoConfirmado } from '../../domain/confirmacion'
 import type { CredencialDeSesion, CuentaActual } from '../../domain/sesion'
 
 // Lo que la API de acceso responde, con sus nombres (snake_case) tal cual. Se comprueba la forma: si el backend
@@ -45,10 +46,12 @@ export function leerCuentaActual(cuerpo: unknown): CuentaActual | undefined {
   return { id, correo, correoConfirmado: correo_confirmado }
 }
 
-const correoConfirmadoSchema = z.object({ correo: z.string().min(1) })
+const correoConfirmadoSchema = z.object({ correo: z.string().min(1), sesion: credencialSchema.optional() })
 
-/** El correo que devuelve `POST /acceso/confirmacion` al confirmarlo */
-export function leerCorreoConfirmado(cuerpo: unknown): string | undefined {
+/** Lo que devuelve `POST /acceso/confirmacion`: el correo y, en el navegador que pidió el enlace, la sesión abierta */
+export function leerCorreoConfirmado(cuerpo: unknown): CorreoConfirmado | undefined {
   const resultado = correoConfirmadoSchema.safeParse(cuerpo)
-  return resultado.success ? resultado.data.correo : undefined
+  if (!resultado.success) return undefined
+  const { correo, sesion } = resultado.data
+  return sesion === undefined ? { correo } : { correo, credencial: credencialDe(sesion) }
 }

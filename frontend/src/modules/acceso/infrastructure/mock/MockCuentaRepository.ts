@@ -1,5 +1,6 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import type { CuentaRepository } from '../../domain/CuentaRepository'
+import type { CorreoConfirmado, IdiomaDelCorreo } from '../../domain/confirmacion'
 import type { CuentaNueva } from '../../domain/cuenta'
 import type { CredencialDeSesion, CuentaActual } from '../../domain/sesion'
 
@@ -28,15 +29,17 @@ function abrirSesion(correo: string): CredencialDeSesion {
   return credencial
 }
 
-// Los enlaces de confirmación vigentes: token → correo. Uno por cuenta; en globalThis por lo mismo que las cuentas.
-const globalEnlaces = globalThis as typeof globalThis & { __enlacesSimulados?: Map<string, string> }
-const enlaces = (globalEnlaces.__enlacesSimulados ??= new Map<string, string>())
+// Los enlaces de confirmación vigentes: token → correo y la marca del navegador que lo pidió. Uno por cuenta; en
+// globalThis por lo mismo que las cuentas.
+type EnlaceSimulado = { correo: string; navegador?: string }
+const globalEnlaces = globalThis as typeof globalThis & { __enlacesSimulados?: Map<string, EnlaceSimulado> }
+const enlaces = (globalEnlaces.__enlacesSimulados ??= new Map<string, EnlaceSimulado>())
 let ultimoToken: string | undefined
 
-function nuevoEnlace(correo: string): void {
-  for (const [token, deQuien] of enlaces) if (deQuien === correo) enlaces.delete(token)
+function nuevoEnlace(correo: string, navegador: string | undefined): void {
+  for (const [token, enlace] of enlaces) if (enlace.correo === correo) enlaces.delete(token)
   ultimoToken = randomBytes(32).toString('base64url')
-  enlaces.set(ultimoToken, correo)
+  enlaces.set(ultimoToken, { correo, navegador })
 }
 
 const SAL_FALSA = randomBytes(16)
@@ -47,13 +50,15 @@ export const CORREO_GOOGLE_SIMULADO = 'cuenta.google@ejemplo.com'
 const huellaDe = (clave: string, sal: Buffer) => scryptSync(clave, sal, 32)
 
 export class MockCuentaRepository implements CuentaRepository {
-  async registrar(cuenta: CuentaNueva): Promise<void> {
+  async registrar(cuenta: CuentaNueva, idioma?: IdiomaDelCorreo, navegador?: string): Promise<void> {
     // Un correo ya registrado no cambia nada ni lo delata
     if (cuentas.has(cuenta.correo)) return
     const sal = randomBytes(16)
     cuentas.set(cuenta.correo, { sal, huella: huellaDe(cuenta.clave, sal) })
     // simulado: no se envía ningún correo; el enlace queda guardado (las pruebas lo leen con ultimoToken)
-    nuevoEnlace(cuenta.correo)
+    // simulado: el idioma no cambia nada, porque no se escribe ningún correo
+    void idioma
+    nuevoEnlace(cuenta.correo, navegador)
   }
 
   async iniciarSesion(correo: string, clave: string): Promise<{ correo: string; credencial: CredencialDeSesion } | undefined> {
@@ -94,15 +99,19 @@ export class MockCuentaRepository implements CuentaRepository {
     return { correo: CORREO_GOOGLE_SIMULADO }
   }
 
-  async reenviarConfirmacion(correo: string): Promise<void> {
-    // simulado: no se manda ningún correo. El simulado no distingue cuentas confirmadas: basta con que exista
-    if (cuentas.has(correo)) nuevoEnlace(correo)
+  async reenviarConfirmacion(correo: string, idioma?: IdiomaDelCorreo, navegador?: string): Promise<void> {
+    // simulado: no se manda ningún correo (el idioma no cambia nada). No distingue cuentas confirmadas: basta con que exista
+    void idioma
+    if (cuentas.has(correo)) nuevoEnlace(correo, navegador)
   }
 
-  async confirmarCorreo(token: string): Promise<string | undefined> {
-    const correo = enlaces.get(token)
+  async confirmarCorreo(token: string, navegador?: string): Promise<CorreoConfirmado | undefined> {
+    const enlace = enlaces.get(token)
     enlaces.delete(token)
-    return correo
+    if (enlace === undefined) return undefined
+    // En el navegador que pidió el enlace, además abre la sesión (como el backend)
+    const mismo = enlace.navegador !== undefined && enlace.navegador === navegador
+    return mismo ? { correo: enlace.correo, credencial: abrirSesion(enlace.correo) } : { correo: enlace.correo }
   }
 
   /** Solo para pruebas: el token del último enlace creado */

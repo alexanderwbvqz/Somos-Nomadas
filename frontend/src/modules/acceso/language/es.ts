@@ -59,7 +59,7 @@ export const es: TextosAcceso = {
     parrafo: 'Te enviamos un enlace para comprobar que el correo es tuyo y seguir con tu perfil.',
     tarjetaTitulo: 'Te enviamos un enlace',
     loEnviamosA: 'Lo enviamos a',
-    nota: 'Ábrelo para continuar. Caduca en 24 horas.',
+    nota: 'Ábrelo para continuar. Caduca en 15 minutos.',
     reenviar: 'Reenviar enlace',
     cambiarCorreo: 'Cambiar correo',
     espera: 'Podrás reenviarlo en {tiempo}.',

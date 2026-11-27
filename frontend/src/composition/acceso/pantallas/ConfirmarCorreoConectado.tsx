@@ -15,6 +15,7 @@ export function ConfirmarCorreoConectado({ idioma }: { idioma: Idioma }) {
           alConfirmar={confirmarCorreoAccion}
           alReenviar={reenviarConfirmacionAccion.bind(null, idioma)}
           hrefInicioSesion={`/${idioma}/iniciar-sesion`}
+          hrefContinuar={`/${idioma}/bienvenida`}
         />
       </main>
     </>

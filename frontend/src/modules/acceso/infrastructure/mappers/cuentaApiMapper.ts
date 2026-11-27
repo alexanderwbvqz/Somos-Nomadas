@@ -6,8 +6,11 @@ import { ErrorDeCamposInvalidos, ErrorDeCorreoSinConfirmar, ErrorDeLimite } from
 // La traducción entre el dominio y la API de acceso: nombres de campo (camelCase ↔ snake_case), códigos de error y
 // los errores del dominio. Los nombres de la API (contrato/autenticacion.md) solo viven aquí y en el esquema.
 
+/** El campo `navegador` (la marca de este navegador), solo si la hay */
+const conNavegador = (navegador: string | undefined) => (navegador === undefined ? {} : { navegador })
+
 /** Lo que se manda a POST /acceso/registro. `idioma` es el del correo de confirmación */
-export function cuerpoDeRegistro(cuenta: CuentaNueva, idioma: IdiomaDelCorreo) {
+export function cuerpoDeRegistro(cuenta: CuentaNueva, idioma: IdiomaDelCorreo, navegador?: string) {
   return {
     correo: cuenta.correo,
     clave: cuenta.clave,
@@ -15,12 +18,18 @@ export function cuerpoDeRegistro(cuenta: CuentaNueva, idioma: IdiomaDelCorreo) {
     // El campo trampa: una persona no lo ve ni lo rellena. Siempre vacío
     sitio_secundario: '',
     idioma,
+    ...conNavegador(navegador),
   }
 }
 
 /** Lo que se manda a POST /acceso/confirmacion/reenvio */
-export function cuerpoDeReenvio(correo: string, idioma: IdiomaDelCorreo) {
-  return { correo, idioma }
+export function cuerpoDeReenvio(correo: string, idioma: IdiomaDelCorreo, navegador?: string) {
+  return { correo, idioma, ...conNavegador(navegador) }
+}
+
+/** Lo que se manda a POST /acceso/confirmacion */
+export function cuerpoDeConfirmacion(token: string, navegador?: string) {
+  return { token, ...conNavegador(navegador) }
 }
 
 /** Lo que se manda a POST /acceso/sesion */

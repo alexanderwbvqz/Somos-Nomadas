@@ -19,7 +19,10 @@ describe('idiomas de acceso', () => {
 })
 
 describe('el enlace de confirmación', () => {
-  it('la pantalla dice que dura 24 horas, como el backend, en los tres idiomas', () => {
-    for (const textos of [es, en, pt]) expect(textos.confirmacion.nota).toContain('24')
+  it('la pantalla dice que dura 15 minutos, como el backend, en los tres idiomas', () => {
+    expect(es.confirmacion.nota).toContain('15 minutos')
+    expect(en.confirmacion.nota).toContain('15 minutes')
+    expect(pt.confirmacion.nota).toContain('15 minutos')
+    for (const textos of [es, en, pt]) expect(textos.confirmacion.nota).not.toContain('24')
   })
 })

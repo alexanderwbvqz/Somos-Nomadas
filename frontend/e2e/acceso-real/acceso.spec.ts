@@ -15,7 +15,11 @@ const RENOVACION = '__Host-nomadas_renovacion'
 const correoUnico = (prefijo: string) => `${prefijo}-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}@correo.com`
 const desde = (ip: string) => ({ extraHTTPHeaders: { 'x-forwarded-for': ip } })
 
-/** Crea la cuenta y la confirma abriendo el enlace del correo, como haría una persona */
+/**
+ * Crea la cuenta y la confirma abriendo el enlace del correo en OTRO navegador (como abrir el correo en el móvil): así
+ * este sigue sin sesión y las pruebas entran con la contraseña. Abrirlo en el mismo navegador ya deja dentro
+ * (confirmacion.spec.ts).
+ */
 async function registrar(page: Page, correo: string, clave = CLAVE) {
   await page.goto('/es/registro')
   await page.getByLabel('Correo').fill(correo)
@@ -24,8 +28,14 @@ async function registrar(page: Page, correo: string, clave = CLAVE) {
   await page.getByRole('button', { name: 'Crear cuenta' }).click()
   await expect(page.getByRole('heading', { name: 'Te enviamos un enlace' })).toBeVisible()
   const { enlace } = await esperarCorreo(correo)
-  await page.goto(enlace)
-  await expect(page.getByRole('heading', { level: 1, name: 'Correo confirmado' })).toBeVisible()
+  const navegador = page.context().browser()
+  if (navegador === null) throw new Error('Sin navegador para abrir el enlace en otro contexto')
+  // Cada «móvil» desde su IP: las confirmaciones tienen su propio límite por origen
+  const movil = await navegador.newContext(desde(`198.51.100.${1 + Math.floor(Math.random() * 250)}`))
+  const pagina = await movil.newPage()
+  await pagina.goto(enlace)
+  await expect(pagina.getByRole('heading', { level: 1, name: 'Correo confirmado' })).toBeVisible()
+  await movil.close()
 }
 
 async function entrar(page: Page, correo: string, clave = CLAVE) {

@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 import { rellenarPlantilla } from '@/shared/idiomas/rellenarPlantilla'
 import { Boton } from '@/shared/ui/Boton'
 import { EnlaceBoton } from '@/shared/ui/EnlaceBoton'
@@ -14,12 +16,16 @@ export type ConfirmarCorreoViewProps = {
   alConfirmar: AccionConfirmar
   alReenviar: AccionReenviar
   hrefInicioSesion: string
+  /** Adónde lleva si el enlace, además de confirmar, abrió la sesión (los pasos: la bienvenida) */
+  hrefContinuar: string
 }
 
 // La página a la que lleva el enlace del correo: confirma el correo y, si el enlace no vale, deja pedir otro.
-// Un solo mensaje por estado, en una columna centrada.
-export function ConfirmarCorreoView({ textos, alConfirmar, alReenviar, hrefInicioSesion }: ConfirmarCorreoViewProps) {
-  const { estado, reintentar } = useConfirmarCorreo(alConfirmar)
+// Abierto en el navegador que pidió el enlace, entra directo a los pasos. Un solo mensaje por estado, centrado.
+export function ConfirmarCorreoView({ textos, alConfirmar, alReenviar, hrefInicioSesion, hrefContinuar }: ConfirmarCorreoViewProps) {
+  const enrutador = useRouter()
+  const entrar = useCallback(() => enrutador.replace(hrefContinuar), [enrutador, hrefContinuar])
+  const { estado, reintentar } = useConfirmarCorreo(alConfirmar, entrar)
   const t = textos.confirmar
 
   switch (estado.tipo) {

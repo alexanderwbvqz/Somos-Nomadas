@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import type { CuentaRepository } from '../../domain/CuentaRepository'
 import { datosRegistroVacios } from '../../domain/cuenta'
 import { MockAlmacenDeSesion } from '../mock/MockAlmacenDeSesion'
+import { MockMarcaNavegador } from '../mock/MockMarcaNavegador'
 import { CORREO_GOOGLE_SIMULADO, MockCuentaRepository } from '../mock/MockCuentaRepository'
 import { recibirConfirmacion, recibirGoogle, recibirInicioSesion, recibirRegistro, recibirReenvio } from './recepcionAcceso'
 
@@ -83,7 +84,39 @@ describe('recepcionAcceso', () => {
     await recibirRegistro(new MockCuentaRepository(), validos, 'es')
     const token = MockCuentaRepository.ultimoToken()
 
-    expect(await recibirConfirmacion(new MockCuentaRepository(), token)).toEqual({ ok: true, correo: 'ana@correo.com' })
+    expect(await recibirConfirmacion(new MockCuentaRepository(), token)).toEqual({ ok: true, correo: 'ana@correo.com', dentro: false })
+  })
+
+  it('el mismo navegador que se registró confirma y queda dentro, con la sesión guardada en el almacén', async () => {
+    const marca = new MockMarcaNavegador()
+    await recibirRegistro(new MockCuentaRepository(), validos, 'es', marca)
+    const almacen = new MockAlmacenDeSesion()
+
+    const resultado = await recibirConfirmacion(new MockCuentaRepository(), MockCuentaRepository.ultimoToken(), marca, almacen)
+
+    expect(resultado).toEqual({ ok: true, correo: 'ana@correo.com', dentro: true })
+    expect(almacen.guardada.renovacion).toBeDefined()
+    expect(marca.valor).toBeUndefined()
+  })
+
+  it('otro navegador solo confirma', async () => {
+    await recibirRegistro(new MockCuentaRepository(), validos, 'es', new MockMarcaNavegador())
+    const almacen = new MockAlmacenDeSesion()
+
+    const resultado = await recibirConfirmacion(new MockCuentaRepository(), MockCuentaRepository.ultimoToken(), new MockMarcaNavegador(), almacen)
+
+    expect(resultado).toEqual({ ok: true, correo: 'ana@correo.com', dentro: false })
+    expect(almacen.guardados).toBe(0)
+  })
+
+  it('el enlace reenviado queda atado al navegador que lo pidió', async () => {
+    await recibirRegistro(new MockCuentaRepository(), validos, 'es', new MockMarcaNavegador())
+    const otro = new MockMarcaNavegador()
+    await recibirReenvio(new MockCuentaRepository(), 'ana@correo.com', 'es', otro)
+
+    const resultado = await recibirConfirmacion(new MockCuentaRepository(), MockCuentaRepository.ultimoToken(), otro, new MockAlmacenDeSesion())
+
+    expect(resultado).toMatchObject({ ok: true, dentro: true })
   })
 
   it.each([undefined, null, 42, '', 'a'.repeat(501), { token: 'x' }])(
