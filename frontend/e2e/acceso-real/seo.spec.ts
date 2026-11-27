@@ -36,9 +36,7 @@ const SITIO = 'https://somosnomadas.app'
 test.describe('canónica e idiomas', () => {
   const publicas = [
     ['', 'en'],
-    ['/aliados', 'pt'],
     ['/aliados/postular', 'es'],
-    ['/aliados/cowork-plaza', 'en'],
     ['/eventos', 'es'],
     ['/registro', 'pt'],
     ['/iniciar-sesion', 'es'],
@@ -61,11 +59,44 @@ test.describe('canónica e idiomas', () => {
     })
   }
 
-  test('una página privada no declara canónica ni idiomas: no se indexa', async ({ page }) => {
-    await page.goto('/es/confirmar-correo')
+  for (const ruta of ['/es/confirmar-correo', '/pt/aliados', '/en/aliados/cowork-plaza']) {
+    test(`${ruta} no se indexa ni declara canónica ni idiomas (privada, o aliados de ejemplo)`, async ({ page }) => {
+      await page.goto(ruta)
 
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
-    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
-    await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0)
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
+      await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
+      await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0)
+    })
+  }
+})
+
+test.describe('mapa del sitio y robots', () => {
+  test('/sitemap.xml lista las páginas públicas en los tres idiomas, enlazadas, y nada de datos de ejemplo', async ({ request }) => {
+    const respuesta = await request.get('/sitemap.xml')
+    expect(respuesta.status()).toBe(200)
+    expect(respuesta.headers()['content-type']).toContain('xml')
+    const xml = await respuesta.text()
+
+    const direcciones = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
+    const rutas = ['', '/registro', '/iniciar-sesion', '/aliados/postular']
+    expect(direcciones).toEqual(rutas.flatMap((ruta) => ['es', 'en', 'pt'].map((idioma) => `${SITIO}/${idioma}${ruta}`)))
+    expect(xml).toContain(`<xhtml:link rel="alternate" hreflang="pt" href="${SITIO}/pt/registro" />`)
+    expect(xml).toContain(`<xhtml:link rel="alternate" hreflang="x-default" href="${SITIO}/es/registro" />`)
+    // Aliados y eventos son de ejemplo en estas pruebas: no se anuncian
+    expect(xml).not.toContain('/aliados<')
+    expect(xml).not.toContain('/eventos')
+    // Ni páginas privadas
+    for (const privada of ['/perfil', '/bienvenida', '/habilidades', '/confirmar-correo']) expect(xml).not.toContain(privada)
+  })
+
+  test('/robots.txt deja pasar a todos y señala el mapa', async ({ request }) => {
+    const respuesta = await request.get('/robots.txt')
+    expect(respuesta.status()).toBe(200)
+    const texto = await respuesta.text()
+
+    expect(texto).toContain('User-Agent: *')
+    expect(texto).toContain('Allow: /')
+    expect(texto).not.toContain('Disallow')
+    expect(texto).toContain(`Sitemap: ${SITIO}/sitemap.xml`)
   })
 })
